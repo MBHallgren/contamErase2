@@ -1,0 +1,12 @@
+scenario_1:
+  total_varified_genes: 53
+  total_unique_genes: 1
+scenario_2:
+  total_varified_genes: 52
+  total_unique_genes: 3
+scenario_3:
+  total_varified_genes: 50
+  total_unique_genes: 5
+scenario_4:
+    total_varified_genes: 40
+    total_unique_genes: 15

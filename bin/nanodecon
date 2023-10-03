@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+import os
+
+sys.path = [os.path.join(os.path.dirname(os.path.realpath(__file__)),'..')] + sys.path
+
+from nanodecon import version
+
+__author__ = "Malte B. Hallgren"
+__version__ = version.__version__
+
+from nanodecon import decontaminate
+
+def main():
+    description = 'NanoDecon - A tool for decontamination of Nanopore sequencing data. Version: ' + __version__
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('--illumina', action="store", type=str, dest='illumina', nargs='+',
+                        default=None, help='Paired end illumina files.')
+    parser.add_argument('--nanopore', action="store", type=str, dest='nanopore',
+                        default=None, help='Nanopore input files.')
+    parser.add_argument('--db_dir', action="store", type=str, dest='db_dir', help='Path to NanoDecon databases.'
+                                                                                  'Should contain the following files: '
+                                                                                  'bac_db, euk_db, viral_db, rmlst_db, plasmid_db')
+    parser.add_argument('--ugt', action="store", default = 10, type=int, dest='ugt', help='Number of unique rmlst genes'
+                                                                                                             'required to positively identify something as an intra-species contamination.'
+                                                                                                             'A lower number will be more likely to remove intra-species contaminations, '
+                                                                                                             'but could also do so for false-positives.')
+
+    parser.add_argument('-filter', action='store_true', dest='filter', default=False,
+                        help='Filter out reads of identified contaminations. Default: False')
+    parser.add_argument('--o', action="store", type=str, dest='output', help='Output directory')
+    parser.add_argument('--threads', action="store", type=int, dest='threads', default=4,
+                        help='Number of threads to use. Default: 4')
+    parser.add_argument('--isd', action="store", type=float, dest='isd', default=0.01,
+                        help='Minimum intra species relative depth abundance score for validating a base call for a given position.'
+                             ' Default: 0.01')
+    parser.add_argument('--conditions', action="store", type=str, dest='conditions', default=None,
+                        help='Path to conditions file. If not provided, NanoDecon will use the default conditions file.')
+    parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
+
+    args = parser.parse_args()
+    decontaminate.decontaminate(args)
+
+
+if __name__ == '__main__':
+    main()
