@@ -8,12 +8,21 @@ from nanodecon.intra_species_detection import determine_intra_species_contaminat
 
 def nanopore_decontamination(arguments):
     os.system('mkdir ' + arguments.output + '/output')
-    os.system('mkdir ' + arguments.output + '/output/contaminations')
-    os.system('mkdir ' + arguments.output + '/alignments')
+    #os.system('mkdir ' + arguments.output + '/output/contaminations')
+    #os.system('mkdir ' + arguments.output + '/alignments')
     kma.KMARunner(arguments.nanopore,
                   arguments.output + "/bacteria_alignment",
                   arguments.db_dir + "/bac_db",
                   "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
+
+    kma.KMARunner('{}'.format(arguments.nanopore),
+                  arguments.output + "/rmlst_alignment",
+                  arguments.db_dir + '/rmlst_db',
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -mp 14".format(arguments.threads)) \
+        .run()
+
+    os.system('gunzip ' + arguments.output + '/bacteria_alignment.frag.gz')
+    sys.exit()
 
 
     kma.KMARunner(arguments.nanopore,

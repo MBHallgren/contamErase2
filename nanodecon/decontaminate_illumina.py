@@ -10,28 +10,14 @@ def illumina_decontamination(arguments):
     input_string = " ".join(arguments.illumina)
 
     os.system('mkdir ' + arguments.output + '/output')
-    os.system('mkdir ' + arguments.output + '/output/contaminations')
-    os.system('mkdir ' + arguments.output + '/alignments')
+    #os.system('mkdir ' + arguments.output + '/output/contaminations')
+    #os.system('mkdir ' + arguments.output + '/alignments')
 
-    kma.KMARunner(input_string,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 5".format(arguments.threads)).run()
+    #kma.KMARunner(input_string,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 5".format(arguments.threads)).run()
 
-    kma.KMARunner(input_string,
-                  arguments.output + "/plasmid_alignment",
-                  arguments.db_dir + "/plasmid_db",
-                  "-mem_mode -1t1 -t {}".format(arguments.threads)).run()
-
-    kma.KMARunner(input_string,
-                  arguments.output + "/viral_alignment",
-                  arguments.db_dir + '/viral_db',
-                  "-mem_mode -1t1 -t {}".format(arguments.threads)).run()
-
-    kma.KMARunner(input_string,
-                  arguments.output + "/human_alignment",
-                  arguments.db_dir + '/human_db',
-                  "-mem_mode -1t1 -t {}".format(arguments.threads)).run()
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
 
     black_list_plasmid, black_list_viral, black_list_human = derive_non_bacterial_black_list(arguments.output)
