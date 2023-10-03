@@ -11,4 +11,4 @@ for item in files:
 """
 path = '/home/people/malhal/contamErase/benchmarking/confindr/data/nanopore/'
 for i in range(1, 11, 1):
-    os.system('confindr -i {}/{}/ -o nanopore_output_001/{} -d rmlst_db/ --rmlst -b 1 -bf 0.01 -dt Nanopore'.format(path, i, i))
+    os.system('confindr -i {}/{}/ -o nanopore_output_005/{} -d rmlst_db/ --rmlst -b 1 -bf 0.05 -dt Nanopore -q 14'.format(path, i, i))

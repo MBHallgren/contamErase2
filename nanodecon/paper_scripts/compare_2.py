@@ -1,8 +1,8 @@
 import os
 import sys
 
-file_1 = '/home/people/malhal/data/ecoli_results/DTU_2022_1013323_R1/DTU_2022_1013323_R1.res'
-file_2 = '/home/people/malhal/data/ecoli_results/DTU_2022_1023536_R1/DTU_2022_1023536_R1.res'
+file_1 = '1028222.res'
+file_2 = '1028247.res'
 
 list_1 = list()
 list_2 = list()
@@ -23,6 +23,6 @@ for item in list_1:
     if item not in list_2:
         print (item)
 
-for item in list_2:
-    if item not in list_1:
-        print (item)
+#for item in list_2:
+#    if item not in list_1:
+#        print (item)

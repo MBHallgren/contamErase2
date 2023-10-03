@@ -13,10 +13,18 @@ def illumina_decontamination(arguments):
     #os.system('mkdir ' + arguments.output + '/output/contaminations')
     #os.system('mkdir ' + arguments.output + '/alignments')
 
-    #kma.KMARunner(input_string,
-    #              arguments.output + "/bacteria_alignment",
-    #              arguments.db_dir + "/bac_db",
-    #              "-mem_mode -1t1 -t {} -ID 5".format(arguments.threads)).run()
+    kma.KMARunner(input_string,
+                  arguments.output + "/bacteria_alignment",
+                  arguments.db_dir + "/bac_db",
+                  "-mem_mode -1t1 -t {} -ID 10".format(arguments.threads)).run()
+
+    kma.KMARunner(input_string,
+                  arguments.output + "/rmlst_alignment",
+                  arguments.db_dir + '/rmlst_db',
+                  "-1t1 -t {} -ID 10 -md 1.5 -matrix -vcf -oa".format(arguments.threads)) \
+        .run()
+
+    sys.exit()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
 
