@@ -33,6 +33,12 @@ def illumina_decontamination(arguments):
     #             arguments.output + '/specie_db',
     #             "-1t1 -t {} -ID 10 -md 1.5 -matrix -vcf -oa".format(arguments.threads)).run()
     #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+
+    odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments, arguments.output + '/rmlst_alignment.res', arguments.output + '/rmlst_alignment.mat')
+    print (odd_size_alleles)
+    print (non_alignment_matches)
+    print (consensus_dict)
+    sys.exit()
     allele_lengths = check_allele_lengths(arguments.output)
     for item in allele_lengths:
         print (item, allele_lengths[item])
@@ -40,6 +46,7 @@ def illumina_decontamination(arguments):
 
     #black_list_plasmid, black_list_viral, black_list_human = derive_non_bacterial_black_list(arguments.output)
     rmlst_candidates = derive_rmlst_candidates(primary, candidate_dict)
+
 
     derive_read_pools_illumina(candidate_dict, arguments, primary, black_list_human)
 
@@ -52,6 +59,28 @@ def illumina_decontamination(arguments):
     produce_final_output_illumina(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
     sys.exit()
+
+def build_consensus_dict(arguments, res_file, mat_file):
+    top_allele_dict = {}
+    with open(res_file, 'r') as f:
+        for line in f:
+            if not line.startswith('#'):
+                line = line.strip.slit('\t')
+                allele = line[0].split('_')[0]
+                if allele not in top_allele_dict:
+                    top_allele_dict[allele] = line[3]
+                else:
+                    if line[3] > top_allele_dict[allele]:
+                        top_allele_dict[allele] = line[3]
+    odd_size_alleles = set()
+    with open(res_file, 'r') as f:
+        for line in f:
+            if not line.startswith('#'):
+                line = line.strip.slit('\t')
+                allele = line[0].split('_')[0]
+                if line[3] != top_allele_dict[allele]:
+                    odd_size_alleles.add(allele)
+    return odd_size_alleles, non_alignment_matches, consensus_dict
 
 def check_allele_lengths(output):
     allele_lengths = {}
