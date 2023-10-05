@@ -57,6 +57,7 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file):
             if line.startswith('rST'):
                 headers = line.strip().split('\t')[1:54]
             else:
+                print (line.strip().split('\t'))
                 print (line.strip().split('\t')[56])
                 break
     #print (headers)
