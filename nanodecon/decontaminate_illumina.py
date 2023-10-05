@@ -94,6 +94,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
         correct_size_flag = False
         for line in f:
             line = line.strip()
+            print (line)
             if line.startswith('#'):
                 allele = line.split('_')[0]
                 gene = line[0]
