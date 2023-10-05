@@ -35,6 +35,8 @@ def illumina_decontamination(arguments):
     #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments, arguments.output + '/rmlst_alignment.res', arguments.output + '/rmlst_alignment.mat')
+
+    print (consensus_dict)
     sys.exit()
     allele_lengths = check_allele_lengths(arguments.output)
     for item in allele_lengths:
@@ -56,6 +58,10 @@ def illumina_decontamination(arguments):
     produce_final_output_illumina(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
     sys.exit()
+
+def check_all_species_alleles_against_consensus_dict(concensus_dict, fsa_file):
+
+    pass
 
 def build_consensus_dict(arguments, res_file, mat_file):
     top_allele_dict = {}
@@ -92,11 +98,9 @@ def build_consensus_dict(arguments, res_file, mat_file):
         for line in f:
             line = line.strip()
             if line.startswith('#'):
-                print(line)
                 allele = line[1:]
                 gene = allele.split('_')[0]
                 if allele in correct_size_alleles:
-                    print ('found correct size allele')
                     correct_size_flag = True
                     index = 0
                 else:
@@ -111,12 +115,8 @@ def build_consensus_dict(arguments, res_file, mat_file):
                                 consensus_dict[gene][index][i] += int(line[i])
                             index += 1
     #Consider how we handle gaps in reads and template
-    print (consensus_dict['BACT000001'])
-
-
-
-
-
+    #missing odd size alleles
+    #missing non alignment matches with gaps
     return odd_size_alleles, non_alignment_matches, consensus_dict
 
 def check_allele_lengths(output):
