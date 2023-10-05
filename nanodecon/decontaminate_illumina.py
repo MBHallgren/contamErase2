@@ -75,6 +75,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                     if int(line[1]) > top_allele_dict[allele][1]:
                         top_allele_dict[allele] = [int(line[3]), int(line[1]), line[0]]
     odd_size_alleles = set()
+    correct_size_alleles = set()
     with open(res_file, 'r') as f:
         for line in f:
             if not line.startswith('#'):
@@ -82,7 +83,24 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 allele = line[0].split('_')[0]
                 if int(line[3]) != top_allele_dict[allele][0]:
                     odd_size_alleles.add(line[0])
-    print (top_allele_dict)
+                else:
+                    correct_size_alleles.add(line[0])
+                    if allele not in consensus_dict:
+                        consensus_dict[allele] = []
+                        for i in range(int(line[3])):
+                            consensus_dict[allele].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
+    for item in consensus_dict:
+        print (item, len(consensus_dict[item]))
+
+    #with open(mat_file, 'r') as f:
+    #    for line in f:
+    #        line = line.strip()
+    #        if line.startswith('#'):
+    #            allele = line.split('_')[0]
+    #            gene = line[0]
+
+
+
     return odd_size_alleles, non_alignment_matches, consensus_dict
 
 def check_allele_lengths(output):
