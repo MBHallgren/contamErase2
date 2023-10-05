@@ -18,11 +18,6 @@ def illumina_decontamination(arguments):
     #              arguments.db_dir + "/bac_db",
     #              "-mem_mode -1t1 -t {} -ID 10".format(arguments.threads)).run()
 
-    #kma.KMARunner(input_string,
-    #              arguments.output + "/rmlst_alignment",
-    #              arguments.db_dir + '/rmlst_db',
-    #              "-1t1 -t {} -ID 10 -md 1.5 -matrix -vcf -oa".format(arguments.threads)) \
-    #    .run()
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
 
@@ -33,7 +28,11 @@ def illumina_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
-    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    kma.KMARunner(input_string,
+                 arguments.output + "/rmlst_alignment",
+                 arguments.output + '/specie_db',
+                 "-1t1 -t {} -ID 10 -md 1.5 -matrix -vcf -oa".format(arguments.threads)).run()
+    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
     sys.exit()
 
     #black_list_plasmid, black_list_viral, black_list_human = derive_non_bacterial_black_list(arguments.output)
@@ -66,6 +65,7 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
                             allele = headers[i] + '_' + line.strip().split('\t')[i+1]
                             gene_set.add(allele)
     produce_species_fsa_file(fsa_file, gene_set, output)
+    os.system('kma index -i {}/specie.fsa -o {}/specie_db'.format(output, output))
 
 def produce_species_fsa_file(fsa_file, gene_set, output):
     with open(output + '/specie.fsa', 'w') as outfile:
