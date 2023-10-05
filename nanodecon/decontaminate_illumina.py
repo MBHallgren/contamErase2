@@ -36,7 +36,7 @@ def illumina_decontamination(arguments):
 
     odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments, arguments.output + '/rmlst_alignment.res', arguments.output + '/rmlst_alignment.mat')
 
-    check_all_species_alleles_against_consensus_dict(concensus_dict, args.output + '/specie.fsa')
+    check_all_species_alleles_against_consensus_dict(consensus_dict, args.output + '/specie.fsa')
     sys.exit()
     allele_lengths = check_allele_lengths(arguments.output)
     for item in allele_lengths:
@@ -59,7 +59,7 @@ def illumina_decontamination(arguments):
     #produce_contamination_report #TBD
     sys.exit()
 
-def check_all_species_alleles_against_consensus_dict(concensus_dict, fsa_file):
+def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
     confirmed_alleles = {}
     with open(fsa_file, 'r') as f:
         sequence = ''
@@ -67,7 +67,7 @@ def check_all_species_alleles_against_consensus_dict(concensus_dict, fsa_file):
         for line in f:
             if line.startswith('>'):
                 if sequence != '':
-                    if len(sequence) == len(concensus_dict[allele]):
+                    if len(sequence) == len(consensus_dict[allele]):
                         if min_depth > 0:
                             confirmed_alleles[gene] = min_depth
                     sequence = ''
@@ -76,7 +76,7 @@ def check_all_species_alleles_against_consensus_dict(concensus_dict, fsa_file):
                 allele = gene.split('_')[0]
             else:
                 sequence += line.strip()
-        if len(sequence) == len(concensus_dict[allele]):
+        if len(sequence) == len(consensus_dict[allele]):
             if min_depth > 0:
                 confirmed_alleles[gene] = min_depth
     print (len(confirmed_alleles))
