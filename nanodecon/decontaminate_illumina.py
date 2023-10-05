@@ -52,6 +52,7 @@ def illumina_decontamination(arguments):
 
 def produce_species_specific_kma_db(species, fsa_file, scheme_file):
     gene_set = set()
+    t = 0
     with open(scheme_file, 'r') as f:
         for line in f:
             if line.startswith('rST'):
@@ -59,11 +60,14 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file):
             else:
                 if line.strip().split('\t') != ['']:
                     if line.strip().split('\t')[55] == species:
+                        t += 1
                         for i in range(len(headers)):
                             allele = headers[i] + '_' + line.strip().split('\t')[i+1]
                             gene_set.add(allele)
     print (gene_set)
     print (len(gene_set))
+    print (t)
+    print (species)
 def produce_final_output_illumina(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
     primary_species = primary.split()[1].lower() + '_' + primary.split()[2].lower()
     rmlst_hits = output_primary_reads(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, primary_species)
