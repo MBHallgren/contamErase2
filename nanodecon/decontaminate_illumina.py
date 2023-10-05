@@ -86,13 +86,6 @@ def build_consensus_dict(arguments, res_file, mat_file):
                         consensus_dict[allele] = []
                         for i in range(int(line[3])):
                             consensus_dict[allele].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
-    for item in consensus_dict['BACT000001']:
-        print (item)
-    print (len(consensus_dict['BACT000001']))
-    sys.exit()
-
-    for item in correct_size_alleles:
-        print (item)
 
     with open(mat_file, 'r') as f:
         correct_size_flag = False
@@ -113,10 +106,6 @@ def build_consensus_dict(arguments, res_file, mat_file):
                     line = line.split('\t')
                     line = line[1:]
                     print (line)
-                    print (consensus_dict[gene][index])
-                    print (len(consensus_dict[gene]))
-                    print (gene)
-                    print (index)
                     for i in range(len(line)):
                         consensus_dict[gene][index][i] += int(line[i])
                     index += 1
