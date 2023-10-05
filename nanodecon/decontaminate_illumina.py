@@ -109,10 +109,8 @@ def build_consensus_dict(arguments, res_file, mat_file):
                     for i in range(len(line)):
                         consensus_dict[allele][index][i] += int(line[i])
                     index += 1
-    for item in correct_size_alleles:
-        print (item)
-    #for item in consensus_dict:
-    #    print (item, consensus_dict[item])
+    for item in consensus_dict:
+        print (item, consensus_dict[item])
 
 
 
