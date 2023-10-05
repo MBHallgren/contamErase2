@@ -98,6 +98,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 allele = line.split('_')[0]
                 gene = line[0]
                 if gene in correct_size_alleles:
+                    print ('found correct size allele')
                     correct_size_flag = True
                     index = 0
                 else:
@@ -108,9 +109,10 @@ def build_consensus_dict(arguments, res_file, mat_file):
                     for i in range(len(line)):
                         consensus_dict[allele][index][i] += int(line[i])
                     index += 1
-
-    for item in consensus_dict:
-        print (item, consensus_dict[item])
+    for item in correct_size_alleles:
+        print (item)
+    #for item in consensus_dict:
+    #    print (item, consensus_dict[item])
 
 
 
