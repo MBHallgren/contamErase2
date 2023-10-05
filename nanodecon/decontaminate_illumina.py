@@ -36,7 +36,7 @@ def illumina_decontamination(arguments):
 
     odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments, arguments.output + '/rmlst_alignment.res', arguments.output + '/rmlst_alignment.mat')
 
-    check_all_species_alleles_against_consensus_dict(consensus_dict, args.output + '/specie.fsa')
+    check_all_species_alleles_against_consensus_dict(consensus_dict, arguments.output + '/specie.fsa')
     sys.exit()
     allele_lengths = check_allele_lengths(arguments.output)
     for item in allele_lengths:
