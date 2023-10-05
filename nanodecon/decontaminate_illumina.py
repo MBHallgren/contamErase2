@@ -106,11 +106,12 @@ def build_consensus_dict(arguments, res_file, mat_file):
                     if correct_size_flag:
                         line = line.split('\t')
                         line = line[1:]
-                        print (line)
                         print (index)
                         print (allele)
                         for i in range(len(line)):
                             consensus_dict[gene][index][i] += int(line[i])
+                            if i == 5 and int(line[i]) > 0:
+                                print (line)
                         index += 1
     for item in consensus_dict:
         print (item, consensus_dict[item])
