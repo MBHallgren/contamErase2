@@ -65,7 +65,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
     with open(res_file, 'r') as f:
         for line in f:
             if not line.startswith('#'):
-                line = line.strip.slit('\t')
+                line = line.strip.split('\t')
                 allele = line[0].split('_')[0]
                 if allele not in top_allele_dict:
                     top_allele_dict[allele] = line[3]
