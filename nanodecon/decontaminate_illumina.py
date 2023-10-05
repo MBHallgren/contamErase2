@@ -61,17 +61,34 @@ def illumina_decontamination(arguments):
 
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
     confirmed_alleles = {}
+    relative_threshold = 0.01
     with open(fsa_file, 'r') as f:
         sequence = ''
-        min_depth = 0
+        min_depth = 100000
         for line in f:
             if line.startswith('>'):
                 if sequence != '':
                     if len(sequence) == len(consensus_dict[allele]):
+                        for i in range(len(sequence)):
+                            #total_base_count = sum(consensus_dict[allele][i][:4])
+                            if sequence[i] == 'A':
+                                index = 0
+                            elif sequence[i] == 'C':
+                                index = 1
+                            elif sequence[i] == 'G':
+                                index = 2
+                            elif sequence[i] == 'T':
+                                index = 3
+                            else:
+                                index = 4
+                                sys.exit('Check here')
+                            #relative_depth = consensus_dict[allele][i][index] / total_base_count
+                            if consensus_dict[allele][i][index] < min_depth:
+                                min_depth = consensus_dict[allele][i][index]
                         if min_depth > 0:
                             confirmed_alleles[gene] = min_depth
                     sequence = ''
-                    min_depth = 0
+                    min_depth = 100000
                 gene = line.strip()[1:]
                 allele = gene.split('_')[0]
             else:
