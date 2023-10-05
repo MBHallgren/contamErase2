@@ -62,6 +62,8 @@ def illumina_decontamination(arguments):
 
 def build_consensus_dict(arguments, res_file, mat_file):
     top_allele_dict = {}
+    non_alignment_matches = {}
+    consensus_dict = {}
     with open(res_file, 'r') as f:
         for line in f:
             if not line.startswith('#'):
