@@ -36,14 +36,14 @@ def illumina_decontamination(arguments):
 
     odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments, arguments.output + '/rmlst_alignment.res', arguments.output + '/rmlst_alignment.mat')
 
-    print (consensus_dict)
+    check_all_species_alleles_against_consensus_dict(concensus_dict, args.output + '/specie.fsa')
     sys.exit()
     allele_lengths = check_allele_lengths(arguments.output)
     for item in allele_lengths:
         print (item, allele_lengths[item])
     sys.exit()
 
-    #black_list_plasmid, black_list_viral, black_list_human = derive_non_bacterial_black_list(arguments.output)
+    #blackx_list_plasmid, black_list_viral, black_list_human = derive_non_bacterial_black_list(arguments.output)
     rmlst_candidates = derive_rmlst_candidates(primary, candidate_dict)
 
 
@@ -60,8 +60,27 @@ def illumina_decontamination(arguments):
     sys.exit()
 
 def check_all_species_alleles_against_consensus_dict(concensus_dict, fsa_file):
-
-    pass
+    confirmed_alleles = {}
+    with open(fsa_file, 'r') as f:
+        sequence = ''
+        min_depth = 0
+        for line in f:
+            if line.startswith('>'):
+                if sequence != '':
+                    if len(sequence) == len(concensus_dict[allele]):
+                        if min_depth > 0:
+                            confirmed_alleles[gene] = min_depth
+                    sequence = ''
+                    min_depth = 0
+                gene = line.strip()[1:]
+                allele = gene.split('_')[0]
+            else:
+                sequence += line.strip()
+        if len(sequence) == len(concensus_dict[allele]):
+            if min_depth > 0:
+                confirmed_alleles[gene] = min_depth
+    print (len(confirmed_alleles))
+    return confirmed_alleles
 
 def build_consensus_dict(arguments, res_file, mat_file):
     top_allele_dict = {}
