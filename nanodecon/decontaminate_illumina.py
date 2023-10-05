@@ -35,9 +35,6 @@ def illumina_decontamination(arguments):
     #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments, arguments.output + '/rmlst_alignment.res', arguments.output + '/rmlst_alignment.mat')
-    print (odd_size_alleles)
-    print (non_alignment_matches)
-    print (consensus_dict)
     sys.exit()
     allele_lengths = check_allele_lengths(arguments.output)
     for item in allele_lengths:
