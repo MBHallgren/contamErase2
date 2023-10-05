@@ -110,6 +110,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                     line = line[1:]
                     print (line)
                     print (consensus_dict[gene][index])
+                    print (len(consensus_dict[gene][index]))
                     print (gene)
                     print (index)
                     for i in range(len(line)):
