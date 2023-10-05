@@ -57,11 +57,12 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file):
             if line.startswith('rST'):
                 headers = line.strip().split('\t')[1:54]
             else:
-                print (line.strip().split('\t'))
-                print (line.strip().split('\t')[55])
-                break
-    #print (headers)
-
+                if line.strip().split('\t')[55] == species:
+                    for i in range(len(headers)):
+                        allele = headers[i] + '_' + line.strip().split('\t')[i+1]
+                        gene_set.add(allele)
+    print (gene_set)
+    print (len(gene_set))
 def produce_final_output_illumina(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
     primary_species = primary.split()[1].lower() + '_' + primary.split()[2].lower()
     rmlst_hits = output_primary_reads(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, primary_species)
