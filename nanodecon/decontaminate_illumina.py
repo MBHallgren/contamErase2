@@ -24,15 +24,15 @@ def illumina_decontamination(arguments):
     primary_species = primary.split()[1] + ' ' + primary.split()[2]
     print (primary_species)
     print (primary_species)
-    produce_species_specific_kma_db(primary_species,
-                                    '/home/people/malhal/contamErase_db/rmlst.fsa',
-                                    '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
-                                    arguments.output)
-    kma.KMARunner(input_string,
-                 arguments.output + "/rmlst_alignment",
-                 arguments.output + '/specie_db',
-                 "-1t1 -t {} -ID 10 -md 1.5 -matrix -vcf -oa".format(arguments.threads)).run()
-    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    #produce_species_specific_kma_db(primary_species,
+    #                                '/home/people/malhal/contamErase_db/rmlst.fsa',
+    #                                '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
+    #                                arguments.output)
+    #kma.KMARunner(input_string,
+    #             arguments.output + "/rmlst_alignment",
+    #             arguments.output + '/specie_db',
+    #             "-1t1 -t {} -ID 10 -md 1.5 -matrix -vcf -oa".format(arguments.threads)).run()
+    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
     allele_lengths = check_allele_lengths(arguments.output)
     for item in allele_lengths:
         print (item, allele_lengths[item])
