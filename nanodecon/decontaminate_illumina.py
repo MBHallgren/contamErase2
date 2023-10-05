@@ -72,7 +72,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 if allele not in top_allele_dict:
                     top_allele_dict[allele] = [int(line[3]), int(line[1]), line[0]]
                 else:
-                    if line[1] > top_allele_dict[allele][1]:
+                    if int(line[1]) > top_allele_dict[allele][1]:
                         top_allele_dict[allele] = [int(line[3]), int(line[1]), line[0]]
     odd_size_alleles = set()
     with open(res_file, 'r') as f:
