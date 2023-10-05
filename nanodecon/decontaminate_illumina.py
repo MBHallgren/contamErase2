@@ -59,7 +59,11 @@ def check_allele_lengths(output):
         for line in f:
             if not line.startswith('#'):
                 allele = line.strip().split('\t')[0].split('_')[0]
-                allele_lengths[allele] = line.strip().split('\t')[3]
+                if allele not in allele_lengths:
+                    allele_lengths[allele] = set()
+                    allele_lengths[allele].add(line.strip().split('\t')[3])
+                else:
+                    allele_lengths[allele].add(line.strip().split('\t')[3])
     return allele_lengths
 
 
