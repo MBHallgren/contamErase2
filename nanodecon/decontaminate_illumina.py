@@ -108,6 +108,8 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 if correct_size_flag:
                     line = line.split('\t')
                     line = line[1:]
+                    print (line)
+                    print (consensus_dict[gene][index])
                     for i in range(len(line)):
                         consensus_dict[gene][index][i] += int(line[i])
                     index += 1
