@@ -33,6 +33,9 @@ def illumina_decontamination(arguments):
                  arguments.output + '/specie_db',
                  "-1t1 -t {} -ID 10 -md 1.5 -matrix -vcf -oa".format(arguments.threads)).run()
     os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    allele_lengths = check_allele_lengths(arguments.output)
+    for item in allele_lengths:
+        print (item, allele_lengths[item])
     sys.exit()
 
     #black_list_plasmid, black_list_viral, black_list_human = derive_non_bacterial_black_list(arguments.output)
@@ -49,6 +52,16 @@ def illumina_decontamination(arguments):
     produce_final_output_illumina(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
     sys.exit()
+
+def check_allele_lengths(output):
+    allele_lengths = {}
+    with open(output + '/rmlst_alignment.res', 'r') as f:
+        for line in f:
+            if not line.startswith('#'):
+                allele = line.strip().split('\t')[0].split('_')[0]
+                allele_lengths[allele] = len(line.strip().split('\t')[3])
+    return allele_lengths
+
 
 def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
     gene_set = set()
