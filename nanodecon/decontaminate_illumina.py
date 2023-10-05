@@ -105,6 +105,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 if line != '':
                     if correct_size_flag:
                         line = line.split('\t')
+                        print (line)
                         line = line[1:]
                         #print (index)
                         #print (allele)
