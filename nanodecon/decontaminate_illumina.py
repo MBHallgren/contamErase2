@@ -86,15 +86,34 @@ def build_consensus_dict(arguments, res_file, mat_file):
                         consensus_dict[allele] = []
                         for i in range(int(line[3])):
                             consensus_dict[allele].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
+
     for item in consensus_dict:
         print (item, len(consensus_dict[item]))
 
-    #with open(mat_file, 'r') as f:
-    #    for line in f:
-    #        line = line.strip()
-    #        if line.startswith('#'):
-    #            allele = line.split('_')[0]
-    #            gene = line[0]
+    with open(mat_file, 'r') as f:
+        correct_size_flag = False
+        for line in f:
+            line = line.strip()
+            if line.startswith('#'):
+                allele = line.split('_')[0]
+                gene = line[0]
+                if gene in correct_size_alleles:
+                    correct_size_flag = True
+                    index = 0
+                else:
+                    correct_size_flag = False
+            else:
+                if correct_size_flag:
+                    line = line.split('\t')
+                    for i in range(len(line)):
+                        consensus_dict[allele][index][i] += int(line[i])
+                    index += 1
+
+    for item in consensus_dict:
+        print (item, consensus_dict[item])
+
+
+
 
 
 
