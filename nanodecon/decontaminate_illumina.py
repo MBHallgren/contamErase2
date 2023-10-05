@@ -88,6 +88,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                             consensus_dict[allele].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
     for item in consensus_dict['BACT000001']:
         print (item)
+    print (len(consensus_dict['BACT000001']))
     sys.exit()
 
     for item in correct_size_alleles:
