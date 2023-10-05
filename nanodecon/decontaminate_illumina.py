@@ -58,7 +58,7 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file):
                 headers = line.strip().split('\t')[1:54]
             else:
                 print (line.strip().split('\t')[56])
-
+                break
     #print (headers)
 
 def produce_final_output_illumina(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
