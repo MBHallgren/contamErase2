@@ -58,7 +58,7 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file):
                 headers = line.strip().split('\t')[1:54]
             else:
                 print (line.strip().split('\t'))
-                print (line.strip().split('\t')[56])
+                print (line.strip().split('\t')[55])
                 break
     #print (headers)
 
