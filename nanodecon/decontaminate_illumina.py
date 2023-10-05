@@ -31,7 +31,8 @@ def illumina_decontamination(arguments):
     print (primary_species)
     produce_species_specific_kma_db(primary_species,
                                     '/home/people/malhal/contamErase_db/rmlst_fsa',
-                                    '/home/people/malhal/contamErase_db/rmlst_scheme.txt')
+                                    '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
+                                    arguments.output
     #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
     sys.exit()
 
