@@ -96,7 +96,8 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
         if len(sequence) == len(consensus_dict[allele]):
             if min_depth > 0:
                 confirmed_alleles[gene] = min_depth
-    print (len(confirmed_alleles))
+    for item in confirmed_alleles:
+        print (item, confirmed_alleles[item])
     return confirmed_alleles
 
 def build_consensus_dict(arguments, res_file, mat_file):
