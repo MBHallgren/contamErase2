@@ -50,7 +50,7 @@ def illumina_decontamination(arguments):
     #produce_contamination_report #TBD
     sys.exit()
 
-def produce_species_specific_kma_db(species, fsa_file, scheme_file):
+def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
     gene_set = set()
     t = 0
     with open(scheme_file, 'r') as f:
@@ -64,10 +64,20 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file):
                         for i in range(len(headers)):
                             allele = headers[i] + '_' + line.strip().split('\t')[i+1]
                             gene_set.add(allele)
-    print (gene_set)
-    print (len(gene_set))
-    print (t)
-    print (species)
+    produce_species_fsa_file(fsa_file, gene_set, output)
+
+def produce_species_fsa_file(fsa_file, gene_set, output):
+    with open(output + 'specie.fsa', 'w') as outfile:
+        with open(fsa_file, 'r') as f:
+            write_sequence = False  # A flag to indicate whether the sequence should be written to the output
+            for line in f:
+                if line.startswith('>'):
+                    # Check if the gene_id (without '>') is in the gene_set
+                    write_sequence = line.strip().split()[0][1:] in gene_set
+                # Write the line (header or sequence) if write_sequence is True
+                if write_sequence:
+                    outfile.write(line)
+
 def produce_final_output_illumina(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
     primary_species = primary.split()[1].lower() + '_' + primary.split()[2].lower()
     rmlst_hits = output_primary_reads(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, primary_species)
