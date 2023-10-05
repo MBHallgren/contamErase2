@@ -13,10 +13,10 @@ def illumina_decontamination(arguments):
     #os.system('mkdir ' + arguments.output + '/output/contaminations')
     #os.system('mkdir ' + arguments.output + '/alignments')
 
-    kma.KMARunner(input_string,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 10".format(arguments.threads)).run()
+    #kma.KMARunner(input_string,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 10".format(arguments.threads)).run()
 
     #kma.KMARunner(input_string,
     #              arguments.output + "/rmlst_alignment",
@@ -25,10 +25,11 @@ def illumina_decontamination(arguments):
     #    .run()
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
-    primary_species = primary[0] + ' ' + primary[1]
+
+    primary_species = primary.split()[0] + ' ' + primary.split()[1]
     print (primary_species)
     print (primary_species)
-    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
     sys.exit()
 
     #black_list_plasmid, black_list_viral, black_list_human = derive_non_bacterial_black_list(arguments.output)
