@@ -26,9 +26,12 @@ def illumina_decontamination(arguments):
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
 
-    primary_species = primary.split()[0] + ' ' + primary.split()[1]
+    primary_species = primary.split()[1] + ' ' + primary.split()[2]
     print (primary_species)
     print (primary_species)
+    produce_species_specific_kma_db(primary_species,
+                                    '/home/people/malhal/contamErase_db/rmlst_fsa'
+                                    '/home/people/malhal/contamErase_db/rmlst_scheme.txt')
     #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
     sys.exit()
 
@@ -46,6 +49,13 @@ def illumina_decontamination(arguments):
     produce_final_output_illumina(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
     sys.exit()
+
+def produce_species_specific_kma_db(species, fsa_file, scheme_file):
+    with open(scheme_file, 'r') as f:
+        for line in f:
+            if line.startswith('rST'):
+                headers = line.strip().split('\t')[1:55]
+    print (headers)
 
 def produce_final_output_illumina(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
     primary_species = primary.split()[1].lower() + '_' + primary.split()[2].lower()
