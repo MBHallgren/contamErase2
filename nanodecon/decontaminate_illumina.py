@@ -37,7 +37,9 @@ def illumina_decontamination(arguments):
     odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments, arguments.output + '/rmlst_alignment.res', arguments.output + '/rmlst_alignment.mat')
 
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict, arguments.output + '/specie.fsa')
-
+    for item in confirmed_alleles:
+        print (item, confirmed_alleles[item])
+    sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
     sys.exit()
@@ -89,9 +91,6 @@ def calculate_rmlst_scheme_matches(confirmed_alleles, rmlst_scheme_file):
                 rmlst_scheme_matches[scheme][2].append(0)
         if rmlst_scheme_matches[scheme][0] == 100000: #fix correction
             rmlst_scheme_matches[scheme][0] = 0
-    for gene in rmlst_scheme_matches:
-        if rmlst_scheme_matches[gene][0] >= 3:
-            print (gene, rmlst_scheme_matches[gene][0], rmlst_scheme_matches[gene][1], rmlst_scheme_matches[gene][2])
     #for scheme in rmlst_scheme_matches:
     #    if rmlst_scheme_matches[scheme][1] > 45 and rmlst_scheme_matches[scheme][0] > 8:
     #        print (scheme, rmlst_scheme_matches[scheme][0], rmlst_scheme_matches[scheme][1], rmlst_scheme_matches[scheme][2])
