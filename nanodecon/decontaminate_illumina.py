@@ -36,7 +36,10 @@ def illumina_decontamination(arguments):
 
     odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments, arguments.output + '/rmlst_alignment.res', arguments.output + '/rmlst_alignment.mat')
 
-    check_all_species_alleles_against_consensus_dict(consensus_dict, arguments.output + '/specie.fsa')
+    confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict, arguments.output + '/specie.fsa')
+
+    calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
+
     sys.exit()
     allele_lengths = check_allele_lengths(arguments.output)
     for item in allele_lengths:
@@ -58,6 +61,23 @@ def illumina_decontamination(arguments):
     produce_final_output_illumina(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
     sys.exit()
+
+def calculate_rmlst_scheme_matches(confirmed_alleles, rmlst_scheme_file):
+    rmlst_schemes = {}
+    with open(rmlst_file, 'r') as f:
+        for line in f:
+            if not line.startswith('rST'):
+                line = line.strip().split('\t')
+                rmlst_genes = line[1:54]
+                rmlst_schemes[line[0]] = set()
+                for i in range(len(rmlst_genes)):
+                    full_name = headers[i] + '_' + rmlst_genes[i]
+                    rmlst_scores[line[0]].add(full_name)
+            else:
+                line = line.strip().split('\t')
+                headers = line[1:54]
+    print (rmlst_schemes)
+    return allele_matches
 
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
     confirmed_alleles = {}
@@ -96,8 +116,6 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
         if len(sequence) == len(consensus_dict[allele]):
             if min_depth > 0 and min_depth != 100000:
                 confirmed_alleles[gene] = min_depth
-    for item in confirmed_alleles:
-        print (item, confirmed_alleles[item])
     return confirmed_alleles
 
 def build_consensus_dict(arguments, res_file, mat_file):
