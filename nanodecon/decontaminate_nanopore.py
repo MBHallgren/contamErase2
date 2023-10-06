@@ -39,8 +39,7 @@ def nanopore_decontamination(arguments):
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict,
                                                                          arguments.output + '/specie.fsa')
     for item in confirmed_alleles:
-        if confirmed_alleles[item][0] >= 10:
-            print(item, confirmed_alleles[item])
+        print(item, confirmed_alleles[item])
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
@@ -81,6 +80,7 @@ def produce_species_fsa_file(fsa_file, gene_set, output):
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
     confirmed_alleles = {}
     relative_threshold = 0.01
+    nucleotide_threshold = 10
     with open(fsa_file, 'r') as f:
         sequence = ''
         min_depth = 100000
@@ -89,6 +89,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
                 if sequence != '':
                     if len(sequence) == len(consensus_dict[allele]):
                         mutation_list = []
+                        mutation_depth = []
                         for i in range(len(sequence)):
                             #total_base_count = sum(consensus_dict[allele][i][:4])
                             if sequence[i] == 'A':
@@ -108,8 +109,9 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
                             major_nucleotide = max(consensus_dict[allele][i][:4])
                             if consensus_dict[allele][i][index] < major_nucleotide:
                                 mutation_list.append('{}_{}'.format(i, sequence[i]))
-                        if min_depth > 0 and min_depth != 100000:
-                            confirmed_alleles[gene] = [min_depth, '', mutation_list]
+                                mutation_depth.append(consensus_dict[allele][i][index])
+                        if min_depth > nucleotide_threshold and min_depth != 100000:
+                            confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
                     sequence = ''
                     min_depth = 100000
                 gene = line.strip()[1:]
@@ -117,8 +119,8 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
             else:
                 sequence += line.strip()
         if len(sequence) == len(consensus_dict[allele]):
-            if min_depth > 0 and min_depth != 100000:
-                confirmed_alleles[gene] = [min_depth, '', mutation_list]
+            if min_depth > nucleotide_threshold and min_depth != 100000:
+                confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
     return confirmed_alleles
 
 
