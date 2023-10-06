@@ -10,10 +10,10 @@ def nanopore_decontamination(arguments):
     os.system('mkdir ' + arguments.output)
     #os.system('mkdir ' + arguments.output + '/output/contaminations')
     #os.system('mkdir ' + arguments.output + '/alignments')
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
@@ -28,7 +28,7 @@ def nanopore_decontamination(arguments):
     kma.KMARunner(arguments.nanopore,
                   arguments.output + "/rmlst_alignment",
                   arguments.output + '/specie_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -mp 14".format(arguments.threads)).run()
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -mp 20".format(arguments.threads)).run()
 
     os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
