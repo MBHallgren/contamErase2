@@ -25,12 +25,12 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/rmlst_alignment",
-    #              arguments.output + '/specie_db',
-    #              "-t {} -ID 10 -ont -md 1.5 -matrix -mp 14".format(arguments.threads)).run()
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/rmlst_alignment",
+                  arguments.output + '/specie_db',
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -mp 14".format(arguments.threads)).run()
 
-    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
