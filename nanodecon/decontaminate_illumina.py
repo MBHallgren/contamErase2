@@ -90,7 +90,7 @@ def calculate_rmlst_scheme_matches(confirmed_alleles, rmlst_scheme_file):
         if rmlst_scheme_matches[scheme][0] == 100000: #fix correction
             rmlst_scheme_matches[scheme][0] = 0
     for scheme in rmlst_scheme_matches:
-        if rmlst_scheme_matches[scheme][1] > 45 and rmlst_scheme_matches[scheme][0] > 10:
+        if rmlst_scheme_matches[scheme][1] > 45 and rmlst_scheme_matches[scheme][0] > 8:
             print (scheme, rmlst_scheme_matches[scheme][0], rmlst_scheme_matches[scheme][1], rmlst_scheme_matches[scheme][2])
     return rmlst_scheme_matches
 
