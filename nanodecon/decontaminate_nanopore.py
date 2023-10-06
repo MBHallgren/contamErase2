@@ -66,6 +66,18 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
     produce_species_fsa_file(fsa_file, gene_set, output)
     os.system('kma index -i {}/specie.fsa -o {}/specie_db'.format(output, output))
 
+def produce_species_fsa_file(fsa_file, gene_set, output):
+    with open(output + '/specie.fsa', 'w') as outfile:
+        with open(fsa_file, 'r') as f:
+            write_sequence = False  # A flag to indicate whether the sequence should be written to the output
+            for line in f:
+                if line.startswith('>'):
+                    # Check if the gene_id (without '>') is in the gene_set
+                    write_sequence = line.strip().split()[0][1:] in gene_set
+                # Write the line (header or sequence) if write_sequence is True
+                if write_sequence:
+                    outfile.write(line)
+
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
     confirmed_alleles = {}
     relative_threshold = 0.01
