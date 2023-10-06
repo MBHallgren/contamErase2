@@ -72,7 +72,7 @@ def calculate_rmlst_scheme_matches(confirmed_alleles, rmlst_scheme_file):
                 rmlst_schemes[line[0]] = set()
                 for i in range(len(rmlst_genes)):
                     full_name = headers[i] + '_' + rmlst_genes[i]
-                    rmlst_scores[line[0]].add(full_name)
+                    rmlst_schemes[line[0]].add(full_name)
             else:
                 line = line.strip().split('\t')
                 headers = line[1:54]
