@@ -38,6 +38,7 @@ def illumina_decontamination(arguments):
 
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict, arguments.output + '/specie.fsa')
 
+    print (confirmed_alleles)
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
     sys.exit()
@@ -76,7 +77,7 @@ def calculate_rmlst_scheme_matches(confirmed_alleles, rmlst_scheme_file):
             else:
                 line = line.strip().split('\t')
                 headers = line[1:54]
-    print (rmlst_schemes)
+    #print (rmlst_schemes)
     return rmlst_schemes
 
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
