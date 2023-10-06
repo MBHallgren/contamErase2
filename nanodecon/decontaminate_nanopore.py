@@ -49,6 +49,23 @@ def nanopore_decontamination(arguments):
     produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
 
+def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
+    gene_set = set()
+    t = 0
+    with open(scheme_file, 'r') as f:
+        for line in f:
+            if line.startswith('rST'):
+                headers = line.strip().split('\t')[1:54]
+            else:
+                if line.strip().split('\t') != ['']:
+                    if line.strip().split('\t')[55] == species:
+                        t += 1
+                        for i in range(len(headers)):
+                            allele = headers[i] + '_' + line.strip().split('\t')[i+1]
+                            gene_set.add(allele)
+    produce_species_fsa_file(fsa_file, gene_set, output)
+    os.system('kma index -i {}/specie.fsa -o {}/specie_db'.format(output, output))
+
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
     confirmed_alleles = {}
     relative_threshold = 0.01
