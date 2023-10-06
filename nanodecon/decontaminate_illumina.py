@@ -38,7 +38,6 @@ def illumina_decontamination(arguments):
 
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict, arguments.output + '/specie.fsa')
 
-    print (confirmed_alleles)
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
     sys.exit()
@@ -77,8 +76,23 @@ def calculate_rmlst_scheme_matches(confirmed_alleles, rmlst_scheme_file):
             else:
                 line = line.strip().split('\t')
                 headers = line[1:54]
-    #print (rmlst_schemes)
-    return rmlst_schemes
+    rmlst_scheme_matches = {}
+    for scheme in rmlst_schemes:
+        rmlst_scheme_matches[scheme] = [100000, 0, []] #min_depth, hits, depth_list
+        for gene in rmlst_schemes[scheme]:
+            if gene in confirmed_alleles:
+                rmlst_scheme_matches[scheme][2].append(confirmed_alleles[gene])
+                if confirmed_alleles[gene] < rmlst_scheme_matches[scheme][0]:
+                    rmlst_scheme_matches[scheme][0] = confirmed_alleles[gene]
+                rmlst_scheme_matches[scheme][1] += 1
+            else:
+                rmlst_scheme_matches[scheme][2].append(0)
+        if rmlst_scheme_matches[scheme][0] == 100000: #fix correction
+            rmlst_scheme_matches[scheme][0] = 0
+    for scheme in rmlst_scheme_matches:
+        if rmlst_scheme_matches[scheme][1] > 35:
+            print (scheme, rmlst_scheme_matches[scheme][0], rmlst_scheme_matches[scheme][1], rmlst_scheme_matches[scheme][2])
+    return rmlst_scheme_matches
 
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
     confirmed_alleles = {}
