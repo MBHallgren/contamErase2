@@ -77,7 +77,7 @@ def calculate_rmlst_scheme_matches(confirmed_alleles, rmlst_scheme_file):
                 line = line.strip().split('\t')
                 headers = line[1:54]
     print (rmlst_schemes)
-    return allele_matches
+    return rmlst_schemes
 
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
     confirmed_alleles = {}
