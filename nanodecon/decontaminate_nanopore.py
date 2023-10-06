@@ -28,7 +28,7 @@ def nanopore_decontamination(arguments):
     kma.KMARunner(arguments.nanopore,
                   arguments.output + "/rmlst_alignment",
                   arguments.output + '/specie_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14".format(arguments.threads)).run()
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5".format(arguments.threads)).run()
 
     os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
@@ -93,6 +93,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
     else:
         threshold = None
     with open(fsa_file, 'r') as f:
+        #TBD Doesn't work for #2 gene, template 48 not in resfile
         sequence = ''
         min_depth = 100000
         for line in f:
