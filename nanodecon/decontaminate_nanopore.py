@@ -156,7 +156,19 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                 if allele != most_mutated_allele[0]:
                     if not is_subset(contenders[allele][1], confirmed_alleles[most_mutated_allele[0]][1]):
                         final_allleles[allele] = confirmed_alleles[allele]
+
         elif len(most_mutated_allele) > 1:
+            for allele in most_mutated_allele:
+                final_allleles[allele] = confirmed_alleles[allele]
+            for allele in contenders:
+                if allele not in most_mutated_allele:
+                    not_subset = True
+                    for most_mutated in most_mutated_allele:
+                        if is_subset(contenders[allele][1], confirmed_alleles[most_mutated][1]):
+                            not_subset = False
+                    if not_subset:
+                        final_allleles[allele] = confirmed_alleles[allele]
+
             #Compare all other mutations to all of these
             print ('multiple largest mutations')
             print (most_mutated_allele)
