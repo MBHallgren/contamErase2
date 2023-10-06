@@ -38,7 +38,8 @@ def illumina_decontamination(arguments):
 
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict, arguments.output + '/specie.fsa')
     for item in confirmed_alleles:
-        print (item, confirmed_alleles[item])
+        if confirmed_alleles[item] >= 3:
+            print (item, confirmed_alleles[item])
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
