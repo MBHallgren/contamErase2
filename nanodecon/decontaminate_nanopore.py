@@ -88,6 +88,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
             if line.startswith('>'):
                 if sequence != '':
                     if len(sequence) == len(consensus_dict[allele]):
+                        mutation_list = []
                         for i in range(len(sequence)):
                             #total_base_count = sum(consensus_dict[allele][i][:4])
                             if sequence[i] == 'A':
@@ -104,8 +105,11 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
                             #relative_depth = consensus_dict[allele][i][index] / total_base_count
                             if consensus_dict[allele][i][index] < min_depth:
                                 min_depth = consensus_dict[allele][i][index]
+                            major_nucleotide = max(consensus_dict[allele][i][:4])
+                            if consensus_dict[allele][i][index] < major_nucleotide:
+                                mutation_list.append('{}_{}'.format(consensus_dict[allele][i][index], sequence[i]))
                         if min_depth > 0 and min_depth != 100000:
-                            confirmed_alleles[gene] = min_depth
+                            confirmed_alleles[gene] = [min_depth, '', mutation_list]
                     sequence = ''
                     min_depth = 100000
                 gene = line.strip()[1:]
@@ -114,7 +118,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
                 sequence += line.strip()
         if len(sequence) == len(consensus_dict[allele]):
             if min_depth > 0 and min_depth != 100000:
-                confirmed_alleles[gene] = min_depth
+                confirmed_alleles[gene] = [min_depth, '', mutation_list]
     return confirmed_alleles
 
 
