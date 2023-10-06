@@ -28,7 +28,7 @@ def nanopore_decontamination(arguments):
     kma.KMARunner(arguments.nanopore,
                   arguments.output + "/rmlst_alignment",
                   arguments.output + '/specie_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -mp 20".format(arguments.threads)).run()
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14".format(arguments.threads)).run()
 
     os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
