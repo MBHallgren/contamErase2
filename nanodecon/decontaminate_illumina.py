@@ -64,7 +64,7 @@ def illumina_decontamination(arguments):
 
 def calculate_rmlst_scheme_matches(confirmed_alleles, rmlst_scheme_file):
     rmlst_schemes = {}
-    with open(rmlst_file, 'r') as f:
+    with open(rmlst_scheme_file, 'r') as f:
         for line in f:
             if not line.startswith('rST'):
                 line = line.strip().split('\t')
