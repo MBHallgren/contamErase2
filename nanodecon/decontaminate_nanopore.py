@@ -107,7 +107,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
                                 min_depth = consensus_dict[allele][i][index]
                             major_nucleotide = max(consensus_dict[allele][i][:4])
                             if consensus_dict[allele][i][index] < major_nucleotide:
-                                mutation_list.append('{}_{}'.format(consensus_dict[allele][i][index], sequence[i]))
+                                mutation_list.append('{}_{}'.format(i, sequence[i]))
                         if min_depth > 0 and min_depth != 100000:
                             confirmed_alleles[gene] = [min_depth, '', mutation_list]
                     sequence = ''
