@@ -39,7 +39,7 @@ def nanopore_decontamination(arguments):
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict,
                                                                          arguments.output + '/specie.fsa')
     for item in confirmed_alleles:
-        if confirmed_alleles[item] >= 2:
+        if confirmed_alleles[item] >= 6:
             print(item, confirmed_alleles[item])
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
