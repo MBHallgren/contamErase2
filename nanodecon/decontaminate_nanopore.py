@@ -158,6 +158,8 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                         final_allleles[allele] = confirmed_alleles[allele]
 
         elif len(most_mutated_allele) > 1:
+            print ('multiple largest mutations')
+            print (most_mutated_allele)
             for allele in most_mutated_allele:
                 final_allleles[allele] = confirmed_alleles[allele]
             for allele in contenders:
