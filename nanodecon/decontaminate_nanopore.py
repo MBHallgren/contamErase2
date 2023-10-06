@@ -143,11 +143,13 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
             relative_depth = min_depth / total_depth
             if relative_depth > arguments.min_rd and min_depth != 100000:
                 confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
+
+
     print ('Confirmed alleles')
     for item in confirmed_alleles:
         print(item, confirmed_alleles[item])
     final_allleles = {}
-
+    print (headers)
     for gene in headers:
         top_score = 0
         top_allele = ''
