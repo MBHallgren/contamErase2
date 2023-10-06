@@ -38,8 +38,9 @@ def nanopore_decontamination(arguments):
 
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict,
                                                                          arguments.output + '/specie.fsa', headers)
-    for item in confirmed_alleles:
-        print(item, confirmed_alleles[item])
+
+
+
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
@@ -47,6 +48,9 @@ def nanopore_decontamination(arguments):
     sys.exit()
     produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
+
+def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
+    pass
 
 def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
     gene_set = set()
@@ -78,10 +82,12 @@ def produce_species_fsa_file(fsa_file, gene_set, output):
                 if write_sequence:
                     outfile.write(line)
 
-def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, headers):
+def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, headers, arguments):
     confirmed_alleles = {}
-    relative_threshold = 0.01
-    nucleotide_threshold = 10
+    if arguments.min_n != None:
+        threshold = arguments.min_n
+    else:
+        threshold = None
     with open(fsa_file, 'r') as f:
         sequence = ''
         min_depth = 100000
@@ -109,10 +115,16 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                                 min_depth = consensus_dict[allele][i][index]
                             major_nucleotide = max(consensus_dict[allele][i][:4])
                             if consensus_dict[allele][i][index] < major_nucleotide:
-                                mutation_list.append('{}_{}'.format(i, sequence[i]))
+                                mutation_list.append('{}_{}'.format(i+1, sequence[i]))
                                 mutation_depth.append(consensus_dict[allele][i][index])
-                        if min_depth > nucleotide_threshold and min_depth != 100000:
-                            confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
+                        if threshold != None:
+                            if min_depth > threshold and min_depth != 100000:
+                                confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
+                        else:
+                            total_depth = sum(consensus_dict[allele][i][:4])
+                            relative_depth = min_depth / total_depth
+                            if relative_depth > relative_threshold and min_depth != 100000:
+                                confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
                     sequence = ''
                     min_depth = 100000
                 gene = line.strip()[1:]
@@ -151,6 +163,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                 most_mutated_allele.append(allele)
 
         if len(most_mutated_allele) == 1:
+            # TBD Check depths of mutation positions
             final_allleles[most_mutated_allele[0]] = confirmed_alleles[most_mutated_allele[0]]
             for allele in contenders:
                 if allele != most_mutated_allele[0]:
@@ -158,6 +171,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                         final_allleles[allele] = confirmed_alleles[allele]
 
         elif len(most_mutated_allele) > 1:
+            #TBD Check depths of mutation positions
             print ('multiple largest mutations')
             print (most_mutated_allele)
             for allele in most_mutated_allele:
@@ -170,15 +184,6 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                             not_subset = False
                     if not_subset:
                         final_allleles[allele] = confirmed_alleles[allele]
-
-            #Compare all other mutations to all of these
-            print ('multiple largest mutations')
-            print (most_mutated_allele)
-
-
-
-
-
     return final_allleles
 
 def is_subset(list_a, list_b):
