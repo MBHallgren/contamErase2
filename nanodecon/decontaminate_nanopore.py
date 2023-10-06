@@ -37,8 +37,12 @@ def nanopore_decontamination(arguments):
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict,
-                                                                         arguments.output + '/specie.fsa', headers)
+                                                                         arguments.output + '/specie.fsa',
+                                                                         headers,
+                                                                         arguments)
 
+    for item in confirmed_alleles:
+        print(item, confirmed_alleles[item])
 
 
     sys.exit()
@@ -172,8 +176,6 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
 
         elif len(most_mutated_allele) > 1:
             #TBD Check depths of mutation positions
-            print ('multiple largest mutations')
-            print (most_mutated_allele)
             for allele in most_mutated_allele:
                 final_allleles[allele] = confirmed_alleles[allele]
             for allele in contenders:
