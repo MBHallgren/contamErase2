@@ -72,7 +72,7 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
                             gene_set.add(allele)
     produce_species_fsa_file(fsa_file, gene_set, output)
     os.system('kma index -i {}/specie.fsa -o {}/specie_db'.format(output, output))
-    return headers[1:54]
+    return headers
 
 def produce_species_fsa_file(fsa_file, gene_set, output):
     with open(output + '/specie.fsa', 'w') as outfile:
