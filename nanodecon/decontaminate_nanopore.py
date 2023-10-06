@@ -21,10 +21,10 @@ def nanopore_decontamination(arguments):
     print(primary_species)
     print(primary_species)
 
-    #produce_species_specific_kma_db(primary_species,
-    #                                '/home/people/malhal/contamErase_db/rmlst.fsa',
-    #                                '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
-    #                                arguments.output)
+    headers = produce_species_specific_kma_db(primary_species,
+                                    '/home/people/malhal/contamErase_db/rmlst.fsa',
+                                    '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
+                                    arguments.output)
     #kma.KMARunner(arguments.nanopore,
     #              arguments.output + "/rmlst_alignment",
     #              arguments.output + '/specie_db',
@@ -37,9 +37,9 @@ def nanopore_decontamination(arguments):
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict,
-                                                                         arguments.output + '/specie.fsa')
-    for item in confirmed_alleles:
-        print(item, confirmed_alleles[item])
+                                                                         arguments.output + '/specie.fsa', headers)
+    #for item in confirmed_alleles:
+    #    print(item, confirmed_alleles[item])
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
@@ -64,6 +64,7 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
                             gene_set.add(allele)
     produce_species_fsa_file(fsa_file, gene_set, output)
     os.system('kma index -i {}/specie.fsa -o {}/specie_db'.format(output, output))
+    return headers[1:54]
 
 def produce_species_fsa_file(fsa_file, gene_set, output):
     with open(output + '/specie.fsa', 'w') as outfile:
@@ -77,7 +78,7 @@ def produce_species_fsa_file(fsa_file, gene_set, output):
                 if write_sequence:
                     outfile.write(line)
 
-def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
+def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, headers):
     confirmed_alleles = {}
     relative_threshold = 0.01
     nucleotide_threshold = 10
@@ -121,6 +122,42 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
         if len(sequence) == len(consensus_dict[allele]):
             if min_depth > nucleotide_threshold and min_depth != 100000:
                 confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
+    final_allleles = {}
+
+    for gene in headers:
+        top_score = 0
+        top_allele = ''
+        for allele in confirmed_alleles:
+            if allele.startswith(gene):
+                if confirmed_alleles[allele][0] > top_score:
+                    top_score = confirmed_alleles[allele][0]
+                    top_allele = allele
+        if top_allele != '':
+            final_allleles[top_allele] = confirmed_alleles[top_allele]
+
+    for gene in headers:
+        contenders = dict{}
+        for allele in confirmed_alleles:
+            if allele.startswith(gene):
+                if allele not in final_allleles:
+                    contenders[allele] = confirmed_alleles[allele]
+        most_mutated_allele = []
+        most_mutated_allele_score = 0
+        for allele in contenders:
+            if len(contenders[allele][1]) > most_mutated_allele_score:
+                most_mutated_allele_score = len(contenders[allele][1])
+                most_mutated_allele = [allele]
+            elif len(contenders[allele][1]) == most_mutated_allele_score:
+                most_mutated_allele.append(allele)
+        if len(most_mutated_allele) == 1:
+            print ('only one hit')
+        elif len(most_mutated_allele) > 1:
+            print ('multiple largest mutations')
+
+
+
+
+
     return confirmed_alleles
 
 
