@@ -7,7 +7,7 @@ from nanodecon import util
 from nanodecon.intra_species_detection import determine_intra_species_contamination_nanopore
 
 def nanopore_decontamination(arguments):
-    os.system('mkdir ' + arguments.output + '/output')
+    os.system('mkdir ' + arguments.output)
     #os.system('mkdir ' + arguments.output + '/output/contaminations')
     #os.system('mkdir ' + arguments.output + '/alignments')
     kma.KMARunner(arguments.nanopore,
@@ -15,46 +15,136 @@ def nanopore_decontamination(arguments):
                   arguments.db_dir + "/bac_db",
                   "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
 
-    kma.KMARunner('{}'.format(arguments.nanopore),
-                  arguments.output + "/rmlst_alignment",
-                  arguments.db_dir + '/rmlst_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -mp 14".format(arguments.threads)) \
-        .run()
-
-    os.system('gunzip ' + arguments.output + '/bacteria_alignment.frag.gz')
-    sys.exit()
-
-
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/plasmid_alignment",
-                  arguments.db_dir + "/plasmid_db",
-                  "-mem_mode -1t1 -t {} -ont".format(arguments.threads)).run()
-
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/viral_alignment",
-                  arguments.db_dir + '/viral_db',
-                  "-mem_mode -1t1 -t {} -ont".format(arguments.threads)).run()
-
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/human_alignment",
-                  arguments.db_dir + '/human_db',
-                  "-mem_mode -1t1 -t {} -ont".format(arguments.threads)).run()
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
-
-    black_list_plasmid, black_list_viral, black_list_human = derive_non_bacterial_black_list(arguments.output)
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
-    rmlst_candidates = derive_rmlst_candidates(primary, candidate_dict)
+    primary_species = primary.split()[1] + ' ' + primary.split()[2]
+    print(primary_species)
+    print(primary_species)
 
+    produce_species_specific_kma_db(primary_species,
+                                    '/home/people/malhal/contamErase_db/rmlst.fsa',
+                                    '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
+                                    arguments.output)
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/rmlst_alignment",
+                  arguments.output + '/specie_db',
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -mp 14".format(arguments.threads)).run()
 
-    derive_read_pools_nanopore(candidate_dict, arguments, primary, black_list_human)
+    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
-    if len(rmlst_candidates) >= 2:
-        candidate_rmlst_dict_results = determine_intra_species_contamination_nanopore(arguments, rmlst_candidates, primary, candidate_dict, total_bacteria_aligning_bases, arguments.ugt)
-    else:
-        candidate_rmlst_dict_results = None
+    odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments,
+                                                                                   arguments.output + '/rmlst_alignment.res',
+                                                                                   arguments.output + '/rmlst_alignment.mat')
+
+    confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict,
+                                                                         arguments.output + '/specie.fsa')
+    for item in confirmed_alleles:
+        if confirmed_alleles[item] >= 2:
+            print(item, confirmed_alleles[item])
+    sys.exit()
+    calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
+
+    sys.exit()
     sys.exit()
     produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
+
+def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file):
+    confirmed_alleles = {}
+    relative_threshold = 0.01
+    with open(fsa_file, 'r') as f:
+        sequence = ''
+        min_depth = 100000
+        for line in f:
+            if line.startswith('>'):
+                if sequence != '':
+                    if len(sequence) == len(consensus_dict[allele]):
+                        for i in range(len(sequence)):
+                            #total_base_count = sum(consensus_dict[allele][i][:4])
+                            if sequence[i] == 'A':
+                                index = 0
+                            elif sequence[i] == 'C':
+                                index = 1
+                            elif sequence[i] == 'G':
+                                index = 2
+                            elif sequence[i] == 'T':
+                                index = 3
+                            else:
+                                index = 4
+                                sys.exit('Check here')
+                            #relative_depth = consensus_dict[allele][i][index] / total_base_count
+                            if consensus_dict[allele][i][index] < min_depth:
+                                min_depth = consensus_dict[allele][i][index]
+                        if min_depth > 0 and min_depth != 100000:
+                            confirmed_alleles[gene] = min_depth
+                    sequence = ''
+                    min_depth = 100000
+                gene = line.strip()[1:]
+                allele = gene.split('_')[0]
+            else:
+                sequence += line.strip()
+        if len(sequence) == len(consensus_dict[allele]):
+            if min_depth > 0 and min_depth != 100000:
+                confirmed_alleles[gene] = min_depth
+    return confirmed_alleles
+
+
+def build_consensus_dict(arguments, res_file, mat_file):
+    top_allele_dict = {}
+    non_alignment_matches = {}
+    consensus_dict = {}
+    with open(res_file, 'r') as f:
+        for line in f:
+            if not line.startswith('#'):
+                line = line.strip().split('\t')
+                allele = line[0].split('_')[0]
+                if allele not in top_allele_dict:
+                    top_allele_dict[allele] = [int(line[3]), int(line[1]), line[0]]
+                else:
+                    if int(line[1]) > top_allele_dict[allele][1]:
+                        top_allele_dict[allele] = [int(line[3]), int(line[1]), line[0]]
+    odd_size_alleles = set()
+    correct_size_alleles = set()
+    with open(res_file, 'r') as f:
+        for line in f:
+            if not line.startswith('#'):
+                line = line.strip().split('\t')
+                allele = line[0].split('_')[0]
+                if int(line[3]) != top_allele_dict[allele][0]:
+                    odd_size_alleles.add(line[0])
+                else:
+                    correct_size_alleles.add(line[0])
+                    if allele not in consensus_dict:
+                        consensus_dict[allele] = []
+                        for i in range(int(line[3])):
+                            consensus_dict[allele].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
+
+    with open(mat_file, 'r') as f:
+        correct_size_flag = False
+        for line in f:
+            line = line.strip()
+            if line.startswith('#'):
+                allele = line[1:]
+                gene = allele.split('_')[0]
+                if allele in correct_size_alleles:
+                    correct_size_flag = True
+                    index = 0
+                else:
+                    correct_size_flag = False
+            else:
+                if line != '':
+                    if correct_size_flag:
+                        line = line.split('\t')
+                        if line[0] != '-': #excludes read gaps. Reconsider?
+                            line = line[1:]
+                            for i in range(len(line)):
+                                consensus_dict[gene][index][i] += int(line[i])
+                            index += 1
+    #Consider how we handle gaps in reads and template
+    #missing odd size alleles
+    #missing non alignment matches with gaps
+    return odd_size_alleles, non_alignment_matches, consensus_dict
+
 
 def produce_final_output_nanopore(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
     rmlst_hits = output_primary_reads_nanopore(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid)
