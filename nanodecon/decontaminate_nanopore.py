@@ -136,7 +136,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
             final_allleles[top_allele] = confirmed_alleles[top_allele]
 
     for gene in headers:
-        contenders = dict{}
+        contenders = {}
         for allele in confirmed_alleles:
             if allele.startswith(gene):
                 if allele not in final_allleles:
