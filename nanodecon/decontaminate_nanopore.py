@@ -38,8 +38,8 @@ def nanopore_decontamination(arguments):
 
     confirmed_alleles = check_all_species_alleles_against_consensus_dict(consensus_dict,
                                                                          arguments.output + '/specie.fsa', headers)
-    #for item in confirmed_alleles:
-    #    print(item, confirmed_alleles[item])
+    for item in confirmed_alleles:
+        print(item, confirmed_alleles[item])
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
@@ -153,6 +153,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
             print ('only one hit')
         elif len(most_mutated_allele) > 1:
             print ('multiple largest mutations')
+            print (most_mutated_allele)
 
 
 
