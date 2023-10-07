@@ -135,7 +135,7 @@ def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
             # Convert string columns to appropriate types
             pos = int(pos)
             tlen = int(tlen)
-            if pos == 1:
+            if pos == 1 and len(seq) >= tlen:
                 # Assuming reference is provided or it is known in another way
                 reference = reference_sequences[rname]
                 print(reference)
