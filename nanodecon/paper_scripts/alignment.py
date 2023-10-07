@@ -135,24 +135,24 @@ def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
             # Convert string columns to appropriate types
             pos = int(pos)
             tlen = int(tlen)
+            if pos == 1:
+                # Assuming reference is provided or it is known in another way
+                reference = reference_sequences[rname]
+                print(reference)
+                # Obtaining the alignment using your function
+                aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
+                #print("Aligned Reference: ", aligned_ref)
+                #print("Aligned Query:     ", aligned_query)
+                # Creating a mutation vector using your function
+                mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
+                #print (mutation_vector, len(mutation_vector))
+                #print (reference, len(reference))
 
-            # Assuming reference is provided or it is known in another way
-            reference = reference_sequences[rname]
-            print(reference)
-            # Obtaining the alignment using your function
-            aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
-            #print("Aligned Reference: ", aligned_ref)
-            #print("Aligned Query:     ", aligned_query)
-            # Creating a mutation vector using your function
-            mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
-            #print (mutation_vector, len(mutation_vector))
-            #print (reference, len(reference))
+                # Identifying mutations using your function
+                mutations = identify_mutations(mutation_vector, reference[pos-1:pos-1+tlen])
 
-            # Identifying mutations using your function
-            mutations = identify_mutations(mutation_vector, reference[pos-1:pos-1+tlen])
-
-            # Storing mutations in the dictionary
-            mutations_dict[qname] = mutations
+                # Storing mutations in the dictionary
+                mutations_dict[qname] = mutations
 
     return mutations_dict
 
@@ -210,7 +210,6 @@ def load_references_from_fasta(fasta_file_path, references):
             ref_sequences[current_ref_name] = "".join(current_sequence)
     return ref_sequences
 
-"""
 # Example usage:
 sam_file_path = "test/test.sam"
 fasta_file_path = "specie.fsa"
@@ -262,7 +261,7 @@ print (len(aligned_query))
 # Storing mutations in the dictionary
 #mutations_dict[qname] = mutations
 
-"""
+
 aligned_ref, aligned_query = extract_alignment(reference, query, cigar_string)
 print("Aligned Reference: ", aligned_ref)
 print("Aligned Query:     ", aligned_query)

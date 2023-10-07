@@ -5,6 +5,7 @@ import sys
 def count_alignments_and_zero_pos(sam_file):
     total_alignments = 0
     zero_pos_count = 0
+    total_cov = 0
 
     with open(sam_file, 'r') as f:
         for line in f:
@@ -18,9 +19,13 @@ def count_alignments_and_zero_pos(sam_file):
 
             # The 4th field in a SAM file is the leftmost mapping POSition
             pos = int(fields[3])
+            tlen = int(fields[8])
+            query_length = len(fields[9])
             print (pos)
             if pos == 1:
                 zero_pos_count += 1
+                if query_length > tlen:
+                    total_cov += tlen
 
     print(f'Total Alignments: {total_alignments}')
     print(f'Total Reads with POS=0: {zero_pos_count}')
