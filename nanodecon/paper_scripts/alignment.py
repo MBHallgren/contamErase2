@@ -138,12 +138,11 @@ def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
 
             # Assuming reference is provided or it is known in another way
             reference = reference_sequences[rname]
-
             # Obtaining the alignment using your function
-            aligned_ref, aligned_query = align_sequences(reference, seq, cigar_str)
+            aligned_ref, aligned_query = extract_alignment(reference, seq, cigar_str)
 
             # Creating a mutation vector using your function
-            mutation_vector = get_mutation_vector(aligned_ref, aligned_query)
+            mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
 
             # Identifying mutations using your function
             mutations = identify_mutations(mutation_vector, reference[pos - 1:pos - 1 + tlen])
