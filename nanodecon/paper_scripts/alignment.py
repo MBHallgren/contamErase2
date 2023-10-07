@@ -127,7 +127,7 @@ def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
             # Skip header lines
             if line.startswith('@'):
                 continue
-
+            print(line)
             # Extract relevant columns: [QNAME, FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN, SEQ]
             cols = line.strip().split('\t')
             qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
@@ -136,12 +136,12 @@ def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
             reference = reference_sequences[rname]
             # Obtaining the alignment using your function
             aligned_ref, aligned_query = extract_alignment(reference, seq, cigar_str)
-            print("Aligned Reference: ", aligned_ref)
-            print("Aligned Query:     ", aligned_query)
+            #print("Aligned Reference: ", aligned_ref)
+            #print("Aligned Query:     ", aligned_query)
             # Creating a mutation vector using your function
             mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
-            print (mutation_vector, len(mutation_vector))
-            print (reference, len(reference))
+            #print (mutation_vector, len(mutation_vector))
+            #print (reference, len(reference))
 
             # Identifying mutations using your function
             mutations = identify_mutations(mutation_vector, reference)
