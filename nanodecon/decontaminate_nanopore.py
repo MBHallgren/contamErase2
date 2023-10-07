@@ -5,6 +5,7 @@ from nanodecon import kma
 from nanodecon import util
 
 from nanodecon.intra_species_detection import determine_intra_species_contamination_nanopore
+from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
 
 def nanopore_decontamination(arguments):
     os.system('mkdir ' + arguments.output)
@@ -41,10 +42,13 @@ def nanopore_decontamination(arguments):
                                                                          headers,
                                                                          arguments)
 
-    for item in confirmed_alleles:
-        print(item, confirmed_alleles[item])
+    #for item in confirmed_alleles:
+    #    print(item, confirmed_alleles[item])
 
-
+    mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
+                                 arguments.output + '/specie.fsa')
+    for item in mutation_dict:
+        print(item, mutation_dict[item])
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
