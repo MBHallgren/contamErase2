@@ -139,6 +139,8 @@ def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
 
             # Creating a mutation vector using your function
             mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
+            print (mutation_vector, len(mutation_vector))
+            print (reference, len(reference))
 
             # Identifying mutations using your function
             mutations = identify_mutations(mutation_vector, reference)
