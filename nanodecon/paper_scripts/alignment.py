@@ -224,6 +224,7 @@ for ref_name, ref_sequence in ref_sequences.items():
 mutations_dict = parse_sam_and_find_mutations(sam_file_path, ref_sequences)
 for read_name, mutations in mutations_dict.items():
     print(read_name, mutations)
+print (len(mutations_dict))
 """
 
 # Example usage
