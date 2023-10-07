@@ -110,19 +110,19 @@ def identify_mutations(mutation_vector, reference_sequence):
 
     return mutations
 
-def parse_sam_and_find_mutations(sam_filepath, reference_sequences):
+def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
     """
     Parses a SAM file, extracts necessary information and finds mutations in each read.
 
     Parameters:
-    - sam_filepath (str): The path to the SAM file.
+    - sam_file_path (str): The path to the SAM file.
 
     Returns:
     - dict: A dictionary where keys are read names and values are lists of mutation strings.
     """
     mutations_dict = {}
 
-    with open(sam_filepath, 'r') as sam_file:
+    with open(sam_file_path, 'r') as sam_file:
         for line in sam_file:
             # Skip header lines
             if line.startswith('@'):
@@ -220,8 +220,8 @@ for ref_name, ref_sequence in ref_sequences.items():
 
 
 # Example usage:
-# sam_filepath = "path_to_your_file.sam"
-mutations_dict = parse_sam_and_find_mutations(sam_filepath, ref_sequences)
+# sam_file_path = "path_to_your_file.sam"
+mutations_dict = parse_sam_and_find_mutations(sam_file_path, ref_sequences)
 for read_name, mutations in mutations_dict.items():
     print(read_name, mutations)
 
