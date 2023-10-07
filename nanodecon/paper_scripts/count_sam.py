@@ -29,6 +29,7 @@ def count_alignments_and_zero_pos(sam_file):
 
     print(f'Total Alignments: {total_alignments}')
     print(f'Total Reads with POS=0: {zero_pos_count}')
+    print(f'Total Coverage: {total_cov}')
 
 # Example usage:
 count_alignments_and_zero_pos('test/test.sam')
