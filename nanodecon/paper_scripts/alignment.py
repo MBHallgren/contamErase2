@@ -209,11 +209,14 @@ def load_references_from_fasta(fasta_file_path, references):
 
 
 # Example usage:
-sam_file_path = "path/to/your/file.sam"
-fasta_file_path = "path/to/your/file.fasta"
+sam_file_path = "test/test.sam"
+fasta_file_path = "specie.fsa"
 
-# references = parse_sam_get_references(sam_file_path)
-# ref_sequences = load_references_from_fasta(fasta_file_path, references)
+references = parse_sam_get_references(sam_file_path)
+ref_sequences = load_references_from_fasta(fasta_file_path, references)
+
+for ref_name, ref_sequence in ref_sequences.items():
+    print(ref_name, ref_sequence)
 
 
 # Example usage:
