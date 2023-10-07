@@ -110,7 +110,7 @@ def identify_mutations(mutation_vector, reference_sequence):
 
     return mutations
 
-def parse_sam_and_find_mutations(sam_filepath):
+def parse_sam_and_find_mutations(sam_filepath, reference_sequences):
     """
     Parses a SAM file, extracts necessary information and finds mutations in each read.
 
@@ -137,7 +137,7 @@ def parse_sam_and_find_mutations(sam_filepath):
             tlen = int(tlen)
 
             # Assuming reference is provided or it is known in another way
-            reference = "ACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTG"
+            reference = reference_sequences[rname]
 
             # Obtaining the alignment using your function
             aligned_ref, aligned_query = align_sequences(reference, seq, cigar_str)
@@ -221,8 +221,9 @@ for ref_name, ref_sequence in ref_sequences.items():
 
 # Example usage:
 # sam_filepath = "path_to_your_file.sam"
-# mutations_dict = parse_sam_and_find_mutations(sam_filepath)
-# print(mutations_dict)
+mutations_dict = parse_sam_and_find_mutations(sam_filepath, ref_sequences)
+for read_name, mutations in mutations_dict.items():
+    print(read_name, mutations)
 
 
 # Example usage
