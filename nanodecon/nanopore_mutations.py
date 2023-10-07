@@ -134,7 +134,7 @@ def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
             pos = int(pos)
             tlen = int(tlen)
             if pos == 1 and len(seq) >= tlen:
-                # Assuming reference is provided or it is known in another way
+                print (rname)
                 reference = reference_sequences[rname]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
