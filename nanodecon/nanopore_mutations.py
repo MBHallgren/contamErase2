@@ -138,7 +138,6 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file):
             pos = int(pos)
             tlen = int(tlen)
             if pos == 1 and len(seq) >= tlen:
-                print (rname)
                 reference = reference_sequences[rname]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
@@ -153,7 +152,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file):
                 mutations = identify_mutations(mutation_vector, reference[pos-1:pos-1+tlen])
 
                 # Storing mutations in the dictionary
-                mutations_dict[qname] = mutations
+                mutations_dict[qname] = [mutations, rname]
 
     return mutations_dict
 
