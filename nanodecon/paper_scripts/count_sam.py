@@ -25,7 +25,7 @@ def count_alignments_and_zero_pos(sam_file):
             if pos == 1:
                 zero_pos_count += 1
                 if query_length > tlen:
-                    total_cov += tlen
+                    total_cov += 1
 
     print(f'Total Alignments: {total_alignments}')
     print(f'Total Reads with POS=0: {zero_pos_count}')
