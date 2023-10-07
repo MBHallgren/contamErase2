@@ -18,6 +18,7 @@ def count_alignments_and_zero_pos(sam_file):
 
             # The 4th field in a SAM file is the leftmost mapping POSition
             pos = int(fields[3])
+            print (pos)
             if pos == 0:
                 zero_pos_count += 1
 
