@@ -109,7 +109,7 @@ def identify_mutations(mutation_vector, reference_sequence):
 
     return mutations
 
-def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
+def parse_sam_and_find_mutations(sam_file_path, fasta_file):
     """
     Parses a SAM file, extracts necessary information and finds mutations in each read.
 
@@ -119,6 +119,10 @@ def parse_sam_and_find_mutations(sam_file_path, reference_sequences):
     Returns:
     - dict: A dictionary where keys are read names and values are lists of mutation strings.
     """
+
+    references = parse_sam_get_references(sam_file_path)
+    reference_sequences = load_references_from_fasta(fasta_file, references)
+
     mutations_dict = {}
 
     with open(sam_file_path, 'r') as sam_file:
