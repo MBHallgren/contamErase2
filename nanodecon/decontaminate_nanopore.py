@@ -117,7 +117,6 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
             if line.startswith('>'):
                 if sequence != '':
                     if allele in top_allele_dict:
-                        print (allele)
                         mutation_list = []
                         mutation_depth = []
                         for i in range(len(sequence)):
@@ -286,21 +285,38 @@ def is_subset(list_a, list_b):
             return False
     return True
 
+def extract_max_scored_alleles(res_file):
+    allele_score_dict = {}
+    max_scored_alleles = {}
+
+    for line in res_file:
+        if not line.startswith("#"):
+            line_split = line.split("\t")
+            allele = line_split[0]
+            gene = allele.split("_")[0]
+            mapscore = int(line_split[1])
+            value = [int(line_split[3]), int(line_split[1]), line_split[0]]
+
+            # If gene is not present in dict or has lower score, update/insert
+            if gene not in allele_score_dict or mapscore > allele_score_dict[gene][1]:
+                allele_score_dict[gene] = (allele, mapscore, value)
+
+    # Create dictionary with allele as key and value as specified
+    for gene, (allele, _, value) in allele_score_dict.items():
+        max_scored_alleles[allele] = value
+
+    return max_scored_alleles
+
+data = """[Your data here]"""
+max_scored_alleles = extract_max_scored_alleles(data)
+
 
 def build_consensus_dict(arguments, res_file, mat_file):
-    top_allele_dict = {}
+    top_allele_dict = extract_max_scored_alleles(res_file)
+    for item in top_allele_dict:
+        print(item, top_allele_dict[item])
     non_alignment_matches = {}
     consensus_dict = {}
-    with open(res_file, 'r') as f:
-        for line in f:
-            if not line.startswith('#'):
-                line = line.strip().split('\t')
-                allele = line[0]
-                if allele not in top_allele_dict:
-                    top_allele_dict[allele] = [int(line[3]), int(line[1]), line[0]]
-                else:
-                    if int(line[1]) > top_allele_dict[allele][1]:
-                        top_allele_dict[allele] = [int(line[3]), int(line[1]), line[0]]
     odd_size_alleles = set()
     correct_size_alleles = set()
     with open(res_file, 'r') as f:
