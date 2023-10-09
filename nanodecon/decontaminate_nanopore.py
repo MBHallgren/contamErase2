@@ -36,10 +36,6 @@ def nanopore_decontamination(arguments):
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
-    print (consensus_dict)
-    for item in consensus_dict:
-        print (item)
-    sys.exit()
 
     mutation_position_dict = derive_mutation_positions(consensus_dict,
                                                        arguments.output + '/specie.fsa',
@@ -315,8 +311,6 @@ def extract_max_scored_alleles(res_file):
 
 def build_consensus_dict(arguments, res_file, mat_file):
     gene_score_dict, top_alleles = extract_max_scored_alleles(res_file)
-    for item in gene_score_dict:
-        print(item, gene_score_dict[item])
     non_alignment_matches = {}
     consensus_dict = {}
     odd_size_alleles = set()
