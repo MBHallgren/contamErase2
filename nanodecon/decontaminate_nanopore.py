@@ -287,7 +287,7 @@ def is_subset(list_a, list_b):
 
 def extract_max_scored_alleles(res_file):
     allele_score_dict = {}
-    max_scored_alleles = {}
+    max_scored_alleles = set()
 
     with open(res_file, "r") as f:
         for line in f:
@@ -304,15 +304,13 @@ def extract_max_scored_alleles(res_file):
 
     # Create dictionary with allele as key and value as specified
     for gene, (allele, _, value) in allele_score_dict.items():
-        max_scored_alleles[allele] = value
+        max_scored_alleles.add(allele)
 
-    return max_scored_alleles
+    return max_scored_alleles, allele_score_dict
 
 
 def build_consensus_dict(arguments, res_file, mat_file):
-    top_allele_dict = extract_max_scored_alleles(res_file)
-    for item in top_allele_dict:
-        print(item, top_allele_dict[item])
+    top_allele_dict, top_allele_dict = extract_max_scored_alleles(res_file)
     non_alignment_matches = {}
     consensus_dict = {}
     odd_size_alleles = set()
@@ -323,7 +321,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 line = line.strip().split('\t')
                 allele = line[0]
                 gene = allele.split('_')[0]
-                if int(line[3]) != top_allele_dict[allele][0]:
+                if int(line[3]) != top_allele_dict[gene][0]:
                     odd_size_alleles.add(line[0])
                 else:
                     correct_size_alleles.add(allele)
