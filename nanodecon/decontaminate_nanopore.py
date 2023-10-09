@@ -289,7 +289,8 @@ def extract_max_scored_alleles(res_file):
     allele_score_dict = {}
     max_scored_alleles = {}
 
-    for line in res_file:
+    with open(res_file, "r") as f:
+    for line in f:
         if not line.startswith("#"):
             line_split = line.split("\t")
             allele = line_split[0]
