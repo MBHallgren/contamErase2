@@ -112,12 +112,12 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                 if sequence != '':
                     if len(sequence) == len(consensus_dict[allele]):
                         if 'BACT000040' in allele:
-                            print (allele)
+                            print (gene)
                         mutation_list = []
                         mutation_depth = []
                         for i in range(len(sequence)):
                             if 'BACT000040' in allele:
-                                print(i, consensus_dict[allele][i][:4])
+                                print(i+1, consensus_dict[allele][i][:4])
                             #total_base_count = sum(consensus_dict[allele][i][:4])
                             if sequence[i] == 'A':
                                 index = 0
