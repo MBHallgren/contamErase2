@@ -111,14 +111,9 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
             if line.startswith('>'):
                 if sequence != '':
                     if len(sequence) == len(consensus_dict[allele]):
-                        if 'BACT000040' in allele:
-                            print (gene)
                         mutation_list = []
                         mutation_depth = []
                         for i in range(len(sequence)):
-                            if 'BACT000040' in allele:
-                                print(i+1, consensus_dict[allele][i][:4])
-                            #total_base_count = sum(consensus_dict[allele][i][:4])
                             if sequence[i] == 'A':
                                 index = 0
                             elif sequence[i] == 'C':
@@ -131,35 +126,32 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                                 index = 4
                                 sys.exit('Check here')
                             #relative_depth = consensus_dict[allele][i][index] / total_base_count
-                            if consensus_dict[allele][i][index] < min_depth:
-                                min_depth = consensus_dict[allele][i][index]
-                            major_nucleotide = max(consensus_dict[allele][i][:4])
-                            if consensus_dict[allele][i][index] < major_nucleotide:
-                                mutation_list.append('{}_{}'.format(i+1, sequence[i]))
-                                mutation_depth.append(consensus_dict[allele][i][index])
-                        if threshold != None:
-                            if min_depth > threshold and min_depth != 100000:
-                                confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
-                        else:
-                            total_depth = sum(consensus_dict[allele][i][:4])
-                            relative_depth = min_depth / total_depth
-                            if relative_depth > arguments.min_rd and min_depth != 100000:
-                                confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
+                            nucleotide_index = ['A', 'C', 'G', 'T']
+                            a_depth = consensus_dict[allele][i][0]
+                            c_depth = consensus_dict[allele][i][1]
+                            g_depth = consensus_dict[allele][i][2]
+                            t_depth = consensus_dict[allele][i][3]
+                            depths = [a_depth, c_depth, g_depth, t_depth]
+                            for i in range(len(depths)):
+                                if i != index:
+                                    if depths[i] > threshold:
+                                        total_depth = sum(consensus_dict[allele][i][:4])
+                                        relative_depth = depths[i] / total_depth
+                                        if relative_depth > arguments.min_rd:
+                                            mutation_list.append('{}_{}'.format(i+1, nucleotide_index[i]))
+                                            mutation_depth.append(depths[i])
+
+                        if mutation_list != []:
+                            confirmed_alleles[gene] = [min(mutation_depth), mutation_list, mutation_depth]
+
                     sequence = ''
                     min_depth = 100000
                 gene = line.strip()[1:]
                 allele = gene.split('_')[0]
             else:
                 sequence += line.strip()
-        if threshold != None:
-            if min_depth > threshold and min_depth != 100000:
-                confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
-        else:
-            total_depth = sum(consensus_dict[allele][i][:4])
-            relative_depth = min_depth / total_depth
-            if relative_depth > arguments.min_rd and min_depth != 100000:
-                confirmed_alleles[gene] = [min_depth, mutation_list, mutation_depth]
-
+    if mutation_list != []:
+        confirmed_alleles[gene] = [min(mutation_depth), mutation_list, mutation_depth]
 
     print ('Confirmed alleles')
     for item in confirmed_alleles:
