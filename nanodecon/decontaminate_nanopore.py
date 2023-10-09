@@ -49,9 +49,9 @@ def nanopore_decontamination(arguments):
                                  arguments.output + '/specie.fsa')
     print ('mutations:')
     for item in mutation_dict:
-        print (item, mutation_dict[item])
-        #if 'BACT000040' in item:
-        #    print(mutation_dict[item])
+        #print (item, mutation_dict[item])
+        if 'BACT000040' in item[1]:
+            print(mutation_dict[item])
     print ('confirmed:')
     for item in confirmed_alleles:
         if 'BACT000040' in item:
