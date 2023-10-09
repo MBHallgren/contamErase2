@@ -138,14 +138,14 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                                         total_depth = sum(consensus_dict[allele][i][:4])
                                         relative_depth = depths[t] / total_depth
                                         if relative_depth > arguments.min_rd:
-                                            mutation_list.append('{}_{}'.format(i + 1, nucleotide_index[i]))
+                                            mutation_list.append('{}_{}'.format(i + 1, nucleotide_index[t]))
                                             mutation_depth.append(depths[t])
                                     else:
                                         if depths[i] > threshold:
                                             total_depth = sum(consensus_dict[allele][i][:4])
                                             relative_depth = depths[i] / total_depth
                                             if relative_depth > arguments.min_rd:
-                                                mutation_list.append('{}_{}'.format(i + 1, nucleotide_index[i]))
+                                                mutation_list.append('{}_{}'.format(i + 1, nucleotide_index[t]))
                                                 mutation_depth.append(depths[t])
 
                         if mutation_list != []:
