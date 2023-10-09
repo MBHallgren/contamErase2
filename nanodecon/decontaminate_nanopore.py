@@ -304,9 +304,9 @@ def extract_max_scored_alleles(res_file):
 
     # Create dictionary with allele as key and value as specified
     for gene, (allele, _, value) in gene_score_dict.items():
-        max_scored_genes.add(allele)
+        max_scored_alleles.add(allele)
 
-    return gene_score_dict, max_scored_genes
+    return gene_score_dict, max_scored_alleles
 
 
 def build_consensus_dict(arguments, res_file, mat_file):
