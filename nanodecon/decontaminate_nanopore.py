@@ -132,21 +132,21 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
                             g_depth = consensus_dict[allele][i][2]
                             t_depth = consensus_dict[allele][i][3]
                             depths = [a_depth, c_depth, g_depth, t_depth]
-                            for i in range(len(depths)):
-                                if i != index:
+                            for t in range(len(depths)):
+                                if t != index:
                                     if threshold == None:
                                         total_depth = sum(consensus_dict[allele][i][:4])
-                                        relative_depth = depths[i] / total_depth
+                                        relative_depth = depths[t] / total_depth
                                         if relative_depth > arguments.min_rd:
                                             mutation_list.append('{}_{}'.format(i + 1, nucleotide_index[i]))
-                                            mutation_depth.append(depths[i])
+                                            mutation_depth.append(depths[t])
                                     else:
                                         if depths[i] > threshold:
                                             total_depth = sum(consensus_dict[allele][i][:4])
                                             relative_depth = depths[i] / total_depth
                                             if relative_depth > arguments.min_rd:
                                                 mutation_list.append('{}_{}'.format(i + 1, nucleotide_index[i]))
-                                                mutation_depth.append(depths[i])
+                                                mutation_depth.append(depths[t])
 
                         if mutation_list != []:
                             confirmed_alleles[gene] = [min(mutation_depth), mutation_list, mutation_depth]
