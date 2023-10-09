@@ -308,9 +308,6 @@ def extract_max_scored_alleles(res_file):
 
     return max_scored_alleles
 
-data = """[Your data here]"""
-max_scored_alleles = extract_max_scored_alleles(data)
-
 
 def build_consensus_dict(arguments, res_file, mat_file):
     top_allele_dict = extract_max_scored_alleles(res_file)
