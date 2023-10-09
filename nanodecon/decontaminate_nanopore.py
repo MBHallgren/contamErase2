@@ -286,7 +286,7 @@ def is_subset(list_a, list_b):
     return True
 
 def extract_max_scored_alleles(res_file):
-    allele_score_dict = {}
+    gene_score_dict = {}
     max_scored_alleles = set()
 
     with open(res_file, "r") as f:
@@ -299,18 +299,18 @@ def extract_max_scored_alleles(res_file):
                 value = [int(line_split[3]), int(line_split[1]), line_split[0]]
 
                 # If gene is not present in dict or has lower score, update/insert
-                if gene not in allele_score_dict or mapscore > allele_score_dict[gene][1]:
-                    allele_score_dict[gene] = (allele, mapscore, value)
+                if gene not in gene_score_dict or mapscore > gene_score_dict[gene][1]:
+                    gene_score_dict[gene] = (allele, mapscore, value)
 
     # Create dictionary with allele as key and value as specified
-    for gene, (allele, _, value) in allele_score_dict.items():
-        max_scored_alleles.add(allele)
+    for gene, (allele, _, value) in gene_score_dict.items():
+        max_scored_genes.add(allele)
 
-    return max_scored_genes, allele_score_dict
+    return gene_score_dict, max_scored_genes
 
 
 def build_consensus_dict(arguments, res_file, mat_file):
-    max_scored_genes, top_alleles = extract_max_scored_alleles(res_file)
+    gene_score_dict, top_alleles = extract_max_scored_alleles(res_file)
     non_alignment_matches = {}
     consensus_dict = {}
     odd_size_alleles = set()
@@ -321,7 +321,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 line = line.strip().split('\t')
                 allele = line[0]
                 gene = allele.split('_')[0]
-                if int(line[3]) != max_scored_genes[gene][0]:
+                if int(line[3]) != gene_score_dict[gene][0]:
                     odd_size_alleles.add(line[0])
                 else:
                     correct_size_alleles.add(allele)
