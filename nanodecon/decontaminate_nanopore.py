@@ -310,14 +310,15 @@ def build_consensus_dict(arguments, res_file, mat_file):
             if not line.startswith('#'):
                 line = line.strip().split('\t')
                 allele = line[0]
+                gene = allele.split('_')[0]
                 if int(line[3]) != top_allele_dict[allele][0]:
                     odd_size_alleles.add(line[0])
                 else:
-                    correct_size_alleles.add(line[0])
-                    if allele not in consensus_dict:
-                        consensus_dict[allele] = []
+                    correct_size_alleles.add(allele)
+                    if gene not in consensus_dict:
+                        consensus_dict[gene] = []
                         for i in range(int(line[3])):
-                            consensus_dict[allele].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
+                            consensus_dict[gene].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
 
     with open(mat_file, 'r') as f:
         correct_size_flag = False
