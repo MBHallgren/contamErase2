@@ -41,6 +41,8 @@ def nanopore_decontamination(arguments):
                                                                          arguments.output + '/specie.fsa',
                                                                          headers,
                                                                          arguments)
+    for item in confirmed_alleles:
+       print(item, confirmed_alleles[item])
     sys.exit()
     #for item in confirmed_alleles:
     #    print(item, confirmed_alleles[item])
@@ -161,11 +163,7 @@ def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, h
     if mutation_list != []:
         confirmed_alleles[gene] = [min(mutation_depth), mutation_list, mutation_depth]
 
-    print ('Confirmed alleles')
-    for item in confirmed_alleles:
-        print(item, confirmed_alleles[item])
     final_allleles = {}
-    print (headers)
     for gene in headers:
         top_score = 0
         top_allele = ''
