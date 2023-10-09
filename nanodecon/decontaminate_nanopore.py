@@ -117,8 +117,8 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
         mutation_depth = []
         for line in f:
             if line.startswith('>'):
-                if allele in top_allele_dict:
-                    if sequence != '':
+                if sequence != '':
+                    if allele in top_allele_dict:
                         if len(sequence) == len(consensus_dict[allele]):
                             mutation_list = []
                             mutation_depth = []
