@@ -103,7 +103,7 @@ def produce_species_fsa_file(fsa_file, gene_set, output):
 
 def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_allele_dict):
     confirmed_mutation_dict = {}
-    for item in top_allele_dict:
+    for item in consensus_dict:
         print (item)
     if arguments.min_n != None:
         threshold = arguments.min_n
