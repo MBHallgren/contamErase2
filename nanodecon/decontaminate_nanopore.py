@@ -166,57 +166,6 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
         if mutation_list != []:
             confirmed_mutation_dict[gene] = [min(mutation_depth), mutation_list, mutation_depth]
     return confirmed_mutation_dict
-    """
-    final_allleles = {}
-    for gene in headers:
-        top_score = 0
-        top_allele = ''
-        for allele in confirmed_alleles:
-            if allele.startswith(gene):
-                if confirmed_alleles[allele][0] > top_score:
-                    top_score = confirmed_alleles[allele][0]
-                    top_allele = allele
-        if top_allele != '':
-            final_allleles[top_allele] = confirmed_alleles[top_allele]
-
-    for gene in headers:
-        contenders = {}
-        for allele in confirmed_alleles:
-            if allele.startswith(gene):
-                if allele not in final_allleles:
-                    contenders[allele] = confirmed_alleles[allele]
-        most_mutated_allele = []
-        most_mutated_allele_score = 0
-        for allele in contenders:
-            if len(contenders[allele][1]) > most_mutated_allele_score:
-                most_mutated_allele_score = len(contenders[allele][1])
-                most_mutated_allele = [allele]
-            elif len(contenders[allele][1]) == most_mutated_allele_score:
-                most_mutated_allele.append(allele)
-
-        if len(most_mutated_allele) == 1:
-            # TBD Check depths of mutation positions
-            final_allleles[most_mutated_allele[0]] = confirmed_alleles[most_mutated_allele[0]]
-            for allele in contenders:
-                if allele != most_mutated_allele[0]:
-                    if not is_subset(contenders[allele][1], confirmed_alleles[most_mutated_allele[0]][1]):
-                        final_allleles[allele] = confirmed_alleles[allele]
-
-        elif len(most_mutated_allele) > 1:
-            #TBD Check depths of mutation positions
-            for allele in most_mutated_allele:
-                final_allleles[allele] = confirmed_alleles[allele]
-            for allele in contenders:
-                if allele not in most_mutated_allele:
-                    not_subset = True
-                    for most_mutated in most_mutated_allele:
-                        if is_subset(contenders[allele][1], confirmed_alleles[most_mutated][1]):
-                            not_subset = False
-                    if not_subset:
-                        final_allleles[allele] = confirmed_alleles[allele]
-    return final_allleles
-    """
-
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, headers, arguments):
     confirmed_alleles = {}
     if arguments.min_n != None:
