@@ -290,17 +290,17 @@ def extract_max_scored_alleles(res_file):
     max_scored_alleles = {}
 
     with open(res_file, "r") as f:
-    for line in f:
-        if not line.startswith("#"):
-            line_split = line.split("\t")
-            allele = line_split[0]
-            gene = allele.split("_")[0]
-            mapscore = int(line_split[1])
-            value = [int(line_split[3]), int(line_split[1]), line_split[0]]
+        for line in f:
+            if not line.startswith("#"):
+                line_split = line.split("\t")
+                allele = line_split[0]
+                gene = allele.split("_")[0]
+                mapscore = int(line_split[1])
+                value = [int(line_split[3]), int(line_split[1]), line_split[0]]
 
-            # If gene is not present in dict or has lower score, update/insert
-            if gene not in allele_score_dict or mapscore > allele_score_dict[gene][1]:
-                allele_score_dict[gene] = (allele, mapscore, value)
+                # If gene is not present in dict or has lower score, update/insert
+                if gene not in allele_score_dict or mapscore > allele_score_dict[gene][1]:
+                    allele_score_dict[gene] = (allele, mapscore, value)
 
     # Create dictionary with allele as key and value as specified
     for gene, (allele, _, value) in allele_score_dict.items():
