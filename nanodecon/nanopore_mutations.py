@@ -109,7 +109,7 @@ def identify_mutations(mutation_vector, reference_sequence):
 
     return mutations
 
-def parse_sam_and_find_mutations(sam_file_path, fasta_file):
+def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
     """
     Parses a SAM file, extracts necessary information and finds mutations in each read.
 
@@ -152,7 +152,11 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file):
                 mutations = identify_mutations(mutation_vector, reference[pos-1:pos-1+tlen])
 
                 # Storing mutations in the dictionary
-                mutations_dict[qname] = [mutations, rname]
+                gene_name = rname.split('_')[0]
+                if gene_name in allele_pair_dict:
+                    mutations_dict[qname] = [mutations, allele_pair_dict[gene_name]]
+                else:
+                    mutations_dict[qname] = [mutations, None]
 
     return mutations_dict
 

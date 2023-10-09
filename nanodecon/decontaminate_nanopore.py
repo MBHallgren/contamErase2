@@ -33,7 +33,7 @@ def nanopore_decontamination(arguments):
 
     os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
-    odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles = build_consensus_dict(arguments,
+    odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
@@ -42,15 +42,16 @@ def nanopore_decontamination(arguments):
                                                        headers,
                                                        arguments,
                                                        top_alleles)
-    #for item in confirmed_alleles:
-    #    print(item, confirmed_alleles[item])
 
     mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
-                                 arguments.output + '/specie.fsa')
+                                 arguments.output + '/specie.fsa',
+                                                 allele_pair_dict)
     print ('mutations:')
     for item in mutation_dict:
         #print (item, mutation_dict[item])
         if 'BACT000040' in mutation_dict[item][1]:
+            print(mutation_dict[item])
+        if mutation_dict[item][1] == None:
             print(mutation_dict[item])
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
@@ -109,8 +110,6 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
             if line.startswith('>'):
                 if sequence != '':
                     if allele in top_alleles:
-                        if allele == 'BACT000002_48':
-                            print (allele)
                         mutation_list = []
                         mutation_depth = []
                         for i in range(len(sequence)):
@@ -305,16 +304,13 @@ def extract_max_scored_alleles(res_file):
         max_scored_alleles.add(allele)
         allele_pair_dict[gene] = allele
 
-    print (allele_pair_dict)
-    sys.exit()
 
 
-
-    return gene_score_dict, max_scored_alleles
+    return gene_score_dict, max_scored_alleles, allele_pair_dict
 
 
 def build_consensus_dict(arguments, res_file, mat_file):
-    gene_score_dict, top_alleles = extract_max_scored_alleles(res_file)
+    gene_score_dict, top_alleles, allele_pair_dict = extract_max_scored_alleles(res_file)
     non_alignment_matches = {}
     consensus_dict = {}
     odd_size_alleles = set()
@@ -358,7 +354,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
     #Consider how we handle gaps in reads and template
     #missing odd size alleles
     #missing non alignment matches with gaps
-    return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles
+    return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict
 
 
 def produce_final_output_nanopore(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
