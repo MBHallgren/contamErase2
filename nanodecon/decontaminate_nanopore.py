@@ -284,6 +284,7 @@ def is_subset(list_a, list_b):
 def extract_max_scored_alleles(res_file):
     gene_score_dict = {}
     max_scored_alleles = set()
+    allele_pair_dict = {}
 
     with open(res_file, "r") as f:
         for line in f:
@@ -291,6 +292,7 @@ def extract_max_scored_alleles(res_file):
                 line_split = line.split("\t")
                 allele = line_split[0]
                 gene = allele.split("_")[0]
+                allele_pair_dict[gene] = ''
                 mapscore = int(line_split[1])
                 value = [int(line_split[3]), int(line_split[1]), line_split[0]]
 
@@ -301,6 +303,12 @@ def extract_max_scored_alleles(res_file):
     # Create dictionary with allele as key and value as specified
     for gene, (allele, _, value) in gene_score_dict.items():
         max_scored_alleles.add(allele)
+        allele_pair_dict[gene] = allele
+
+    print (allele_pair_dict)
+    sys.exit()
+
+
 
     return gene_score_dict, max_scored_alleles
 
