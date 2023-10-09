@@ -110,6 +110,8 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
         #TBD Doesn't work for #2 gene, template 48 not in resfile
         sequence = ''
         min_depth = 100000
+        mutation_list = []
+        mutation_depth = []
         for line in f:
             if line.startswith('>'):
                 if line[1:].strip() in top_allele_dict:
@@ -161,8 +163,8 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                     min_depth = 100000
             else:
                 sequence += line.strip()
-    if mutation_list != []:
-        confirmed_mutation_dict[gene] = [min(mutation_depth), mutation_list, mutation_depth]
+        if mutation_list != []:
+            confirmed_mutation_dict[gene] = [min(mutation_depth), mutation_list, mutation_depth]
     return confirmed_mutation_dict
     """
     final_allleles = {}
