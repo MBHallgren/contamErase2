@@ -47,9 +47,11 @@ def nanopore_decontamination(arguments):
 
     mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                  arguments.output + '/specie.fsa')
+    print ('mutations:')
     for item in mutation_dict:
         if 'BACT000040' in item:
             print(mutation_dict[item])
+    print ('confirmed:')
     for item in confirmed_alleles:
         if 'BACT000040' in item:
             print(item, confirmed_alleles[item])
