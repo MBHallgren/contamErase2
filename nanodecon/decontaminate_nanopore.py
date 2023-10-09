@@ -37,6 +37,10 @@ def nanopore_decontamination(arguments):
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
+    for item in consensus_dict:
+        print (item)
+    sys.exit()
+
     mutation_position_dict = derive_mutation_positions(consensus_dict,
                                                        arguments.output + '/specie.fsa',
                                                        headers,
