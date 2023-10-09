@@ -297,7 +297,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
         for line in f:
             if not line.startswith('#'):
                 line = line.strip().split('\t')
-                allele = line[0].split('_')[0]
+                allele = line[0]
                 if allele not in top_allele_dict:
                     top_allele_dict[allele] = [int(line[3]), int(line[1]), line[0]]
                 else:
@@ -309,7 +309,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
         for line in f:
             if not line.startswith('#'):
                 line = line.strip().split('\t')
-                allele = line[0].split('_')[0]
+                allele = line[0]
                 if int(line[3]) != top_allele_dict[allele][0]:
                     odd_size_alleles.add(line[0])
                 else:
