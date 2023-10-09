@@ -36,7 +36,7 @@ def nanopore_decontamination(arguments):
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
-
+    print (consensus_dict)
     for item in consensus_dict:
         print (item)
     sys.exit()
