@@ -51,6 +51,7 @@ def nanopore_decontamination(arguments):
         #print (item, mutation_dict[item])
         if 'BACT000040' in mutation_dict[item][1]:
             print(mutation_dict[item])
+    for item in mutation_dict:
         if mutation_dict[item][1] == None:
             print(mutation_dict[item])
     sys.exit()
