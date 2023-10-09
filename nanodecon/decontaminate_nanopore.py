@@ -327,7 +327,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 line = line.strip().split('\t')
                 allele = line[0]
                 gene = allele.split('_')[0]
-                if int(line[3]) != gene_score_dict[gene][0]:
+                if int(line[3]) != gene_score_dict[gene][-1][0]:
                     odd_size_alleles.add(line[0])
                 else:
                     correct_size_alleles.add(allele)
