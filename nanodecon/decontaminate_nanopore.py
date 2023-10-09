@@ -50,7 +50,7 @@ def nanopore_decontamination(arguments):
     print ('mutations:')
     for item in mutation_dict:
         #print (item, mutation_dict[item])
-        if 'BACT000040' in item[1]:
+        if 'BACT000040' in mutation_dict[item][1]:
             print(mutation_dict[item])
     print ('confirmed:')
     for item in confirmed_alleles:
