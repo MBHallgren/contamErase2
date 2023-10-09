@@ -42,9 +42,6 @@ def nanopore_decontamination(arguments):
                                                        headers,
                                                        arguments,
                                                        top_alleles)
-    for item in mutation_position_dict:
-       print(item, mutation_position_dict[item])
-    sys.exit()
     #for item in confirmed_alleles:
     #    print(item, confirmed_alleles[item])
 
@@ -55,10 +52,6 @@ def nanopore_decontamination(arguments):
         #print (item, mutation_dict[item])
         if 'BACT000040' in mutation_dict[item][1]:
             print(mutation_dict[item])
-    print ('confirmed:')
-    for item in confirmed_alleles:
-        if 'BACT000040' in item:
-            print(item, confirmed_alleles[item])
     sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
