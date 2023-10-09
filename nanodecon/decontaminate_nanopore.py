@@ -42,6 +42,7 @@ def nanopore_decontamination(arguments):
                                                        headers,
                                                        arguments,
                                                        top_allele_dict)
+    print (mutation_position_dict)
     for item in mutation_position_dict:
        print(item, mutation_position_dict[item])
     sys.exit()
