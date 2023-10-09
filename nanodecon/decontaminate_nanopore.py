@@ -33,19 +33,17 @@ def nanopore_decontamination(arguments):
 
     #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
-    odd_size_alleles, non_alignment_matches, consensus_dict = build_consensus_dict(arguments,
+    odd_size_alleles, non_alignment_matches, consensus_dict, top_allele_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
-    for item in consensus_dict:
-        print (item, consensus_dict[item])
-    sys.exit()
 
     mutation_position_dict = derive_mutation_positions(consensus_dict,
                                                        arguments.output + '/specie.fsa',
                                                        headers,
-                                                       arguments)
-    for item in confirmed_alleles:
-       print(item, confirmed_alleles[item])
+                                                       arguments,
+                                                       top_allele_dict)
+    for item in mutation_position_dict:
+       print(item, mutation_position_dict[item])
     sys.exit()
     #for item in confirmed_alleles:
     #    print(item, confirmed_alleles[item])
@@ -102,8 +100,8 @@ def produce_species_fsa_file(fsa_file, gene_set, output):
                 if write_sequence:
                     outfile.write(line)
 
-def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments):
-    confirmed_alleles = {}
+def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_allele_dict):
+    confirmed_mutation_dict = {}
     if arguments.min_n != None:
         threshold = arguments.min_n
     else:
@@ -114,58 +112,59 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments):
         min_depth = 100000
         for line in f:
             if line.startswith('>'):
-                if sequence != '':
-                    if len(sequence) == len(consensus_dict[allele]):
-                        mutation_list = []
-                        mutation_depth = []
-                        for i in range(len(sequence)):
-                            if sequence[i] == 'A':
-                                index = 0
-                            elif sequence[i] == 'C':
-                                index = 1
-                            elif sequence[i] == 'G':
-                                index = 2
-                            elif sequence[i] == 'T':
-                                index = 3
-                            else:
-                                index = 4
-                                sys.exit('Check here')
-                            #relative_depth = consensus_dict[allele][i][index] / total_base_count
-                            nucleotide_index = ['A', 'C', 'G', 'T']
-                            a_depth = consensus_dict[allele][i][0]
-                            c_depth = consensus_dict[allele][i][1]
-                            g_depth = consensus_dict[allele][i][2]
-                            t_depth = consensus_dict[allele][i][3]
-                            depths = [a_depth, c_depth, g_depth, t_depth]
-                            for t in range(len(depths)):
-                                if t != index:
-                                    if threshold == None:
-                                        total_depth = sum(consensus_dict[allele][i][:4])
-                                        relative_depth = depths[t] / total_depth
-                                        if relative_depth > arguments.min_rd:
-                                            mutation_list.append(
-                                                '{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
-                                            mutation_depth.append(depths[t])
-                                    else:
-                                        if depths[t] > threshold:
+                if line[1:].strip() in top_allele_dict:
+                    if sequence != '':
+                        if len(sequence) == len(consensus_dict[allele]):
+                            mutation_list = []
+                            mutation_depth = []
+                            for i in range(len(sequence)):
+                                if sequence[i] == 'A':
+                                    index = 0
+                                elif sequence[i] == 'C':
+                                    index = 1
+                                elif sequence[i] == 'G':
+                                    index = 2
+                                elif sequence[i] == 'T':
+                                    index = 3
+                                else:
+                                    index = 4
+                                    sys.exit('Check here')
+                                #relative_depth = consensus_dict[allele][i][index] / total_base_count
+                                nucleotide_index = ['A', 'C', 'G', 'T']
+                                a_depth = consensus_dict[allele][i][0]
+                                c_depth = consensus_dict[allele][i][1]
+                                g_depth = consensus_dict[allele][i][2]
+                                t_depth = consensus_dict[allele][i][3]
+                                depths = [a_depth, c_depth, g_depth, t_depth]
+                                for t in range(len(depths)):
+                                    if t != index:
+                                        if threshold == None:
                                             total_depth = sum(consensus_dict[allele][i][:4])
                                             relative_depth = depths[t] / total_depth
                                             if relative_depth > arguments.min_rd:
-                                                mutation_list.append('{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
+                                                mutation_list.append(
+                                                    '{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
                                                 mutation_depth.append(depths[t])
+                                        else:
+                                            if depths[t] > threshold:
+                                                total_depth = sum(consensus_dict[allele][i][:4])
+                                                relative_depth = depths[t] / total_depth
+                                                if relative_depth > arguments.min_rd:
+                                                    mutation_list.append('{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
+                                                    mutation_depth.append(depths[t])
 
-                        if mutation_list != []:
-                            confirmed_alleles[gene] = [min(mutation_depth), mutation_list, mutation_depth]
-
+                            if mutation_list != []:
+                                confirmed_mutation_dict[gene] = [min(mutation_depth), mutation_list, mutation_depth]
+                    gene = line.strip()[1:]
+                    allele = gene.split('_')[0]
                     sequence = ''
                     min_depth = 100000
-                gene = line.strip()[1:]
-                allele = gene.split('_')[0]
             else:
                 sequence += line.strip()
     if mutation_list != []:
-        confirmed_alleles[gene] = [min(mutation_depth), mutation_list, mutation_depth]
-
+        confirmed_mutation_dict[gene] = [min(mutation_depth), mutation_list, mutation_depth]
+    return confirmed_mutation_dict
+    """
     final_allleles = {}
     for gene in headers:
         top_score = 0
@@ -214,7 +213,7 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments):
                     if not_subset:
                         final_allleles[allele] = confirmed_alleles[allele]
     return final_allleles
-
+    """
 
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, headers, arguments):
     confirmed_alleles = {}
@@ -390,7 +389,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
     #Consider how we handle gaps in reads and template
     #missing odd size alleles
     #missing non alignment matches with gaps
-    return odd_size_alleles, non_alignment_matches, consensus_dict
+    return odd_size_alleles, non_alignment_matches, consensus_dict, top_allele_dict
 
 
 def produce_final_output_nanopore(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
