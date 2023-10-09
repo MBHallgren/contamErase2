@@ -315,6 +315,8 @@ def extract_max_scored_alleles(res_file):
 
 def build_consensus_dict(arguments, res_file, mat_file):
     gene_score_dict, top_alleles = extract_max_scored_alleles(res_file)
+    for item in gene_score_dict:
+        print(item, gene_score_dict[item])
     non_alignment_matches = {}
     consensus_dict = {}
     odd_size_alleles = set()
