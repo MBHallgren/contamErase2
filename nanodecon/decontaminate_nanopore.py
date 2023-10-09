@@ -42,7 +42,6 @@ def nanopore_decontamination(arguments):
                                                        headers,
                                                        arguments,
                                                        top_alleles)
-    print (mutation_position_dict)
     for item in mutation_position_dict:
        print(item, mutation_position_dict[item])
     sys.exit()
@@ -117,6 +116,8 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
             if line.startswith('>'):
                 if sequence != '':
                     if allele in top_alleles:
+                        if allele == 'BACT000002_48':
+                            print (allele)
                         mutation_list = []
                         mutation_depth = []
                         for i in range(len(sequence)):
@@ -132,6 +133,8 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                                 index = 4
                                 sys.exit('Check here')
                             #relative_depth = consensus_dict[allele][i][index] / total_base_count
+                            if allele == 'BACT000002_48':
+                                print (i+1, sequence[i], consensus_dict[allele][i][index])
                             nucleotide_index = ['A', 'C', 'G', 'T']
                             a_depth = consensus_dict[gene][i][0]
                             c_depth = consensus_dict[gene][i][1]
