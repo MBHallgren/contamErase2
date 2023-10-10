@@ -47,11 +47,9 @@ def nanopore_decontamination(arguments):
                                  arguments.output + '/specie.fsa',
                                                  allele_pair_dict)
 
-    for item in mutation_position_dict:
-        print(item, mutation_position_dict[item])
-    sys.exit()
 
     determine_mutation_sets(reads_mutation_dict, mutation_position_dict)
+    sys.exit()
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
     sys.exit()
@@ -61,8 +59,10 @@ def nanopore_decontamination(arguments):
 
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
-
-    pass
+    for read in reads_mutation_dict:
+        reference = read[1]
+        mutation_set = set(read[0])
+        print (mutation_set)
 
 def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
     pass
