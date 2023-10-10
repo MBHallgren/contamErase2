@@ -64,6 +64,14 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
         gene_mutation_set = set(mutation_position_dict[reference][1])
         if read_mutation_set != set():
             print (read_mutation_set, gene_mutation_set)
+            if read_mutation_set.issubset(gene_mutation_set):
+                if reference + '_' + str(read_mutation_set) not in mutation_count_dict:
+                    mutation_count_dict[reference + '_' + str(read_mutation_set)] = 1
+                else:
+                    mutation_count_dict[reference + '_' + str(read_mutation_set)] += 1
+
+    for item in mutation_count_dict:
+        print (item, mutation_count_dict[item])
 
 def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
     pass
