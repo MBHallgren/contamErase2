@@ -63,15 +63,18 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
         read_mutation_set = set(reads_mutation_dict[read][0])
         gene_mutation_set = set(mutation_position_dict[reference][1])
         if read_mutation_set != set():
-            print (reference, read_mutation_set, gene_mutation_set)
             common_elements = read_mutation_set & gene_mutation_set
-            if reference + '_' + str(common_elements) not in mutation_count_dict:
-                mutation_count_dict[reference + '_' + str(common_elements)] = 1
-            else:
-                mutation_count_dict[reference + '_' + str(common_elements)] += 1
+            print (reference, read_mutation_set, gene_mutation_set, common_elements)
+            if common_elements != set():
+                if reference + '_' + str(common_elements) not in mutation_count_dict:
+                    mutation_count_dict[reference + '_' + str(common_elements)] = 1
+                else:
+                    mutation_count_dict[reference + '_' + str(common_elements)] += 1
 
-    for item in mutation_count_dict:
-        print (item, mutation_count_dict[item])
+    sorted_items = sorted(mutation_count_dict.items(), key=lambda item: item[1], reverse=True)
+    for key, value in sorted_items:
+        print(f"{key}: {value}")
+
 
 def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
     pass
