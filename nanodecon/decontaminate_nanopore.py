@@ -44,6 +44,7 @@ def nanopore_decontamination(arguments):
                                                        top_alleles)
     for allele in mutation_position_dict:
         print (allele, mutation_position_dict[allele])
+    print (headers)
     sys.exit()
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                  arguments.output + '/specie.fsa',
