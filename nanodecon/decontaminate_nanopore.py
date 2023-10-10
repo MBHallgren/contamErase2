@@ -73,7 +73,13 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
 
     sorted_items = sorted(mutation_count_dict.items(), key=lambda item: item[1], reverse=True)
     for key, value in sorted_items:
-        print(f"{key}: {value}")
+        if 'BACT000038' in key:
+            print(f"{key}: {value}")
+
+    for key, value in sorted_items:
+        if 'BACT000002' in key:
+            print(f"{key}: {value}")
+
 
 
 def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
