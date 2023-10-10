@@ -60,7 +60,9 @@ def nanopore_decontamination(arguments):
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
     for read in reads_mutation_dict:
-        print (read)
+        reference = reads_mutation_dict[read][1]
+        mutation_set = set(reads_mutation_dict[read][0])
+        print (mutation_set)
 
 def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
     pass
