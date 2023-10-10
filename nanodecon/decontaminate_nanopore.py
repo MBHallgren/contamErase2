@@ -63,8 +63,8 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
         reference = reads_mutation_dict[read][1]
         read_mutation_set = set(reads_mutation_dict[read][0])
         gene_mutation_set = set(mutation_position_dict[reference][1])
-        if mutation_set != set():
-            print (mutation_set, gene_mutation_set)
+        if read_mutation_set != set():
+            print (read_mutation_set, gene_mutation_set)
 
 def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
     pass
