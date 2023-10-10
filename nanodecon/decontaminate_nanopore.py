@@ -63,7 +63,7 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
         read_mutation_set = set(reads_mutation_dict[read][0])
         gene_mutation_set = set(mutation_position_dict[reference][1])
         if read_mutation_set != set():
-            print (read_mutation_set, gene_mutation_set)
+            print (reference, read_mutation_set, gene_mutation_set)
             if read_mutation_set.issubset(gene_mutation_set):
                 if reference + '_' + str(read_mutation_set) not in mutation_count_dict:
                     mutation_count_dict[reference + '_' + str(read_mutation_set)] = 1
