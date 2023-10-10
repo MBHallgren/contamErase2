@@ -153,11 +153,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
 
                 # Storing mutations in the dictionary
                 gene_name = rname.split('_')[0]
-                if gene_name in allele_pair_dict:
-                    mutations_dict[qname] = [mutations, allele_pair_dict[gene_name]]
-                else:
-                    mutations_dict[qname] = [mutations, None]
-
+                mutations_dict[qname] = [mutations, allele_pair_dict[gene_name]]
     return mutations_dict
 
 def parse_sam_get_references(sam_file_path):

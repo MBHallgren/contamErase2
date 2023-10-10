@@ -43,7 +43,7 @@ def nanopore_decontamination(arguments):
                                                        arguments,
                                                        top_alleles)
 
-    mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
+    reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                  arguments.output + '/specie.fsa',
                                                  allele_pair_dict)
     print ('mutations:')
@@ -51,16 +51,22 @@ def nanopore_decontamination(arguments):
         #print (item, mutation_dict[item])
         if 'BACT000040' in mutation_dict[item][1]:
             print(mutation_dict[item])
-    for item in mutation_dict:
-        if mutation_dict[item][1] == None:
-            print(mutation_dict[item])
+    for item in mutation_position_dict:
+        print(item, mutation_position_dict[item])
     sys.exit()
+
+    determine_mutation_sets(reads_mutation_dict, mutation_position_dict)
     calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
 
     sys.exit()
     sys.exit()
     produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
+
+def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
+    mutation_count_dict = {}
+
+    pass
 
 def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
     pass
