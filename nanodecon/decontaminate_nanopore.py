@@ -36,10 +36,6 @@ def nanopore_decontamination(arguments):
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
-    for item in consensus_dict:
-        if 'BACT000065' in item:
-            print (item, consensus_dict[item])
-    sys.exit()
     mutation_position_dict = derive_mutation_positions(consensus_dict,
                                                        arguments.output + '/specie.fsa',
                                                        headers,
@@ -168,8 +164,8 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                 min_depth = 100000
             else:
                 sequence += line.strip()
-        if mutation_list != []:
-            confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth]
+    if mutation_list != []:
+        confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth]
     return confirmed_mutation_dict
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, headers, arguments):
     confirmed_alleles = {}
