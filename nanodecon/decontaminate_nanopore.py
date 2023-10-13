@@ -77,6 +77,10 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
             print(f"{key}: {value}")
 
     for key, value in sorted_items:
+        if 'BACT000040' in key:
+            print(f"{key}: {value}")
+
+    for key, value in sorted_items:
         if 'BACT000002' in key:
             print(f"{key}: {value}")
 
