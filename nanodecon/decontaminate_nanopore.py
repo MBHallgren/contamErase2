@@ -64,7 +64,8 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
         gene_mutation_set = set(mutation_position_dict[reference][1])
         if read_mutation_set != set():
             common_elements = read_mutation_set & gene_mutation_set
-            print (reference, read_mutation_set, gene_mutation_set, common_elements)
+            if 'BACT000001' in reference:
+                print (reference, read_mutation_set, gene_mutation_set, common_elements)
             if common_elements != set():
                 if reference + '_' + str(common_elements) not in mutation_count_dict:
                     mutation_count_dict[reference + '_' + str(common_elements)] = 1
@@ -83,6 +84,7 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     for key, value in sorted_items:
         if 'BACT000001' in key:
             print(f"{key}: {value}")
+
 
 
 
