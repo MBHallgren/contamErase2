@@ -72,13 +72,13 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
                     mutation_count_dict[reference + '_' + str(common_elements)] += 1
 
     sorted_items = sorted(mutation_count_dict.items(), key=lambda item: item[1], reverse=True)
-    for key, value in sorted_items:
-        if 'BACT000049' in key:
-            print(f"{key}: {value}")
+    #for key, value in sorted_items:
+    #    if 'BACT000049' in key:
+    #        print(f"{key}: {value}")
 
-    for key, value in sorted_items:
-        if 'BACT000038' in key:
-            print(f"{key}: {value}")
+    #for key, value in sorted_items:
+    #    if 'BACT000038' in key:
+    #        print(f"{key}: {value}")
 
     for key, value in sorted_items:
         if 'BACT000001' in key:
