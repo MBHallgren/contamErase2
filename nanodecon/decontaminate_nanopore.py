@@ -74,7 +74,10 @@ def generate_combinations(input_set):
 
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
+    print (len(reads_mutation_dict))
+    t = 0
     for read in reads_mutation_dict:
+
         mutation_combinations = generate_combinations(reads_mutation_dict[read][0])
         reference = reads_mutation_dict[read][1]
         for hit in mutation_combinations:
@@ -82,7 +85,9 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
                 mutation_count_dict[reference + '_' + str(hit)] = 1
             else:
                 mutation_count_dict[reference + '_' + str(hit)] += 1
-
+        t += 1
+        if t % 10000:
+            print (t)
         #reference = reads_mutation_dict[read][1]
         #read_mutation_set = set(reads_mutation_dict[read][0])
         #gene_mutation_set = set(mutation_position_dict[reference][1])
