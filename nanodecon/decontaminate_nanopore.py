@@ -78,6 +78,7 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     t = 0
     for read in reads_mutation_dict:
         print (read[0:35])
+        print (reads_mutation_dict[read][0])
         mutation_combinations = generate_combinations(reads_mutation_dict[read][0])
         print (mutation_combinations)
         reference = reads_mutation_dict[read][1]
