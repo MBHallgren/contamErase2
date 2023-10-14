@@ -3,6 +3,8 @@ import sys
 import gzip
 from nanodecon import kma
 from nanodecon import util
+from itertools import combinations
+
 
 from nanodecon.intra_species_detection import determine_intra_species_contamination_nanopore
 from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
@@ -73,10 +75,7 @@ def generate_combinations(input_set):
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
     for read in reads_mutation_dict:
-        if len(reads_mutation_dict[read][0]) == 1:
-            mutation_combinations = reads_mutation_dict[read][0]
-        else:
-            mutation_combinations = generate_combinations(reads_mutation_dict[read][0])
+        mutation_combinations = generate_combinations(reads_mutation_dict[read][0])
         reference = reads_mutation_dict[read][1]
         for hit in mutation_combinations:
             if reference + '_' + str(hit) not in mutation_count_dict:
