@@ -65,10 +65,6 @@ def nanopore_decontamination(arguments):
     produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
 
-def error_adjust_consensus_dict(consensus_dict):
-    for item in consensus_dict:
-
-    pass
 
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
@@ -101,10 +97,6 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
             print(f"{key}: {value}")
 
 
-
-
-def derive_rmlst_scheme_candidates(confirmed_alleles, rmlst_scheme_file):
-    pass
 
 def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
     gene_set = set()
