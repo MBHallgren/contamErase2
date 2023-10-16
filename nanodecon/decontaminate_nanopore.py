@@ -130,10 +130,6 @@ def produce_species_fsa_file(fsa_file, gene_set, output):
 
 def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_alleles):
     confirmed_mutation_dict = {}
-    if arguments.min_n != None:
-        threshold = arguments.min_n
-    else:
-        threshold = None
     with open(fsa_file, 'r') as f:
         #TBD Doesn't work for #2 gene, template 48 not in resfile
         sequence = ''
@@ -159,7 +155,7 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                                 index = 4
                                 sys.exit('Check here')
                             #relative_depth = consensus_dict[allele][i][index] / total_base_count
-                            if allele == 'BACT000001_99633':
+                            if allele == 'BACT000001_10827':
                                 print (i+1, sequence[i], consensus_dict[gene][i])
                             nucleotide_index = ['A', 'C', 'G', 'T']
                             a_depth = consensus_dict[gene][i][0]
@@ -169,20 +165,13 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                             depths = [a_depth, c_depth, g_depth, t_depth]
                             for t in range(len(depths)):
                                 if t != index:
-                                    if threshold == None:
+                                    if depths[t] >= threshold:
                                         total_depth = sum(consensus_dict[gene][i][:4])
                                         relative_depth = depths[t] / total_depth
                                         if relative_depth > arguments.min_rd:
                                             mutation_list.append(
                                                 '{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
                                             mutation_depth.append(depths[t])
-                                    else:
-                                        if depths[t] > threshold:
-                                            total_depth = sum(consensus_dict[gene][i][:4])
-                                            relative_depth = depths[t] / total_depth
-                                            if relative_depth > arguments.min_rd:
-                                                mutation_list.append('{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
-                                                mutation_depth.append(depths[t])
 
                         if mutation_list != []:
                             confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
@@ -211,8 +200,8 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                 index = 4
                 sys.exit('Check here')
             # relative_depth = consensus_dict[allele][i][index] / total_base_count
-            #if allele == 'BACT000001_99633':
-            #    print(i + 1, sequence[i], consensus_dict[gene][i])
+            if allele == 'BACT000001_10827':
+                print(i + 1, sequence[i], consensus_dict[gene][i])
             nucleotide_index = ['A', 'C', 'G', 'T']
             a_depth = consensus_dict[gene][i][0]
             c_depth = consensus_dict[gene][i][1]
@@ -221,20 +210,13 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
             depths = [a_depth, c_depth, g_depth, t_depth]
             for t in range(len(depths)):
                 if t != index:
-                    if threshold == None:
+                    if depths[t] >= threshold:
                         total_depth = sum(consensus_dict[gene][i][:4])
                         relative_depth = depths[t] / total_depth
                         if relative_depth > arguments.min_rd:
                             mutation_list.append(
                                 '{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
                             mutation_depth.append(depths[t])
-                    else:
-                        if depths[t] > threshold:
-                            total_depth = sum(consensus_dict[gene][i][:4])
-                            relative_depth = depths[t] / total_depth
-                            if relative_depth > arguments.min_rd:
-                                mutation_list.append('{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
-                                mutation_depth.append(depths[t])
 
         if mutation_list != []:
             confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth]
