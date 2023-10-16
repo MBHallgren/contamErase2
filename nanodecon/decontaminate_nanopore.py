@@ -44,7 +44,8 @@ def nanopore_decontamination(arguments):
                                                        arguments,
                                                        top_alleles)
     for key in mutation_position_dict:
-        print (key, mutation_position_dict[key])
+        if 'BACT000001' in key:
+            print (key, mutation_position_dict[key])
     sys.exit()
 
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
@@ -211,7 +212,7 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                 index = 4
                 sys.exit('Check here')
             # relative_depth = consensus_dict[allele][i][index] / total_base_count
-            if allele == 'BACT000002_48':
+            if allele == 'BACT000001_99633':
                 print(i + 1, sequence[i], consensus_dict[gene][i])
             nucleotide_index = ['A', 'C', 'G', 'T']
             a_depth = consensus_dict[gene][i][0]
