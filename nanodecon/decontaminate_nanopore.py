@@ -160,7 +160,7 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                                 index = 4
                                 sys.exit('Check here')
                             #relative_depth = consensus_dict[allele][i][index] / total_base_count
-                            if allele == 'BACT000002_48':
+                            if allele == 'BACT000001_99633':
                                 print (i+1, sequence[i], consensus_dict[gene][i])
                             nucleotide_index = ['A', 'C', 'G', 'T']
                             a_depth = consensus_dict[gene][i][0]
