@@ -165,7 +165,7 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                             depths = [a_depth, c_depth, g_depth, t_depth]
                             for t in range(len(depths)):
                                 if t != index:
-                                    if depths[t] >= threshold:
+                                    if depths[t] >= args.min_n:
                                         total_depth = sum(consensus_dict[gene][i][:4])
                                         relative_depth = depths[t] / total_depth
                                         if relative_depth > arguments.min_rd:
@@ -210,7 +210,7 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
             depths = [a_depth, c_depth, g_depth, t_depth]
             for t in range(len(depths)):
                 if t != index:
-                    if depths[t] >= threshold:
+                    if depths[t] >= min_n:
                         total_depth = sum(consensus_dict[gene][i][:4])
                         relative_depth = depths[t] / total_depth
                         if relative_depth > arguments.min_rd:
