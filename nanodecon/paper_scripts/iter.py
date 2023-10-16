@@ -13,9 +13,11 @@ def generate_combinations(input_set):
             all_combinations.add(tuple(sorted(combo)))
 
     return all_combinations
+#i_list = ['78_T_C', '193_G_T', '195_C_A', '196_G_T', '197_A_G', '201_T_C', '264_T_G', '356_C_T', '410_T_C', '708_T_A', '722_A_G', '828_T_C', '1071_T_C', '1072_G_T', '1077_T_C', '1078_G_T', '1082_C_T', '1085_C_G', '1095_G_A', '1103_T_C', '1109_G_A']
+#i_list = ['5_C_T', '15_C_A', '19_G_A', '20_A_G', '30_T_C', '64_G_A', '66_G_A', '117_A_C', '121_A_G', '125_G_C', '126_G_A', '356_C_T', '392_G_A', '397_G_A', '400_C_A', '402_G_T', '626_C_T', '628_T_G', '670_G_A', '676_T_A', '708_T_A', '828_T_C', '855_C_G', '1017_G_A', '1109_G_A']
+i_list = ['30_T_C', '64_G_A', '66_G_A', '117_A_C', '121_A_G', '125_G_C', '126_G_A', '356_C_T', '392_G_A', '397_G_A', '400_C_A', '402_G_T', '626_C_T', '628_T_G', '670_G_A', '676_T_A', '708_T_A', '828_T_C', '855_C_G', '1017_G_A', '1109_G_A']
 
-input_set = {'269_G_C', '334_G_T', '985_G_A', '669_T_C', '494_A_G', '894_T_C', '1103_T_G', '1076_G_C', '665_T_C', '492_A_G', '1105_G_T', '1027_G_A', '282_T_C', '1078_G_A', '263_C_T', '1075_A_G'}
-
+input_set = set(i_list)
 combinations = generate_combinations(input_set)
 
 # Print the result

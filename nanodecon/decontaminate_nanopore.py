@@ -43,6 +43,9 @@ def nanopore_decontamination(arguments):
                                                        headers,
                                                        arguments,
                                                        top_alleles)
+    for key in mutation_position_dict:
+        print (key, mutation_position_dict[key])
+    sys.exit()
 
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                  arguments.output + '/specie.fsa',
@@ -58,59 +61,32 @@ def nanopore_decontamination(arguments):
     produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
 
-def generate_combinations(input_set):
-    all_combinations = set()
-    input_list = list(input_set)
-
-    # Generate singles
-    all_combinations.update(input_set)
-
-    # Generate pairs, triplets, and so on
-    for r in range(2, len(input_list) + 1):
-        for combo in combinations(input_list, r):
-            all_combinations.add(tuple(sorted(combo)))
-
-    return all_combinations
 
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
     print (len(reads_mutation_dict))
-    t = 0
     for read in reads_mutation_dict:
-        print (read[0:35])
-        print (reads_mutation_dict[read][0])
-        mutation_combinations = generate_combinations(reads_mutation_dict[read][0])
-        #print (mutation_combinations)
         reference = reads_mutation_dict[read][1]
-        for hit in mutation_combinations:
-            if reference + '_' + str(hit) not in mutation_count_dict:
-                mutation_count_dict[reference + '_' + str(hit)] = 1
-            else:
-                mutation_count_dict[reference + '_' + str(hit)] += 1
-        t += 1
-        if t % 1000:
-            print (t)
-        #reference = reads_mutation_dict[read][1]
-        #read_mutation_set = set(reads_mutation_dict[read][0])
-        #gene_mutation_set = set(mutation_position_dict[reference][1])
-        #if read_mutation_set != set():
-        #    common_elements = read_mutation_set & gene_mutation_set
-        #    if 'BACT000001' in reference:
-        #        print (reference, read_mutation_set, gene_mutation_set, common_elements)
-        #    if common_elements != set():
-        #        if reference + '_' + str(common_elements) not in mutation_count_dict:
-        #            mutation_count_dict[reference + '_' + str(common_elements)] = 1
-        #        else:
-        #            mutation_count_dict[reference + '_' + str(common_elements)] += 1
+        read_mutation_set = set(reads_mutation_dict[read][0])
+        gene_mutation_set = set(mutation_position_dict[reference][1])
+        if read_mutation_set != set():
+            common_elements = read_mutation_set & gene_mutation_set
+            if 'BACT000001' in reference:
+                print (reference, read_mutation_set, gene_mutation_set, common_elements)
+            if common_elements != set():
+                if reference + '_' + str(common_elements) not in mutation_count_dict:
+                    mutation_count_dict[reference + '_' + str(common_elements)] = 1
+                else:
+                    mutation_count_dict[reference + '_' + str(common_elements)] += 1
 
     sorted_items = sorted(mutation_count_dict.items(), key=lambda item: item[1], reverse=True)
-    #for key, value in sorted_items:
-    #    if 'BACT000049' in key:
-    #        print(f"{key}: {value}")
+    for key, value in sorted_items:
+        if 'BACT000049' in key:
+            print(f"{key}: {value}")
 
-    #for key, value in sorted_items:
-    #    if 'BACT000038' in key:
-    #        print(f"{key}: {value}")
+    for key, value in sorted_items:
+        if 'BACT000038' in key:
+            print(f"{key}: {value}")
 
     for key, value in sorted_items:
         if 'BACT000001' in key:

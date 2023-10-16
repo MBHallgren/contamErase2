@@ -37,7 +37,7 @@ def main():
                         help='Minimum number of minimum number of nucleotides required to call a SNV for a contaminated nucleotide position.'
                              'The value of min_rd will be using unless a specific min_n integer is given. Default: None')
     parser.add_argument('--min_rd', action="store", type=float, dest='min_rd', default=0.03
-                        , help='Minimum relative read depth required to call a SNV for a contaminated nucleotide. Default: 0.03')
+                        , help='Minimum relative read depth required to call SNVs. Default: 0.03')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
     args = parser.parse_args()
