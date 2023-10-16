@@ -185,9 +185,10 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                                                 mutation_depth.append(depths[t])
 
                         if mutation_list != []:
-                            confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth]
+                            confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
                         else:
-                            confirmed_mutation_dict[allele] = [0, [], []]
+                            confirmed_mutation_dict[allele] = [0, [], [], total_depth]
+
                 allele = line.strip()[1:]
                 gene = allele.split('_')[0]
                 sequence = ''
