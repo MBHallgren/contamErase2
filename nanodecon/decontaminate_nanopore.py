@@ -111,7 +111,7 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
                     #print (allele, template_allele)
                     confirmed_mutations = validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template_gene][template_allele], allele)
                     if confirmed_mutations != set():
-                        if mutations_found_in_rmlst_genes[gene] == set():
+                        if gene not in mutations_found_in_rmlst_genes:
                             mutations_found_in_rmlst_genes[gene] = confirmed_mutations
                         else:
                             mutations_found_in_rmlst_genes[gene] = mutations_found_in_rmlst_genes[gene] & confirmed_mutations
@@ -119,13 +119,13 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
         print (gene, mutations_found_in_rmlst_genes[gene])
 def validate_mutation_positions(mutations, sequence, allele):
     gene = allele.split('_')[0]
-    mutations_found_in_rmlst_genes = set()
+    confirmed_mutations = set()
     for mutation in mutations:
         position, wild_type, mutant = mutation.split('_')
         if sequence[int(position) - 1] == mutant:
-            mutations_found_in_rmlst_genes.add(mutation)
+            confirmed_mutations.add(mutation)
             print ('found mutation for ', allele, mutation, sequence[int(position) - 1], mutant)
-    return mutations_found_in_rmlst_genes
+    return confirmed_mutations
 def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     correct_length_dict = {}
     sequence = ''
