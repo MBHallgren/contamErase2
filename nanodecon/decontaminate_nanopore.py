@@ -106,6 +106,7 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
         mutations_found_in_rmlst_genes[allele] = set()
         gene = allele.split('_')[0]
         for template in correct_length_dict:
+            print (template)
             template_gene = template.split('_')[0]
             if template_gene == gene:
                 print (allele, template)
