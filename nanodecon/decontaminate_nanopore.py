@@ -122,9 +122,9 @@ def validate_mutation_positions(mutations, sequence, allele):
     mutations_found_in_rmlst_genes = set()
     for mutation in mutations:
         position, wild_type, mutant = mutation.split('_')
-        print (position, sequence[int(position) - 1], wild_type, mutant)
         if sequence[int(position) - 1] == mutant:
             mutations_found_in_rmlst_genes.add(mutation)
+            print ('found mutation for ', allele, mutation, sequence[int(position) - 1], mutant)
     return mutations_found_in_rmlst_genes
 def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     correct_length_dict = {}
