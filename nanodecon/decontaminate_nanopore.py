@@ -35,7 +35,7 @@ def nanopore_decontamination(arguments):
 
     os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
-    odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict = build_consensus_dict(arguments,
+    odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
     mutation_position_dict = derive_mutation_positions(consensus_dict,
@@ -43,6 +43,9 @@ def nanopore_decontamination(arguments):
                                                        headers,
                                                        arguments,
                                                        top_alleles)
+
+    validate_mutations(arguments, mutation_position_dict, gene_score_dict)
+
     for item in mutation_position_dict:
         print (item, mutation_position_dict[item])
 
@@ -95,6 +98,10 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     for key, value in sorted_items:
         if 'BACT000001' in key:
             print(f"{key}: {value}")
+
+def validate_mutations(arguments, mutation_position_dict, gene_score_dict):
+    for item in gene_score_dict:
+        print (item, gene_score_dict[item])
 
 
 
@@ -414,7 +421,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
     #Consider how we handle gaps in reads and template
     #missing odd size alleles
     #missing non alignment matches with gaps
-    return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict
+    return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict
 
 
 def produce_final_output_nanopore(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
