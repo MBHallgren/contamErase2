@@ -105,12 +105,11 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
     for allele in mutation_position_dict:
         mutations_found_in_rmlst_genes[allele] = set()
         gene = allele.split('_')[0]
-        for template in correct_length_dict:
-            print (template)
-            template_gene = template.split('_')[0]
+        for template_gene in correct_length_dict:
             if template_gene == gene:
-                print (allele, template)
-                #validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template][allele], allele)
+                for template_allele in correct_length_dict[template_gene]:
+                    print (allele, template_allele)
+                    #validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template_gene][template_allee], allele)
 def validate_mutation_positions(mutations, sequence, allele):
     gene = allele.split('_')[0]
     mutations_found_in_rmlst_genes = dict()
