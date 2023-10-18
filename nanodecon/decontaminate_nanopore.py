@@ -100,9 +100,9 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
             print(f"{key}: {value}")
 
 def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_file):
-    derive_correct_length_headers(arguments, gene_score_dict)
+    derive_correct_length_headers(arguments, gene_score_dict, fsa_file)
 
-def derive_correct_length_headers(arguments, gene_score_dict):
+def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     correct_length_dict = {}
     with open(fsa_file, 'r') as f:
         for line in f:
