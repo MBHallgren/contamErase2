@@ -105,6 +105,7 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
 def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     correct_length_dict = {}
     sequence = ''
+    gene = None
     with open(fsa_file, 'r') as f:
         for line in f:
             if line.startswith('>'):
