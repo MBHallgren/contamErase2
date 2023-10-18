@@ -112,7 +112,7 @@ def validate_mutation_positions(mutations, sequence, gene):
     for mutation in mutations:
         mutations_found_in_rmlst_genes[gene] = set()
         position, wild_type, mutant = mutation.split('_')
-        if sequence[int(position) - 1] == mutation:
+        if sequence[int(position) - 1] == mutant:
             mutations_found_in_rmlst_genes[gene].add(mutation)
 
     print ('confirmed mutations: ', gene)
