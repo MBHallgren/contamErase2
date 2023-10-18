@@ -114,8 +114,8 @@ def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
                         if sequence != '':
                             if len(sequence) == gene_score_dict[gene][-1][0]:
                                 if gene not in correct_length_dict:
-                                    correct_length_dict[gene] = []
-                                correct_length_dict[gene].append(allele)
+                                    correct_length_dict[gene] = {}
+                                correct_length_dict[gene][allele] = sequence
                 header = line.strip()[1:]
                 allele = header
                 gene = allele.split('_')[0]
@@ -123,10 +123,7 @@ def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
             else:
                 sequence += line.strip()
 
-    for gene in correct_length_dict:
-        print (gene, correct_length_dict[gene])
-
-    print (gene_score_dict)
+    print (sys.getsizeof(correct_length_dict))
 
 
 def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
