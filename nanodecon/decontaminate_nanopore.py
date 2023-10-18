@@ -114,7 +114,7 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
                         if gene not in mutations_found_in_rmlst_genes:
                             mutations_found_in_rmlst_genes[gene] = confirmed_mutations
                         else:
-                            mutations_found_in_rmlst_genes[gene] = mutations_found_in_rmlst_genes[gene] & confirmed_mutations
+                            mutations_found_in_rmlst_genes[gene] = mutations_found_in_rmlst_genes[gene] | confirmed_mutations
     for gene in mutations_found_in_rmlst_genes:
         print (gene, mutations_found_in_rmlst_genes[gene])
 def validate_mutation_positions(mutations, sequence, allele):
