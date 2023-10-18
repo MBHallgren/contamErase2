@@ -101,13 +101,17 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
 
 def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_file):
     correct_length_dict = derive_correct_length_headers(arguments, gene_score_dict, fsa_file)
+    mutations_found_in_rmlst_genes = dict()
     for allele in mutation_position_dict:
+        mutations_found_in_rmlst_genes[allele] = set()
         gene = allele.split('_')[0]
         for template in correct_length_dict:
             template_gene = template.split('_')[0]
             if template_gene == gene:
-                validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template][allele], gene)
-def validate_mutation_positions(mutations, sequence, gene):
+                print (allele, template)
+                #validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template][allele], allele)
+def validate_mutation_positions(mutations, sequence, allele):
+    gene = allele.split('_')[0]
     mutations_found_in_rmlst_genes = dict()
     for mutation in mutations:
         mutations_found_in_rmlst_genes[gene] = set()
