@@ -100,7 +100,18 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
             print(f"{key}: {value}")
 
 def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_file):
-    derive_correct_length_headers(arguments, gene_score_dict, fsa_file)
+    correct_length_dict = derive_correct_length_headers(arguments, gene_score_dict, fsa_file)
+    for allele in mutation_position_dict:
+        gene = allele.split('_')[0]
+        for template in correct_length_dict:
+            template_gene = template.split('_')[0]
+            if template_gene == gene:
+                validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template][allele])
+
+def validate_mutation_positions(mutations, sequence):
+    for mutation in mutations:
+        position, wild_type, mutant = mutation.split('_')
+        print (position, wild_type, mutant)
 
 def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     correct_length_dict = {}
@@ -122,14 +133,15 @@ def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
                 sequence = ''
             else:
                 sequence += line.strip()
+    if gene != None:
+        if gene in gene_score_dict:
+            if sequence != '':
+                if len(sequence) == gene_score_dict[gene][-1][0]:
+                    if gene not in correct_length_dict:
+                        correct_length_dict[gene] = {}
+                    correct_length_dict[gene][allele] = sequence
 
-    for gene in correct_length_dict:
-        print (gene)
-        for allele in correct_length_dict[gene]:
-            print (allele, len(correct_length_dict[gene][allele]))
-
-    print (sys.getsizeof(correct_length_dict))
-
+    return correct_length_dict
 
 def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
     gene_set = set()
