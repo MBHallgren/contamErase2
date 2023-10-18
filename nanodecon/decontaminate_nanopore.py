@@ -109,7 +109,7 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
             if template_gene == gene:
                 for template_allele in correct_length_dict[template_gene]:
                     #print (allele, template_allele)
-                    validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template_gene][template_allee], allele)
+                    validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template_gene][template_allele], allele)
 def validate_mutation_positions(mutations, sequence, allele):
     gene = allele.split('_')[0]
     mutations_found_in_rmlst_genes = dict()
