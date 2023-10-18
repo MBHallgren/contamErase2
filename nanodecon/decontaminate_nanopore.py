@@ -44,7 +44,7 @@ def nanopore_decontamination(arguments):
                                                        arguments,
                                                        top_alleles)
 
-    validate_mutations(arguments, mutation_position_dict, gene_score_dict)
+    validate_mutations(arguments, mutation_position_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
     for item in mutation_position_dict:
         print (item, mutation_position_dict[item])
@@ -99,9 +99,19 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
         if 'BACT000001' in key:
             print(f"{key}: {value}")
 
-def validate_mutations(arguments, mutation_position_dict, gene_score_dict):
-    for item in gene_score_dict:
-        print (item, gene_score_dict[item])
+def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_file):
+    derive_correct_length_headers(arguments, gene_score_dict)
+
+def derive_correct_length_headers(arguments, gene_score_dict):
+    correct_length_dict = {}
+    with open(fsa_file, 'r') as f:
+        for line in f:
+            if line.startswith('>'):
+                header = line.strip()[1:]
+                allele = header
+                gene = allele.split('_')[0]
+                if gene in gene_score_dict:
+                    print (gene)
 
 
 
