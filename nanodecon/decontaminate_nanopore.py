@@ -123,6 +123,11 @@ def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
             else:
                 sequence += line.strip()
 
+    for gene in correct_length_dict:
+        print (gene)
+        for allele in correct_length_dict[gene]:
+            print (allele, len(correct_length_dict[gene][allele]))
+
     print (sys.getsizeof(correct_length_dict))
 
 
