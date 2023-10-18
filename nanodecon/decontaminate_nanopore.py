@@ -103,26 +103,29 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
     correct_length_dict = derive_correct_length_headers(arguments, gene_score_dict, fsa_file)
     mutations_found_in_rmlst_genes = dict()
     for allele in mutation_position_dict:
-        mutations_found_in_rmlst_genes[allele] = set()
         gene = allele.split('_')[0]
+        mutations_found_in_rmlst_genes[gene] = set()
         for template_gene in correct_length_dict:
             if template_gene == gene:
                 for template_allele in correct_length_dict[template_gene]:
                     #print (allele, template_allele)
-                    validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template_gene][template_allele], allele)
+                    confirmed_mutations = validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template_gene][template_allele], allele)
+                    if confirmed_mutations != set():
+                        if mutations_found_in_rmlst_genes[gene] = set():
+                            mutations_found_in_rmlst_genes[gene] = confirmed_mutations
+                        else:
+                            mutations_found_in_rmlst_genes[gene] = mutations_found_in_rmlst_genes[gene] & confirmed_mutations
+    for gene in mutations_found_in_rmlst_genes:
+        print (gene, mutations_found_in_rmlst_genes[gene])
 def validate_mutation_positions(mutations, sequence, allele):
     gene = allele.split('_')[0]
-    mutations_found_in_rmlst_genes = dict()
+    mutations_found_in_rmlst_genes = set()
     for mutation in mutations:
-        mutations_found_in_rmlst_genes[gene] = set()
         position, wild_type, mutant = mutation.split('_')
         print (position, sequence[int(position) - 1], wild_type, mutant)
         if sequence[int(position) - 1] == mutant:
-            mutations_found_in_rmlst_genes[gene].add(mutation)
-
-    print ('confirmed mutations: ', gene)
-    for gene in mutations_found_in_rmlst_genes:
-        print (gene, mutations_found_in_rmlst_genes[gene])
+            mutations_found_in_rmlst_genes.add(mutation)
+    return mutations_found_in_rmlst_genes
 def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     correct_length_dict = {}
     sequence = ''
