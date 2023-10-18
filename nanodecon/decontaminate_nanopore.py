@@ -112,7 +112,7 @@ def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
                 if gene != None:
                     if gene in gene_score_dict:
                         if sequence != '':
-                            if len(sequence) == gene_score_dict[-1][0]:
+                            if len(sequence) == gene_score_dict[gene][-1][0]:
                                 if gene not in correct_length_dict:
                                     correct_length_dict[gene] = []
                                 correct_length_dict[gene].append(allele)
