@@ -108,12 +108,13 @@ def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     with open(fsa_file, 'r') as f:
         for line in f:
             if line.startswith('>'):
-                if gene in gene_score_dict:
-                    if sequence != '':
-                        if len(sequence) == gene_score_dict[-1][0]:
-                            if gene not in correct_length_dict:
-                                correct_length_dict[gene] = []
-                            correct_length_dict[gene].append(allele)
+                if gene != None:
+                    if gene in gene_score_dict:
+                        if sequence != '':
+                            if len(sequence) == gene_score_dict[-1][0]:
+                                if gene not in correct_length_dict:
+                                    correct_length_dict[gene] = []
+                                correct_length_dict[gene].append(allele)
                 header = line.strip()[1:]
                 allele = header
                 gene = allele.split('_')[0]
