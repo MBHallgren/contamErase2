@@ -111,7 +111,10 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
 def validate_mutation_positions(mutations, sequence):
     for mutation in mutations:
         position, wild_type, mutant = mutation.split('_')
-        print (position, wild_type, mutant)
+        if sequence[int(position) - 1] != wild_type:
+            print (mutation, sequence[int(position) - 1], wild_type, mutant)
+        else:
+            print ('{} not found in {}'.format(wild_type, sequence))
 
 def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     correct_length_dict = {}
