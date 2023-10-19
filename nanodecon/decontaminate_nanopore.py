@@ -47,12 +47,12 @@ def nanopore_decontamination(arguments):
     for item in upper_confirmed_mutation_dict:
         print (item, upper_confirmed_mutation_dict[item])
 
-    print ('lower')
-    for item in lower_confirmed_mutation_dict:
-        print (item, lower_confirmed_mutation_dict[item])
 
 
-    validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    lower_validated_rmlst_mutations = validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    for item in lower_validated_rmlst_mutations:
+        print (item, lower_validated_rmlst_mutations[item])
+    #upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
     #for item in mutation_position_dict:
     #    print (item, mutation_position_dict[item])
@@ -123,8 +123,7 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
                             mutations_found_in_rmlst_genes[gene] = confirmed_mutations
                         else:
                             mutations_found_in_rmlst_genes[gene] = mutations_found_in_rmlst_genes[gene] | confirmed_mutations
-    for gene in mutations_found_in_rmlst_genes:
-        print (gene, mutations_found_in_rmlst_genes[gene])
+    return mutations_found_in_rmlst_genes
 def validate_mutation_positions(mutations, sequence, allele):
     gene = allele.split('_')[0]
     confirmed_mutations = set()
