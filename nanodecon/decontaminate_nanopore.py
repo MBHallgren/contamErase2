@@ -131,7 +131,8 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
                 return_dict[item][1].append(mutation_position_dict[item][1][i])
                 return_dict[item][2].append(mutation_position_dict[item][2][i])
                 return_dict[item][3] = mutation_position_dict[item][3]
-        return_dict[item][0] = min(return_dict[item][2])
+        if return_dict[item][2] != []:
+            return_dict[item][0] = min(return_dict[item][2])
     return return_dict
 
 
