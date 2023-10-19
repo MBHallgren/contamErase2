@@ -41,7 +41,7 @@ def main():
                         , help='Upper related depth (urd) for validating a SNV.'
                                ' Any SNV above this threshold in considered a true positive.'
                                'Default: 0.03')
-    parser.add_argument('--lrd', action="store", type=float, dest='urd', default=0.01
+    parser.add_argument('--lrd', action="store", type=float, dest='lrd', default=0.01
                         , help='Lower related depth (lrd) for validating a SNV.'
                                ' Any SNV above this depth which also is found in another rmlst allele is considered a true positive.'
                                'Default: 0.01')
