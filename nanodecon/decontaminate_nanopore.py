@@ -249,11 +249,11 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
 
 
                         if upper_mutation_list != []:
-                            upper_confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
+                            upper_confirmed_mutation_dict[allele] = [min(upper_mutation_depth), upper_mutation_list, upper_mutation_depth, total_depth]
                         else:
                             upper_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
                         if lower_mutation_list != []:
-                            lower_confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
+                            lower_confirmed_mutation_dict[allele] = [min(lower_mutation_depth), lower_mutation_list, lower_mutation_depth, total_depth]
                         else:
                             lower_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
 
@@ -302,11 +302,11 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                             lower_mutation_depth.append(depths[t])
 
         if upper_mutation_list != []:
-            upper_confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
+            upper_confirmed_mutation_dict[allele] = [min(upper_mutation_depth), upper_mutation_list, upper_mutation_depth, total_depth]
         else:
             upper_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
         if lower_mutation_list != []:
-            lower_confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
+            lower_confirmed_mutation_dict[allele] = [min(lower_cmutation_depth), lower_cmutation_list, lower_cmutation_depth, total_depth]
         else:
             lower_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
 
