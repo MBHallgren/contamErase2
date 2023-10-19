@@ -51,12 +51,11 @@ def nanopore_decontamination(arguments):
     for item in lower_confirmed_mutation_dict:
         print (item, lower_confirmed_mutation_dict[item])
 
-    sys.exit()
 
-    validate_mutations(arguments, mutation_position_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
-    for item in mutation_position_dict:
-        print (item, mutation_position_dict[item])
+    #for item in mutation_position_dict:
+    #    print (item, mutation_position_dict[item])
 
     sys.exit()
 
