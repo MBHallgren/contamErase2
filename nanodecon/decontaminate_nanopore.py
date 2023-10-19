@@ -210,8 +210,10 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
             if line.startswith('>'):
                 if sequence != '':
                     if allele in top_alleles:
-                        mutation_list = []
-                        mutation_depth = []
+                        upper_mutation_list = []
+                        upper_mutation_depth = []
+                        lower_mutation_list = []
+                        lower_mutation_depth = []
                         for i in range(len(sequence)):
                             if sequence[i] == 'A':
                                 index = 0
@@ -264,8 +266,10 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
             else:
                 sequence += line.strip()
     if allele in top_alleles:
-        mutation_list = []
-        mutation_depth = []
+        upper_mutation_list = []
+        upper_mutation_depth = []
+        lower_mutation_list = []
+        lower_mutation_depth = []
         for i in range(len(sequence)):
             if sequence[i] == 'A':
                 index = 0
