@@ -33,11 +33,18 @@ def main():
     parser.add_argument('--o', action="store", type=str, dest='output', help='Output directory')
     parser.add_argument('--threads', action="store", type=int, dest='threads', default=4,
                         help='Number of threads to use. Default: 4')
+
     parser.add_argument('--min_n', action="store", type=int, dest='min_n', default=2,
                         help='Minimum number of minimum number of nucleotides required to call a SNV for a contaminated nucleotide position.'
                              'The value of min_rd will be using unless a specific min_n integer is given. Default: 2')
-    parser.add_argument('--min_rd', action="store", type=float, dest='min_rd', default=0.03
-                        , help='Minimum relative read depth required to call SNVs. Default: 0.03')
+    parser.add_argument('--urd', action="store", type=float, dest='urd', default=0.03
+                        , help='Upper related depth (urd) for validating a SNV.'
+                               ' Any SNV above this threshold in considered a true positive.'
+                               'Default: 0.03')
+    parser.add_argument('--lrd', action="store", type=float, dest='urd', default=0.01
+                        , help='Lower related depth (lrd) for validating a SNV.'
+                               ' Any SNV above this depth which also is found in another rmlst allele is considered a true positive.'
+                               'Default: 0.01')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
     args = parser.parse_args()

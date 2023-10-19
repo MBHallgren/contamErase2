@@ -38,11 +38,20 @@ def nanopore_decontamination(arguments):
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
-    mutation_position_dict = derive_mutation_positions(consensus_dict,
+    upper_confirmed_mutation_dict, lower_confirmed_mutation_dict = derive_mutation_positions(consensus_dict,
                                                        arguments.output + '/specie.fsa',
                                                        headers,
                                                        arguments,
                                                        top_alleles)
+    print ('upper')
+    for item in upper_confirmed_mutation_dict:
+        print (item, upper_confirmed_mutation_dict[item])
+
+    print ('lower')
+    for item in lower_confirmed_mutation_dict:
+        print (item, lower_confirmed_mutation_dict[item])
+
+    sys.exit()
 
     validate_mutations(arguments, mutation_position_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
@@ -187,13 +196,16 @@ def produce_species_fsa_file(fsa_file, gene_set, output):
                     outfile.write(line)
 
 def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_alleles):
-    confirmed_mutation_dict = {}
+    upper_confirmed_mutation_dict = {}
+    lower_confirmed_mutation_dict = {}
     with open(fsa_file, 'r') as f:
         #TBD Doesn't work for #2 gene, template 48 not in resfile
         sequence = ''
         min_depth = 100000
-        mutation_list = []
-        mutation_depth = []
+        upper_mutation_list = []
+        upper_mutation_depth = []
+        lower_mutation_list = []
+        lower_mutation_depth = []
         for line in f:
             if line.startswith('>'):
                 if sequence != '':
@@ -226,15 +238,24 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                                     if depths[t] >= arguments.min_n:
                                         total_depth = sum(consensus_dict[gene][i][:4])
                                         relative_depth = depths[t] / total_depth
-                                        if relative_depth > arguments.min_rd:
-                                            mutation_list.append(
+                                        if relative_depth >= arguments.urd:
+                                            upper_mutation_list.append(
                                                 '{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
-                                            mutation_depth.append(depths[t])
+                                            upper_mutation_depth.append(depths[t])
+                                        elif relative_depth >= arguments.lrd:
+                                            lower_mutation_list.append(
+                                                '{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
+                                            lower_mutation_depth.append(depths[t])
 
-                        if mutation_list != []:
-                            confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
+
+                        if upper_mutation_list != []:
+                            upper_confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
                         else:
-                            confirmed_mutation_dict[allele] = [0, [], [], total_depth]
+                            upper_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
+                        if lower_mutation_list != []:
+                            lower_confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
+                        else:
+                            lower_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
 
                 allele = line.strip()[1:]
                 gene = allele.split('_')[0]
@@ -271,14 +292,25 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                     if depths[t] >= arguments.min_n:
                         total_depth = sum(consensus_dict[gene][i][:4])
                         relative_depth = depths[t] / total_depth
-                        if relative_depth > arguments.min_rd:
-                            mutation_list.append(
+                        if relative_depth >= arguments.urd:
+                            upper_mutation_list.append(
                                 '{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
-                            mutation_depth.append(depths[t])
+                            upper_mutation_depth.append(depths[t])
+                        elif relative_depth >= arguments.lrd:
+                            lower_mutation_list.append(
+                                '{}_{}_{}'.format(i + 1, sequence[i], nucleotide_index[t]))
+                            lower_mutation_depth.append(depths[t])
 
-        if mutation_list != []:
-            confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth]
-    return confirmed_mutation_dict
+        if upper_mutation_list != []:
+            upper_confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
+        else:
+            upper_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
+        if lower_mutation_list != []:
+            lower_confirmed_mutation_dict[allele] = [min(mutation_depth), mutation_list, mutation_depth, total_depth]
+        else:
+            lower_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
+
+    return upper_confirmed_mutation_dict, lower_confirmed_mutation_dict
 def check_all_species_alleles_against_consensus_dict(consensus_dict, fsa_file, headers, arguments):
     confirmed_alleles = {}
     if arguments.min_n != None:
