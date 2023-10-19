@@ -10,13 +10,13 @@ from nanodecon.intra_species_detection import determine_intra_species_contaminat
 from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
 
 def nanopore_decontamination(arguments):
-    os.system('mkdir ' + arguments.output)
+    #os.system('mkdir ' + arguments.output)
     #os.system('mkdir ' + arguments.output + '/output/contaminations')
     #os.system('mkdir ' + arguments.output + '/alignments')
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
@@ -28,12 +28,12 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/rmlst_alignment",
-                  arguments.output + '/specie_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 > {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/rmlst_alignment",
+    #              arguments.output + '/specie_db',
+    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 > {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
 
-    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
@@ -123,6 +123,18 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
                             mutations_found_in_rmlst_genes[gene] = confirmed_mutations
                         else:
                             mutations_found_in_rmlst_genes[gene] = mutations_found_in_rmlst_genes[gene] | confirmed_mutations
+    return_dict = dict()
+    for item in mutation_position_dict:
+        return_dict[item] = [0, [], [], 0]
+        for i in range(len(mutation_position_dict[item][1])):
+            if mutation_position_dict[item][1][i] in mutations_found_in_rmlst_genes[item.split('_')[0]]:
+                return_dict[item][1].append(mutation_position_dict[item][1][i])
+                return_dict[item][2].append(mutation_position_dict[item][2][i])
+                return_dict[item][3] = mutation_position_dict[item][3]
+        return_dict[item][0] = min(return_dict[item][2])
+    return return_dict
+
+
     return mutations_found_in_rmlst_genes
 def validate_mutation_positions(mutations, sequence, allele):
     gene = allele.split('_')[0]
