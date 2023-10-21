@@ -88,12 +88,26 @@ def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gen
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
-            print (co_occurrence_matrix)
+            for read in reads_mutation_dict:
+                if reads_mutation_dict[read][1] == allele:
+                    read_mutations = reads_mutation_dict[read][0]
+                    valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
+                    if len(valid_mutations) > 1:
+                        # Increment the matrix for pairs of mutations in the read
+                        for i in range(len(valid_mutations)):
+                            for j in range(i + 1, len(valid_mutations)):
+                                mutation1 = mutations.index(valid_mutations[i])
+                                mutation2 = mutations.index(valid_mutations[j])
+                                co_occurrence_matrix[mutation1][mutation2] += 1
+                                co_occurrence_matrix[mutation2][mutation1] += 1
+
+            # Print the co-occurrence matrix with mutation names
+            print("Mutation names:", mutations)
+            for i, row in enumerate(co_occurrence_matrix):
+                mutation_name = mutations[i]
+                print(f"{mutation_name}: {row}")
+
             sys.exit()
-        #for read in reads_mutation_dict:
-        #    if reads_mutation_dict[read][1] == allele:
-        #        if reads_mutation_dict[read][0] != []:
-        #            for
 
 
 
