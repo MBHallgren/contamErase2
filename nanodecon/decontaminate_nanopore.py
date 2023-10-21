@@ -102,9 +102,9 @@ def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gen
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print("Mutation names:", mutations)
+            print("Mutation names:", mutation_list)
             for i, row in enumerate(co_occurrence_matrix):
-                mutation_name = mutations[i]
+                mutation_name = mutation_list[i]
                 print(f"{mutation_name}: {row}")
 
             sys.exit()
