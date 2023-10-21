@@ -97,6 +97,8 @@ def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gen
             for read in reads_mutation_dict:
                 if reads_mutation_dict[read][1] == allele:
                     read_mutations = reads_mutation_dict[read][0]
+                    if allele == 'BACT000049_5559':
+                        print (read_mutations)
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
                     if len(valid_mutations) > 1:
                         # Increment the matrix for pairs of mutations in the read
