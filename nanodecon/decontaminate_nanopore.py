@@ -49,11 +49,17 @@ def nanopore_decontamination(arguments):
 
 
     #Exists in RMLST alelle db
-    lower_validated_rmlst_mutations = validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
-    for item in lower_validated_rmlst_mutations:
-        print (item, lower_validated_rmlst_mutations[item])
+    #lower_validated_rmlst_mutations = validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    #for item in lower_validated_rmlst_mutations:
+    #    print (item, lower_validated_rmlst_mutations[item])
 
-    lower_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, lower_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
+    upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    for item in upper_validated_rmlst_mutations:
+        print (item, upper_validated_rmlst_mutations[item])
+
+    #lower_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, lower_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
+    upper_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, upper_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
+
     #Check for co-occuring mutations
     #Check for pairwise rmlst schemes
     #upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
