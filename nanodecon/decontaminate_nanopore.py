@@ -48,10 +48,14 @@ def nanopore_decontamination(arguments):
         print (item, upper_confirmed_mutation_dict[item])
 
 
-
+    #Exists in RMLST alelle db
     lower_validated_rmlst_mutations = validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
     for item in lower_validated_rmlst_mutations:
         print (item, lower_validated_rmlst_mutations[item])
+
+    lower_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, lower_validated_rmlst_mutations, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    #Check for co-occuring mutations
+    #Check for pairwise rmlst schemes
     #upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
     #for item in mutation_position_dict:
@@ -59,9 +63,6 @@ def nanopore_decontamination(arguments):
 
     sys.exit()
 
-    reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
-                                 arguments.output + '/specie.fsa',
-                                                 allele_pair_dict)
     determine_mutation_sets(reads_mutation_dict, mutation_position_dict)
 
     sys.exit()
@@ -76,6 +77,17 @@ def nanopore_decontamination(arguments):
     produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
 
+def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
+    reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
+                                                       arguments.output + '/specie.fsa',
+                                                       allele_pair_dict)
+    for read in reads_mutation_dict:
+        print (read[0:25], reads_mutation_dict[read])
+    #co_occurance_dict = {}
+    #for gene in lower_confirmed_mutation_dict:
+    #    mutation_list = lower_confirmed_mutation_dict[gene][1]
+
+    #pass
 
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
