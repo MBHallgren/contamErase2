@@ -81,11 +81,12 @@ def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gen
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
-    for read in reads_mutation_dict:
-        print (read[0:25], reads_mutation_dict[read])
-    #co_occurance_dict = {}
-    #for gene in lower_confirmed_mutation_dict:
-    #    mutation_list = lower_confirmed_mutation_dict[gene][1]
+    co_occurance_dict = {}
+    for gene in lower_confirmed_mutation_dict:
+        mutation_list = lower_confirmed_mutation_dict[gene][1]
+        print (gene)
+        #for read in reads_mutation_dict:
+        #    reference
 
     #pass
 
