@@ -82,7 +82,7 @@ def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gen
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
 
-    for allele in lower_confirmed_mutation_dict
+    for allele in lower_confirmed_mutation_dict:
         co_occurance_matrix = []
         mutation_list = lower_confirmed_mutation_dict[gene][1]
         num_mutations = len(mutation_list)
