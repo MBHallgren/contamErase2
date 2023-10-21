@@ -83,14 +83,21 @@ def nanopore_decontamination(arguments):
     produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
     #produce_contamination_report #TBD
 
-def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
+def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
+    for read in reads_mutation_dict:
+        allele = reads_mutation_dict[read][1]
+        gene = allele.split('_')[0]
+        if gene == 'BACT000049':
+            print (read[0:25], allele, reads_mutation_dict[read][0])
 
-    for allele in lower_confirmed_mutation_dict:
+    sys.exit()
+
+    for allele in confirmed_mutation_dict:
         co_occurance_matrix = []
-        mutation_list = lower_confirmed_mutation_dict[allele][1]
+        mutation_list = confirmed_mutation_dict[allele][1]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
