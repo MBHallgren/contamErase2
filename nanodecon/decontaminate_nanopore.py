@@ -84,7 +84,7 @@ def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gen
 
     for allele in lower_confirmed_mutation_dict:
         co_occurance_matrix = []
-        mutation_list = lower_confirmed_mutation_dict[gene][1]
+        mutation_list = lower_confirmed_mutation_dict[allele][1]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
