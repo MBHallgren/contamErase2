@@ -53,7 +53,7 @@ def nanopore_decontamination(arguments):
     for item in lower_validated_rmlst_mutations:
         print (item, lower_validated_rmlst_mutations[item])
 
-    lower_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, lower_validated_rmlst_mutations, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    lower_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, lower_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
     #Check for co-occuring mutations
     #Check for pairwise rmlst schemes
     #upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
@@ -78,7 +78,6 @@ def nanopore_decontamination(arguments):
     #produce_contamination_report #TBD
 
 def co_occuring_mutations_in_reads(arguments, lower_confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
-    print (allele_pair_dict)
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
