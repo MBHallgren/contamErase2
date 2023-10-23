@@ -146,7 +146,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
                 print("Aligned Reference: ", aligned_ref, len(aligned_ref))
-                print("Aligned Query:     ", aligned_query, len(aligned_query)
+                print("Aligned Query:     ", aligned_query, len(aligned_query))
                 # Creating a mutation vector using your function
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
                 #print (mutation_vector, len(mutation_vector))
