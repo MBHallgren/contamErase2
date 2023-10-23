@@ -86,7 +86,7 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
     for read in reads_mutation_dict:
-        if 'BBACT000038' in read:
+        if 'BACT000038' in read:
             print (read, reads_mutation_dict[read])
     sys.exit()
 
