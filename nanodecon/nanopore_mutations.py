@@ -134,13 +134,13 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
             cols = line.strip().split('\t')
             qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
             gene_name = rname.split('_')[0]
-            if gene_name == 'BACT000049':
-                print (len(seq), pos, tlen, cigar_str)
 
             # Convert string columns to appropriate types
             pos = int(pos)
             tlen = int(tlen)
             if pos == 1 and len(seq) >= tlen:
+                if gene_name == 'BACT000049':
+                    print(len(seq), pos, tlen, cigar_str)
                 reference = reference_sequences[rname]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
