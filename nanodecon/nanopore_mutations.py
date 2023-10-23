@@ -156,6 +156,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
 
                 # Storing mutations in the dictionary
                 mutations_dict[qname] = [mutations, allele_pair_dict[gene_name]]
+    print (len(mutations_dict))
     return mutations_dict
 
 def parse_sam_get_references(sam_file_path):
