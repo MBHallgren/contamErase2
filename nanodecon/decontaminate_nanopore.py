@@ -90,10 +90,7 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
 
     print (len(reads_mutation_dict))
     for read in reads_mutation_dict:
-        allele = reads_mutation_dict[read][1]
-        gene = allele.split('_')[0]
-        if gene in read:
-            print (read, reads_mutation_dict[read])
+        print (read, reads_mutation_dict[read])
 
     sys.exit()
 

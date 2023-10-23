@@ -162,7 +162,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
                 t += 1
                 if qname in mutations_dict:
                     print (qname, 'already in dict')
-                mutations_dict[read_id + allele_pair_dict[gene_name]] = mutations
+                mutations_dict[read_id + ' ' + allele_pair_dict[gene_name]] = mutations
     print (t, t)
     return mutations_dict
 
