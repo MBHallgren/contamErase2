@@ -124,7 +124,6 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
     reference_sequences = load_references_from_fasta(fasta_file, references)
 
     mutations_dict = {}
-    t = 0
     with open(sam_file_path, 'r') as sam_file:
         for line in sam_file:
             # Skip header lines
@@ -159,11 +158,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
                 # Storing mutations in the dictionary
                 #if gene_name == 'BACT000049':
                 #    print(len(seq), pos, tlen, cigar_str, qname[0:25])
-                t += 1
-                if qname in mutations_dict:
-                    print (qname, 'already in dict')
                 mutations_dict[read_id + ' ' + allele_pair_dict[gene_name]] = mutations
-    print (t, t)
     return mutations_dict
 
 def parse_sam_get_references(sam_file_path):

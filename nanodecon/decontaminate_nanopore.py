@@ -88,13 +88,6 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
 
-    print (len(reads_mutation_dict))
-    for read in reads_mutation_dict:
-        if 'BACT000049' in read:
-            print (read, reads_mutation_dict[read])
-
-    sys.exit()
-
     for allele in confirmed_mutation_dict:
         co_occurance_matrix = []
         mutation_list = confirmed_mutation_dict[allele][1]
@@ -102,10 +95,10 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
             for read in reads_mutation_dict:
-                if reads_mutation_dict[read][1] == allele:
-                    read_mutations = reads_mutation_dict[read][0]
-                    if allele == 'BACT000049_5559':
-                        print (read_mutations)
+                read_allele = read.split(' ')[-1]
+                print (read_allele, allele)
+                if read_allele == allele:
+                    read_mutations = reads_mutation_dict[read]
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
                     if len(valid_mutations) > 1:
                         # Increment the matrix for pairs of mutations in the read
