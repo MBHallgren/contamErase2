@@ -140,7 +140,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
             pos = int(pos)
             tlen = int(tlen)
 
-            if 'BACT000038' in line:
+            if 'BACT000038' in rname:
                 print(read_id, pos, tlen, cigar_str)
                 t += 1
             #Should be start pos of the alignment and not of the read
