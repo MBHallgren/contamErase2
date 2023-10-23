@@ -133,6 +133,9 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
             # Extract relevant columns: [QNAME, FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN, SEQ]
             cols = line.strip().split('\t')
             qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
+            gene_name = rname.split('_')[0]
+            if gene_name == 'BACT000049':
+                print (line)
 
             # Convert string columns to appropriate types
             pos = int(pos)
@@ -152,7 +155,6 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
                 mutations = identify_mutations(mutation_vector, reference[pos-1:pos-1+tlen])
 
                 # Storing mutations in the dictionary
-                gene_name = rname.split('_')[0]
                 mutations_dict[qname] = [mutations, allele_pair_dict[gene_name]]
     return mutations_dict
 
