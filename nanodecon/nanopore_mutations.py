@@ -138,9 +138,11 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
             # Convert string columns to appropriate types
             pos = int(pos)
             tlen = int(tlen)
+            t = 0
             if pos == 1 and len(seq) >= tlen:
                 if gene_name == 'BACT000049':
                     print(len(seq), pos, tlen, cigar_str)
+                    t += 1
                 reference = reference_sequences[rname]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
@@ -156,6 +158,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
 
                 # Storing mutations in the dictionary
                 mutations_dict[qname] = [mutations, allele_pair_dict[gene_name]]
+    print (t, t)
     return mutations_dict
 
 def parse_sam_get_references(sam_file_path):
