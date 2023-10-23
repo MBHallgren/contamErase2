@@ -164,7 +164,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
                 #    print(len(seq), pos, tlen, cigar_str, qname[0:25])
                 name = read_id + ' ' + allele_pair_dict[gene_name]
                 if name in mutations_dict:
-                    sys.exit('Duplicate read name')
+                    print ('Duplicate read name')
                 mutations_dict[name] = mutations
     print (t)
     return mutations_dict
