@@ -90,7 +90,8 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
 
     print (len(reads_mutation_dict))
     for read in reads_mutation_dict:
-        print (read, reads_mutation_dict[read])
+        if 'BACT000049' in read:
+            print (read, reads_mutation_dict[read])
 
     sys.exit()
 
