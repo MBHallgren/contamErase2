@@ -162,7 +162,10 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
                 # Storing mutations in the dictionary
                 #if gene_name == 'BACT000049':
                 #    print(len(seq), pos, tlen, cigar_str, qname[0:25])
-                mutations_dict[read_id + ' ' + allele_pair_dict[gene_name]] = mutations
+                name = read_id + ' ' + allele_pair_dict[gene_name]
+                if name in mutations_dict:
+                    sys.exit('Duplicate read name')
+                mutations_dict[name] = mutations
     print (t)
     return mutations_dict
 
