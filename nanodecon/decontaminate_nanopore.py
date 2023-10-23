@@ -52,10 +52,10 @@ def nanopore_decontamination(arguments):
     #lower_validated_rmlst_mutations = validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
     #for item in lower_validated_rmlst_mutations:
     #    print (item, lower_validated_rmlst_mutations[item])
-
-    upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
     for item in upper_validated_rmlst_mutations:
         print (item, upper_validated_rmlst_mutations[item])
+    upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+
 
     #lower_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, lower_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
     upper_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, upper_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
@@ -87,6 +87,10 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
+    for read in reads_mutation_dict:
+        if 'BBACT000038' in read:
+            print (read, reads_mutation_dict[read])
+    sys.exit()
 
     for allele in confirmed_mutation_dict:
         co_occurance_matrix = []
