@@ -85,6 +85,7 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
+    sys.exit()
     t = 0
     for read in reads_mutation_dict:
         if 'BACT000038' in read:
