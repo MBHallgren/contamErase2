@@ -52,8 +52,6 @@ def nanopore_decontamination(arguments):
     #lower_validated_rmlst_mutations = validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
     #for item in lower_validated_rmlst_mutations:
     #    print (item, lower_validated_rmlst_mutations[item])
-    for item in upper_validated_rmlst_mutations:
-        print (item, upper_validated_rmlst_mutations[item])
     upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
 
