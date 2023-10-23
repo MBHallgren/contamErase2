@@ -140,12 +140,11 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
             pos = int(pos)
             tlen = int(tlen)
 
-
+            if 'BACT000038' in line:
+                print(read_id, pos, tlen, cigar_str)
+                t += 1
             #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
-                if 'BACT000038' in line:
-                    print (read_id, pos, tlen, cigar_str)
-                    t += 1
                 reference = reference_sequences[rname]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
