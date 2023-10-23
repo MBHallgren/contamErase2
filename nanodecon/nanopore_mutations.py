@@ -157,8 +157,8 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
 
                 # Storing mutations in the dictionary
                 name = read_id + ' ' + allele_pair_dict[gene_name]
-                if 'BACT000038' in qname:
-                    print (qname, mutations)
+                if 'BACT000038' in rname:
+                    print (rname, mutations)
                 #Multiple can occur, issue?
                 mutations_dict[name] = mutations
     return mutations_dict
