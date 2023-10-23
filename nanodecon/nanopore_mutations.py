@@ -133,12 +133,15 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
             # Extract relevant columns: [QNAME, FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN, SEQ]
             cols = line.strip().split('\t')
             qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
+            read_id = qname.split('_')[0]
             gene_name = rname.split('_')[0]
 
             # Convert string columns to appropriate types
             pos = int(pos)
             tlen = int(tlen)
 
+
+            #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
                 reference = reference_sequences[rname]
                 # Obtaining the alignment using your function
@@ -159,7 +162,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
                 t += 1
                 if qname in mutations_dict:
                     print (qname, 'already in dict')
-                mutations_dict[qname] = [mutations, allele_pair_dict[gene_name]]
+                mutations_dict[read_id + allele_pair_dict[gene_name]] = mutations
     print (t, t)
     return mutations_dict
 
