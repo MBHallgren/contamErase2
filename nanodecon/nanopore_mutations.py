@@ -156,8 +156,8 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
 
                 # Storing mutations in the dictionary
                 name = read_id + ' ' + allele_pair_dict[gene_name]
-                if 'BACT000038' in rname:
-                    print (rname, mutations)
+                #if 'BACT000038' in rname:
+                #    print (rname, mutations)
                     #print("Aligned Reference: ", aligned_ref, len(aligned_ref))
                     #print("Aligned Query:     ", aligned_query, len(aligned_query))
                 #Multiple can occur, issue?

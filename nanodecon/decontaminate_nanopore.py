@@ -89,8 +89,8 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
     ##    if 'BACT000038' in read:
     #        print (read, reads_mutation_dict[read])
 
-    print ('BACT000038_1436', confirmed_mutation_dict['BACT000038_1436'])
-    sys.exit()
+    #print ('BACT000038_1436', confirmed_mutation_dict['BACT000038_1436'])
+    #sys.exit()
 
     for allele in confirmed_mutation_dict:
         co_occurance_matrix = []
