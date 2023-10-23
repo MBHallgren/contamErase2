@@ -125,6 +125,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
 
     mutations_dict = {}
     t = 0
+    print (sam_file_path)
     with open(sam_file_path, 'r') as sam_file:
         for line in sam_file:
             # Skip header lines
