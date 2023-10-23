@@ -84,9 +84,6 @@ def nanopore_decontamination(arguments):
     #produce_contamination_report #TBD
 
 def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
-    for item in allele_pair_dict:
-        print (item, allele_pair_dict[item])
-    sys.exit()
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
