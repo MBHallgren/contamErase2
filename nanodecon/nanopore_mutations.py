@@ -97,6 +97,7 @@ def identify_mutations(mutation_vector, reference_sequence):
 
     # Ensure that mutation vector and reference have equal lengths
     if len(mutation_vector) != len(reference_sequence):
+        print (len(mutation_vector), len(reference_sequence))
         raise ValueError("The mutation vector and reference sequence must have the same length.")
 
     # Loop through the mutation vector and reference sequence
