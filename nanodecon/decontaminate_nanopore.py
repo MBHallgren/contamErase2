@@ -381,7 +381,7 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
         else:
             upper_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
         if lower_mutation_list != []:
-            lower_confirmed_mutation_dict[allele] = [min(lower_cmutation_depth), lower_cmutation_list, lower_cmutation_depth, total_depth]
+            lower_confirmed_mutation_dict[allele] = [min(lower_mutation_depth), lower_cmutation_list, lower_mutation_depth, total_depth]
         else:
             lower_confirmed_mutation_dict[allele] = [0, [], [], total_depth]
 
