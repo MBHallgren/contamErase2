@@ -92,11 +92,11 @@ def derive_mutation_positions2(consensus_dict, arguments):
                         if relative_depth >= arguments.urd:
                             upper_confirmed_mutation_dict[item][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
-                            upper_confirmed_mutation_dict[item][1].append(depths[t])
+                            upper_confirmed_mutation_dict[item][1].append(positions[t])
                         elif relative_depth >= arguments.lrd:
                             lower_confirmed_mutation_dict[item][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
-                            lower_confirmed_mutation_dict[item][1].append(depths[t])
+                            lower_confirmed_mutation_dict[item][1].append(positions[t])
     return upper_confirmed_mutation_dict, lower_confirmed_mutation_dict
 
 
