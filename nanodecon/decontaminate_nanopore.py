@@ -38,6 +38,13 @@ def nanopore_decontamination(arguments):
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
+
+    for item in consensus_dict:
+        if item.startswith('BACT000040'):
+            print (item)
+            for i in range(len(consensus_dict[item])):
+                print (i+1, consensus_dict[item][i])
+
     upper_confirmed_mutation_dict, lower_confirmed_mutation_dict = derive_mutation_positions(consensus_dict,
                                                        arguments.output + '/specie.fsa',
                                                        headers,
@@ -569,9 +576,6 @@ def build_consensus_dict(arguments, res_file, mat_file):
                             for i in range(len(line)):
                                 consensus_dict[gene][index][i] += int(line[i])
                             index += 1
-    #Consider how we handle gaps in reads and template
-    #missing odd size alleles
-    #missing non alignment matches with gaps
     return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict
 
 
