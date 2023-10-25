@@ -84,7 +84,7 @@ def nanopore_decontamination(arguments):
 
 def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
-                                                       arguments.output + '/specie.fsa',
+                                                       arguments.output + '/rmlst_alignment.fsa',
                                                        allele_pair_dict)
     #for read in reads_mutation_dict:
     ##    if 'BACT000038' in read:

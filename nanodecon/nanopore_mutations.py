@@ -211,7 +211,7 @@ def load_references_from_fasta(fasta_file_path, references):
                 current_sequence = []
             else:
                 # Add the line to the sequence
-                current_sequence.append(line)
+                current_sequence.append(line.upper())
 
         # Add the last sequence
         if current_ref_name and (current_ref_name in references):
