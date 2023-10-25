@@ -39,26 +39,12 @@ def nanopore_decontamination(arguments):
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
-    for item in consensus_dict:
-        if item.startswith('BACT000040'):
-            print (item)
-            for i in range(len(consensus_dict[item])):
-                print (i+1, consensus_dict[item][i])
 
     upper_confirmed_mutation_dict, lower_confirmed_mutation_dict = derive_mutation_positions(consensus_dict,
                                                        arguments.output + '/rmlst_alignment.fsa',
                                                        headers,
                                                        arguments,
                                                        top_alleles)
-    for item in upper_confirmed_mutation_dict:
-        if item.startswith('BACT000040'):
-            print (item, upper_confirmed_mutation_dict[item])
-    for item in lower_confirmed_mutation_dict:
-        if item.startswith('BACT000040'):
-            print (item, lower_confirmed_mutation_dict[item])
-    sys.exit()
-
-    print ('upper')
     for item in upper_confirmed_mutation_dict:
         print (item, upper_confirmed_mutation_dict[item])
 
