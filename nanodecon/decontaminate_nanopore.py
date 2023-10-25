@@ -43,6 +43,14 @@ def nanopore_decontamination(arguments):
                                                        headers,
                                                        arguments,
                                                        top_alleles)
+    for item in upper_confirmed_mutation_dict:
+        if item.startswith('BACT000040'):
+            print (item, upper_confirmed_mutation_dict[item])
+    for item in lower_confirmed_mutation_dict:
+        if item.startswith('BACT000040'):
+            print (item, lower_confirmed_mutation_dict[item])
+    sys.exit()
+
     print ('upper')
     for item in upper_confirmed_mutation_dict:
         print (item, upper_confirmed_mutation_dict[item])
