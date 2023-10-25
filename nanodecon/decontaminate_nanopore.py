@@ -10,13 +10,13 @@ from nanodecon.intra_species_detection import determine_intra_species_contaminat
 from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
 
 def nanopore_decontamination(arguments):
-    os.system('mkdir ' + arguments.output)
+    #os.system('mkdir ' + arguments.output)
     #os.system('mkdir ' + arguments.output + '/output/contaminations')
     #os.system('mkdir ' + arguments.output + '/alignments')
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
@@ -28,20 +28,23 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/rmlst_alignment",
-                  arguments.output + '/specie_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 -oa> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/rmlst_alignment",
+    #              arguments.output + '/specie_db',
+    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 -oa> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
 
-    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
 
+    derive_mutation_positions2(consensus_dict)
+    sys.exit()
+
     upper_confirmed_mutation_dict, lower_confirmed_mutation_dict = derive_mutation_positions(consensus_dict,
-                                                       arguments.output + '/rmlst_alignment.fsa',
+                                                       arguments.output + '/specie.fsa',
                                                        headers,
                                                        arguments,
                                                        top_alleles)
@@ -68,23 +71,14 @@ def nanopore_decontamination(arguments):
 
     sys.exit()
 
-    determine_mutation_sets(reads_mutation_dict, mutation_position_dict)
+def derive_mutation_positions2(consensus_dict):
+    for item in consensus_dict:
+        print (item, consensus_dict[item])
 
-    sys.exit()
-
-
-    determine_mutation_sets(reads_mutation_dict, mutation_position_dict)
-    sys.exit()
-    calculate_rmlst_scheme_matches(confirmed_alleles, arguments.db_dir + '/rmlst_scheme.txt')
-
-    sys.exit()
-    sys.exit()
-    produce_final_output_nanopore(arguments, arguments.output + '/bacteria_alignment.frag', primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human)
-    #produce_contamination_report #TBD
 
 def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
-                                                       arguments.output + '/rmlst_alignment.fsa',
+                                                       arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
     #for read in reads_mutation_dict:
     ##    if 'BACT000038' in read:
@@ -256,7 +250,9 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
     upper_confirmed_mutation_dict = {}
     lower_confirmed_mutation_dict = {}
     with open(fsa_file, 'r') as f:
-        #TBD Doesn't work for #2 gene, template 48 not in resfile
+        #TBD do we change the method of looking for mutations?
+        #Main_call = max(list)
+        #Mutations = any positions > t and < Main_call
         sequence = ''
         min_depth = 100000
         upper_mutation_list = []
