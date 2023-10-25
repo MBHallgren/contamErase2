@@ -80,8 +80,7 @@ def derive_mutation_positions2(consensus_dict, arguments):
         upper_confirmed_mutation_dict[item] = [[], []]
         lower_confirmed_mutation_dict[item] = [[], []]
         for i in range(len(consensus_dict[item])):
-            positions = consensus_dict[item][i][4:]
-            print (positions)
+            positions = consensus_dict[item][i][:4]
             max_number = max(positions)
             index_of_max = positions.index(max_number)
             nucleotide_index = ['A', 'C', 'G', 'T']
@@ -90,7 +89,6 @@ def derive_mutation_positions2(consensus_dict, arguments):
                     if positions[t] >= arguments.min_n:
                         total_depth = sum(positions)
                         relative_depth = positions[t] / total_depth
-                        print (relative_depth)
                         if relative_depth >= arguments.urd:
                             upper_confirmed_mutation_dict[item][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
