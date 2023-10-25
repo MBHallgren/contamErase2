@@ -46,7 +46,7 @@ def nanopore_decontamination(arguments):
                 print (i+1, consensus_dict[item][i])
 
     upper_confirmed_mutation_dict, lower_confirmed_mutation_dict = derive_mutation_positions(consensus_dict,
-                                                       arguments.output + '/specie.fsa',
+                                                       arguments.output + '/rmlst_alignment.fsa',
                                                        headers,
                                                        arguments,
                                                        top_alleles)
