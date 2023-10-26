@@ -130,9 +130,10 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
     for gene in co_occurence_matrix_dict:
         adjusted_mutation_dict[gene] = [[], []]
         average_depth = sum(confirmed_mutation_dict[gene][1]) / len(confirmed_mutation_dict[gene][1])
+        threshold = average_depth * 0.5 # TBD reconsider
         for i, row in enumerate(co_occurence_matrix_dict[gene]):
             for depth in row:
-                if depth >= average_depth:
+                if depth >= threshold:
                     adjusted_mutation_dict[gene][0].append(confirmed_mutation_dict[gene][0][i])
                     adjusted_mutation_dict[gene][1].append(confirmed_mutation_dict[gene][1][i])
                     break
