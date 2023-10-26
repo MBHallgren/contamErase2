@@ -203,6 +203,7 @@ def validate_mutation_positions(mutations, sequence, allele):
         position, mutant = mutation.split('_')
         if sequence[int(position) - 1] == mutant:
             confirmed_mutations.add(mutation)
+    print ('returning confirmed mutations', confirmed_mutations)
     return confirmed_mutations
 def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     correct_length_dict = {}
