@@ -44,20 +44,11 @@ def nanopore_decontamination(arguments):
     for item in upper_confirmed_mutation_dict:
         print (item, upper_confirmed_mutation_dict[item])
     sys.exit()
-
-    upper_confirmed_mutation_dict, lower_confirmed_mutation_dict = derive_mutation_positions(consensus_dict,
-                                                       arguments.output + '/specie.fsa',
-                                                       headers,
-                                                       arguments,
-                                                       top_alleles)
-    for item in upper_confirmed_mutation_dict:
-        print (item, upper_confirmed_mutation_dict[item])
-
-
     #Exists in RMLST alelle db
     #lower_validated_rmlst_mutations = validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
     #for item in lower_validated_rmlst_mutations:
     #    print (item, lower_validated_rmlst_mutations[item])
+    #continue here
     upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
 
@@ -85,7 +76,7 @@ def derive_mutation_positions2(consensus_dict, arguments):
             index_of_max = positions.index(max_number)
             nucleotide_index = ['A', 'C', 'G', 'T']
             for t in range(len(positions)):
-                if t != index_of_max:
+                if t != index_of_max: #Use this to parse majority calls in the future if needed
                     if positions[t] >= arguments.min_n:
                         total_depth = sum(positions)
                         relative_depth = positions[t] / total_depth
