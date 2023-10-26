@@ -187,14 +187,13 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
     print (mutations_found_in_rmlst_genes)
     return_dict = dict()
     for item in mutation_position_dict:
-        return_dict[item] = [0, [], [], 0]
+        return_dict[item] = [[], [], 0]
         for i in range(len(mutation_position_dict[item][0])):
             if mutation_position_dict[item][0][i] in mutations_found_in_rmlst_genes[item.split('_')[0]]:
+                return_dict[item][0].append(mutation_position_dict[item][0][i])
                 return_dict[item][1].append(mutation_position_dict[item][1][i])
-                return_dict[item][2].append(mutation_position_dict[item][2][i])
-                return_dict[item][3] = mutation_position_dict[item][3]
-        if return_dict[item][2] != []:
-            return_dict[item][0] = min(return_dict[item][2])
+        if return_dict[item][1] != []:
+            return_dict[item][2] = min(return_dict[item][1])
     return return_dict
 
 def validate_mutation_positions(mutations, sequence, allele):
