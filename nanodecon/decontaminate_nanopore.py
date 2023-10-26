@@ -33,8 +33,16 @@ def nanopore_decontamination(arguments):
                   arguments.output + '/specie_db',
                   "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 -oa> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
 
-    hits = realign_rmlst_to_hits(arguments.output + "/initial_rmlst_alignment.res")
-    print (hits)
+    seqs = realign_rmlst_to_hits(arguments.output + "/initial_rmlst_alignment.res")
+    os.system('kma seq2fasta -seqs {} -t_db {} > {}/top_rmlst_hits.fsa'.format(seqs, arguments.output + '/specie_db', arguments.output))
+    os.system('kma index -i {} -o {}'.format(arguments.output + '/top_rmlst_hits.fsa', arguments.output + '/top_rmlst_hits_db'))
+
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/top_rmlst_hits_alignment",
+                  arguments.output + '/top_rmlst_hits_db',
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 -oa> {}/top_rmlst_hits_alignment.sam".format(
+                      arguments.threads, arguments.output)).run()
+
     sys.exit()
     #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
@@ -63,7 +71,7 @@ def nanopore_decontamination(arguments):
 
     sys.exit()
 
-def realign_rmlst_to_hits(res_file):
+def realign_rmlst_to_hits(res_file, name_file):
     rmlst_alleles = set()
     rmlst_genes = dict()
     with open(res_file, 'r') as res:
@@ -80,7 +88,22 @@ def realign_rmlst_to_hits(res_file):
 
     for item in rmlst_genes:
         rmlst_alleles.add(rmlst_genes[item][1])
-    return rmlst_alleles
+    
+    ids = []
+    with open(name_file, 'r') as names:
+        t = 1
+        for line in names:
+            line = line.rstrip()
+            if line in rmlst_alleles:
+                ids.append(t)
+            t += 1
+    
+    seqs = ",".join(str(x) for x in ids)
+    
+    return seqs
+    
+            
+    
 
 
 
