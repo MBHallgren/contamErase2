@@ -136,7 +136,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
             qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
             read_id = qname.split(' ')[0]
             gene_name = rname.split('_')[0]
-
+            main_reference = reference_sequences[allele_pair_dict[gene_name]]
             # Convert string columns to appropriate types
             pos = int(pos)
             tlen = int(tlen)
@@ -149,14 +149,14 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
                 if 'BACT000040' in rname:
                     print ('pos: {}, aligned_ref: {}, aligned_query: {}'.format(240, aligned_ref[240-1], aligned_query[240-1]))
                     print ('pos: {}, aligned_ref: {}, aligned_query: {}'.format(270, aligned_ref[270-1], aligned_query[270-1]))
-
+                    print (aligned_ref)
+                    print (aligned_query)
                 # Creating a mutation vector using your function
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
                 #print (mutation_vector, len(mutation_vector))
                 #print (reference, len(reference))
 
                 # Identifying mutations using your function
-                main_reference = reference_sequences[allele_pair_dict[gene_name]]
                 mutations = identify_mutations(mutation_vector, main_reference[pos-1:pos-1+tlen])
 
                 # Storing mutations in the dictionary
