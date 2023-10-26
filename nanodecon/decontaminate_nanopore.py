@@ -98,6 +98,7 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
 
     for gene in confirmed_mutation_dict:
         mutation_list = confirmed_mutation_dict[gene][0]
+        depth_list = confirmed_mutation_dict[gene][1]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
@@ -118,6 +119,7 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
             # Print the co-occurrence matrix with mutation names
             print ("gene:", gene)
             print("Mutation names:", mutation_list)
+            print ("Depth:", depth_list)
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
                 print(f"{mutation_name}: {row}")
