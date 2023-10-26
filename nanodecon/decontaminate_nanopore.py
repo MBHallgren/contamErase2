@@ -197,6 +197,7 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
     return return_dict
 
 def validate_mutation_positions(mutations, sequence, allele):
+    print (mutations, sequence, allele)
     gene = allele.split('_')[0]
     confirmed_mutations = set()
     for mutation in mutations:
