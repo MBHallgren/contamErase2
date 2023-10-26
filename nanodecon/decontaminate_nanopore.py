@@ -178,7 +178,7 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
             if template_gene == gene:
                 for template_allele in correct_length_dict[template_gene]:
                     #print (allele, template_allele)
-                    confirmed_mutations = validate_mutation_positions(mutation_position_dict[allele][1], correct_length_dict[template_gene][template_allele], allele)
+                    confirmed_mutations = validate_mutation_positions(mutation_position_dict[allele][0], correct_length_dict[template_gene][template_allele], allele)
                     if confirmed_mutations != set():
                         if gene not in mutations_found_in_rmlst_genes:
                             mutations_found_in_rmlst_genes[gene] = confirmed_mutations
