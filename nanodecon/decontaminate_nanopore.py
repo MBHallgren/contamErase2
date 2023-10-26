@@ -33,7 +33,7 @@ def nanopore_decontamination(arguments):
                   arguments.output + '/specie_db',
                   "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 -oa> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
 
-    seqs = realign_rmlst_to_hits(arguments.output + "/initial_rmlst_alignment.res")
+    seqs = realign_rmlst_to_hits(arguments.output + "/initial_rmlst_alignment.res", arguments.output + '/specie_db.name')
     os.system('kma seq2fasta -seqs {} -t_db {} > {}/top_rmlst_hits.fsa'.format(seqs, arguments.output + '/specie_db', arguments.output))
     os.system('kma index -i {} -o {}'.format(arguments.output + '/top_rmlst_hits.fsa', arguments.output + '/top_rmlst_hits_db'))
 
