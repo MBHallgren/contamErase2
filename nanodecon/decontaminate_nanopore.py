@@ -41,8 +41,7 @@ def nanopore_decontamination(arguments):
 
 
     upper_confirmed_mutation_dict, lower_confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
-    for item in upper_confirmed_mutation_dict:
-        print (item, upper_confirmed_mutation_dict[item])
+
     #Exists in RMLST alelle db
     #lower_validated_rmlst_mutations = validate_mutations(arguments, lower_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
     #for item in lower_validated_rmlst_mutations:
@@ -50,10 +49,6 @@ def nanopore_decontamination(arguments):
     #continue here
     upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
-    for item in upper_validated_rmlst_mutations:
-        print (item, upper_validated_rmlst_mutations[item])
-
-    sys.exit()
     #lower_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, lower_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
     upper_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, upper_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
 
@@ -109,7 +104,7 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
 
     for allele in confirmed_mutation_dict:
         co_occurance_matrix = []
-        mutation_list = confirmed_mutation_dict[allele][1]
+        mutation_list = confirmed_mutation_dict[allele][0]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
@@ -184,7 +179,6 @@ def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_f
                             mutations_found_in_rmlst_genes[gene] = confirmed_mutations
                         else:
                             mutations_found_in_rmlst_genes[gene] = mutations_found_in_rmlst_genes[gene] | confirmed_mutations
-    print (mutations_found_in_rmlst_genes)
     return_dict = dict()
     for item in mutation_position_dict:
         return_dict[item] = [[], [], 0]
