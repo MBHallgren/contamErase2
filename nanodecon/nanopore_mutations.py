@@ -106,7 +106,7 @@ def identify_mutations(mutation_vector, reference_sequence):
         # and is not a "-" (representing a deletion)
         if mv_nt != ref_nt and mv_nt != "-":
             # Add to mutations in the format "POSITION_NUCLEOTIDE"
-            mutations.append(f"{i + 1}_{ref_nt}_{mv_nt}")
+            mutations.append(f"{i + 1}_{mv_nt}")
 
     return mutations
 
