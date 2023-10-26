@@ -70,7 +70,7 @@ def realign_rmlst_to_hits(res_file):
         for line in res:
             line = line.rstrip()
             if line[0] != '#':
-                alelle = line.split()[0]
+                allele = line.split()[0]
                 gene = allele.split('_')[0]
                 if gene not in rmlst_genes:
                     rmlst_genes[gene] = [line[1], allele]
