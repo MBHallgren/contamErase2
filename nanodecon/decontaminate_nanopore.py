@@ -103,7 +103,7 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
             for read in reads_mutation_dict:
-                read_gene = reads_mutation_dict[read].split(' ')[1].split('_')[0]
+                read_gene = read.split(' ')[1].split('_')[0]
                 if read_gene == gene:
                     read_mutations = reads_mutation_dict[read]
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
