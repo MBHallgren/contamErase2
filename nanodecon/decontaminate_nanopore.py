@@ -96,16 +96,14 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict)
 
-    for allele in confirmed_mutation_dict:
-        co_occurance_matrix = []
-        mutation_list = confirmed_mutation_dict[allele][0]
+    for gene in confirmed_mutation_dict:
+        mutation_list = confirmed_mutation_dict[gene][0]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
             for read in reads_mutation_dict:
-                read_allele = read.split(' ')[-1]
-                print (read_allele, allele)
-                if read_allele == allele:
+                read_gene = read.split('_')[0]
+                if read_gene == gene:
                     read_mutations = reads_mutation_dict[read]
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
                     if len(valid_mutations) > 1:
@@ -118,7 +116,7 @@ def co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_scor
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print ("Allele:", allele)
+            print ("gene:", gene)
             print("Mutation names:", mutation_list)
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
