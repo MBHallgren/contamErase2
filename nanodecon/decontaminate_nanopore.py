@@ -43,7 +43,7 @@ def nanopore_decontamination(arguments):
     upper_confirmed_mutation_dict, lower_confirmed_mutation_dict, all_confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
 
     all_validated_rmlst_mutations = validate_mutations(arguments, all_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
-    all_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, all_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
+    all_validated_rmlst_mutations = upper_co_occuring_mutations_in_reads(arguments, all_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
     for item in all_validated_rmlst_mutations:
         print (item, all_validated_rmlst_mutations[item])
     sys.exit()
