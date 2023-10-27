@@ -162,9 +162,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
                 read_gene = read.split(' ')[1].split('_')[0]
                 if read_gene == gene:
                     read_mutations = reads_mutation_dict[read]
-                    if read_gene == 'BACT000040':
-                        print (read_mutations)
-
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
                     if len(valid_mutations) > 1:
                         # Increment the matrix for pairs of mutations in the read
@@ -179,6 +176,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
             print ("gene:", gene)
             print("Mutation names:", mutation_list)
             print ("Depth:", depth_list)
+            average_depth = sum(confirmed_mutation_dict[gene][1]) / len(confirmed_mutation_dict[gene][1])
+            print ("Average depth:", average_depth)
+            print ("Threshold:", average_depth * 0.5)
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
                 print(f"{mutation_name}: {row}")
