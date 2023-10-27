@@ -46,9 +46,6 @@ def nanopore_decontamination(arguments):
     #Should be consider doing co-occurence on all mutation?
     upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
-    for item in upper_validated_rmlst_mutations:
-        print (item, upper_validated_rmlst_mutations[item])
-    sys.exit()
 
     upper_validated_rmlst_mutations = upper_co_occuring_mutations_in_reads(arguments, upper_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
 

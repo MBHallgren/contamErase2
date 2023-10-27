@@ -82,7 +82,7 @@ def create_mutation_vector(aligned_ref, aligned_query):
     return mutation_vector
 
 
-def identify_mutations(mutation_vector, reference_sequence):
+def identify_mutations(mutation_vector, reference_sequence, gene_mutations):
     """
     Identify all mutation positions from a mutation vector compared to the reference.
 
@@ -100,13 +100,17 @@ def identify_mutations(mutation_vector, reference_sequence):
         print (len(mutation_vector), len(reference_sequence))
         raise ValueError("The mutation vector and reference sequence must have the same length.")
 
+    for i in range(len(mutation_vector)):
+        if '{}_{}'.format(i+1, mutation_vector[i]) in gene_mutations:
+            mutations.append('{}_{}'.format(i+1, mutation_vector[i]))
+
     # Loop through the mutation vector and reference sequence
-    for i, (mv_nt, ref_nt) in enumerate(zip(mutation_vector, reference_sequence)):
-        # If the nucleotide in the mutation vector is different from the reference
-        # and is not a "-" (representing a deletion)
-        if mv_nt != ref_nt and mv_nt != "-":
-            # Add to mutations in the format "POSITION_NUCLEOTIDE"
-            mutations.append(f"{i + 1}_{mv_nt}")
+    #for i, (mv_nt, ref_nt) in enumerate(zip(mutation_vector, reference_sequence)):
+    #    # If the nucleotide in the mutation vector is different from the reference
+    #    # and is not a "-" (representing a deletion)
+    #    if mv_nt != ref_nt and mv_nt != "-":
+    #        # Add to mutations in the format "POSITION_NUCLEOTIDE"
+    #        mutations.append(f"{i + 1}_{mv_nt}")
 
     return mutations
 
@@ -124,8 +128,6 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
     references = parse_sam_get_references(sam_file_path)
     reference_sequences = load_references_from_fasta(fasta_file, references)
 
-    print (confirmed_mutation_dict)
-    sys.exit()
     mutations_dict = {}
     print (sam_file_path)
     with open(sam_file_path, 'r') as sam_file:
@@ -159,7 +161,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
 
                 # Identifying mutations using your function
                 main_reference = reference_sequences[allele_pair_dict[gene_name]]
-                mutations = identify_mutations(mutation_vector, main_reference[pos-1:pos-1+tlen])
+                mutations = identify_mutations(mutation_vector, main_reference[pos-1:pos-1+tlen], confirmed_mutation_dict[gene_name][0])
 
                 # Storing mutations in the dictionary
                 name = read_id + ' ' + allele_pair_dict[gene_name]
