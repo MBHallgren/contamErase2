@@ -40,8 +40,13 @@ def nanopore_decontamination(arguments):
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
 
-    upper_confirmed_mutation_dict, lower_confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
+    upper_confirmed_mutation_dict, lower_confirmed_mutation_dict, all_confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
 
+    all_validated_rmlst_mutations = validate_mutations(arguments, all_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    all_validated_rmlst_mutations = co_occuring_mutations_in_reads(arguments, all_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
+    for item in all_validated_rmlst_mutations:
+        print (item, all_validated_rmlst_mutations[item])
+    sys.exit()
     #TBD consider if the unvalidated upper mutations should be moved to the lower mutations
     #Should be consider doing co-occurence on all mutation?
     upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
@@ -103,9 +108,11 @@ def realign_rmlst_to_hits(res_file, name_file):
 def derive_mutation_positions2(consensus_dict, arguments):
     upper_confirmed_mutation_dict = {}
     lower_confirmed_mutation_dict = {}
+    all_confirmed_mutation_dict = {}
     for item in consensus_dict:
         upper_confirmed_mutation_dict[item] = [[], []]
         lower_confirmed_mutation_dict[item] = [[], []]
+        all_confirmed_mutation_dict[item] = [[], []]
         for i in range(len(consensus_dict[item])):
             positions = consensus_dict[item][i][:4]
             max_number = max(positions)
@@ -120,11 +127,18 @@ def derive_mutation_positions2(consensus_dict, arguments):
                             upper_confirmed_mutation_dict[item][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
                             upper_confirmed_mutation_dict[item][1].append(positions[t])
+                            all_confirmed_mutation_dict[item][0].append(
+                                '{}_{}'.format(i + 1, nucleotide_index[t]))
+                            all_confirmed_mutation_dict[item][1].append(positions[t])
+
                         elif relative_depth >= arguments.lrd:
                             lower_confirmed_mutation_dict[item][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
                             lower_confirmed_mutation_dict[item][1].append(positions[t])
-    return upper_confirmed_mutation_dict, lower_confirmed_mutation_dict
+                            all_confirmed_mutation_dict[item][0].append(
+                                '{}_{}'.format(i + 1, nucleotide_index[t]))
+                            all_confirmed_mutation_dict[item][1].append(positions[t])
+    return upper_confirmed_mutation_dict, lower_confirmed_mutation_dict, all_confirmed_mutation_dict
 
 
 
