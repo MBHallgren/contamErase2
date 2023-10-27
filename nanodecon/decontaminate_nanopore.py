@@ -183,8 +183,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
                     adjusted_mutation_dict[gene][1].append(confirmed_mutation_dict[gene][1][i])
                     break
 
-    for item in adjusted_mutation_dict:
-        print (item, adjusted_mutation_dict[item])
+    return adjusted_mutation_dict
+
 
     #pass
 
