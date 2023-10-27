@@ -110,7 +110,7 @@ def identify_mutations(mutation_vector, reference_sequence):
 
     return mutations
 
-def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
+def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, confirmed_mutation_dict):
     """
     Parses a SAM file, extracts necessary information and finds mutations in each read.
 
@@ -124,6 +124,8 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict):
     references = parse_sam_get_references(sam_file_path)
     reference_sequences = load_references_from_fasta(fasta_file, references)
 
+    print (confirmed_mutation_dict)
+    sys.exit()
     mutations_dict = {}
     print (sam_file_path)
     with open(sam_file_path, 'r') as sam_file:
