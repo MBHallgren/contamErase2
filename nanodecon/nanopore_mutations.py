@@ -150,9 +150,6 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
                 reference = reference_sequences[rname]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
-                if 'BACT000040' in rname:
-                    print ('pos: {}, aligned_ref: {}, aligned_query: {}'.format(240, aligned_ref[240-1], aligned_query[240-1]))
-                    print ('pos: {}, aligned_ref: {}, aligned_query: {}'.format(270, aligned_ref[270-1], aligned_query[270-1]))
 
                 # Creating a mutation vector using your function
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
