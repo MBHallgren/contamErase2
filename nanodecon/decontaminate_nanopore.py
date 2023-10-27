@@ -197,7 +197,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
                 if gene == 'BACT000053':
                     print (depth, threshold)
                 if float(depth) >= float(threshold):
-                    print (confirmed_mutation_dict[gene][0][i], depth, threshold)
+                    if gene == 'BACT000053':
+                        print (confirmed_mutation_dict[gene][0][i], depth, threshold)
                     adjusted_mutation_dict[gene][0].append(confirmed_mutation_dict[gene][0][i])
                     adjusted_mutation_dict[gene][1].append(confirmed_mutation_dict[gene][1][i])
                     break
