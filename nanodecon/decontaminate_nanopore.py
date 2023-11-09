@@ -24,6 +24,7 @@ def nanopore_decontamination(arguments):
     print(primary_species)
     print(primary_species)
 
+    #TBD make this non-verbose
     headers = produce_species_specific_kma_db(primary_species,
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
@@ -44,12 +45,12 @@ def nanopore_decontamination(arguments):
 
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
-    all_validated_rmlst_mutations = validate_mutations(arguments, all_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    confirmed_mutation_dict = validate_mutations(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
-    all_validated_rmlst_mutations = upper_co_occuring_mutations_in_reads(arguments, all_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
+    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
 
-    for item in all_validated_rmlst_mutations:
-        print (item, all_validated_rmlst_mutations[item])
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
     sys.exit()
     #TBD consider if the unvalidated upper mutations should be moved to the lower mutations
     #Should be consider doing co-occurence on all mutation?
