@@ -42,12 +42,10 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
 
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
-
-    print (arguments.mrd * arguments.coc)
-    sys.exit()
+    #Consider this, can we exclude all novel mutations?
+        #Can we do something to include novel mutations if the signal is strong enough?
     all_validated_rmlst_mutations = validate_mutations(arguments, all_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+
     all_validated_rmlst_mutations = upper_co_occuring_mutations_in_reads(arguments, all_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
 
     for item in all_validated_rmlst_mutations:
@@ -169,7 +167,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
             print ("Depth:", depth_list)
             average_depth = sum(confirmed_mutation_dict[gene][1]) / len(confirmed_mutation_dict[gene][1])
             print ("Average depth:", average_depth)
-            print ("Threshold:", average_depth * 0.5)
+            print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
                 print(f"{mutation_name}: {row}")
