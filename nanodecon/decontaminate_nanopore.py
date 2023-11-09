@@ -10,13 +10,13 @@ from nanodecon.intra_species_detection import determine_intra_species_contaminat
 from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
 
 def nanopore_decontamination(arguments):
-    os.system('mkdir ' + arguments.output)
+    #os.system('mkdir ' + arguments.output)
     #os.system('mkdir ' + arguments.output + '/output/contaminations')
     #os.system('mkdir ' + arguments.output + '/alignments')
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
@@ -28,12 +28,12 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/rmlst_alignment",
-                  arguments.output + '/specie_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 -oa> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/rmlst_alignment",
+    #              arguments.output + '/specie_db',
+    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096 -oa> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
 
-    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
@@ -42,6 +42,9 @@ def nanopore_decontamination(arguments):
 
     upper_confirmed_mutation_dict, lower_confirmed_mutation_dict, all_confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
 
+    for item in upper_confirmed_mutation_dict:
+        print (item, upper_confirmed_mutation_dict[item])
+    sys.exit()
     all_validated_rmlst_mutations = validate_mutations(arguments, all_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
     all_validated_rmlst_mutations = upper_co_occuring_mutations_in_reads(arguments, all_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
 

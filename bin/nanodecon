@@ -37,6 +37,13 @@ def main():
     parser.add_argument('--min_n', action="store", type=int, dest='min_n', default=2,
                         help='Minimum number of minimum number of nucleotides required to call a SNV for a contaminated nucleotide position.'
                              'The value of min_rd will be using unless a specific min_n integer is given. Default: 2')
+    parser.add_argument('--mrd', action="store", type=float, dest='mrd', default=0.03
+                        , help='Minimum related depth (mrd) for validating a single allele SNVs.'
+                               ' Any SNV above this threshold in considered a true positive.'
+                               'Default: 0.03')
+    parser.add_argument('--coc', action="store", type=float, dest='coc', default=0.5
+                        , help='Co-occuence Cutoff. This value is multiplied with the minimum related depth (mrd) to determine the co-occurence cutoff.'
+                               'Default: 0.5')
     parser.add_argument('--urd', action="store", type=float, dest='urd', default=0.03
                         , help='Upper related depth (urd) for validating a SNV.'
                                ' Any SNV above this threshold in considered a true positive.'
