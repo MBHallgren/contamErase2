@@ -143,7 +143,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict,
                                                        confirmed_mutation_dict,
-                                                       arguments.output + '/rmlst_alignment.fsa',
+                                                       arguments.output + '/rmlst_alignment.fsa')
 
     co_occurence_matrix_dict = {}
     for gene in confirmed_mutation_dict:
