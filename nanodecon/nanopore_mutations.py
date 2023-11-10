@@ -158,7 +158,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
                 #print (reference, len(reference))
 
                 # Identifying mutations using your function
-                main_reference = reference_sequences[allele_pair_dict[gene_name]]
+                #main_reference = reference_sequences[allele_pair_dict[gene_name]]
                 mutations = identify_mutations(mutation_vector, majority_seq[pos-1:pos-1+tlen], confirmed_mutation_dict[gene_name][0])
 
                 # Storing mutations in the dictionary
