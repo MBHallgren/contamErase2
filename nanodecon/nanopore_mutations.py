@@ -123,13 +123,14 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
 
     Returns:
     - dict: A dictionary where keys are read names and values are lists of mutation strings.
+
     """
 
-    references = parse_sam_get_references(sam_file_path)
-    reference_sequences = load_references_from_fasta(fasta_file, references)
+    #references = parse_sam_get_references(sam_file_path)
+    references = parse_fsa_get_references
+    #reference_sequences = load_references_from_fasta(fasta_file, references)
 
     mutations_dict = {}
-    print (sam_file_path)
     with open(sam_file_path, 'r') as sam_file:
         for line in sam_file:
             # Skip header lines
@@ -147,7 +148,9 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
 
             #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
-                reference = reference_sequences[rname]
+                majority_seq = reference_sequences[gene_name]
+                print (majority_seq)
+                sys.exit()
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
 
@@ -169,6 +172,25 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
                 #Multiple can occur, issue?
                 mutations_dict[name] = mutations
     return mutations_dict
+
+def parse_fsa_get_references(fsa_file_path):
+    """
+    Parse the FSA file and extract all unique reference names.
+
+    :param fsa_file_path: Path to the FSA file.
+    :return: Set of reference names.
+    """
+    references = dict()
+    with open(fsa_file_path, 'r') as fsa_file:
+        for line in fsa_file:
+            # Skip header lines
+            if line.startswith(">"):
+                gene = line.strip()[1:].split('_')[0]
+                references[gene] = ""
+            else:
+                references[gene] += line.strip()
+    return references
+
 
 def parse_sam_get_references(sam_file_path):
     """
