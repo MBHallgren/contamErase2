@@ -139,7 +139,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
     #HERE
     for item in confirmed_mutation_dict:
         print (item, confirmed_mutation_dict[item])
-    sys.exit()
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict,
