@@ -142,7 +142,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict,
-                                                       confirmed_mutation_dict)
+                                                       confirmed_mutation_dict,
+                                                       arguments.output + '/rmlst_alignment.fsa',
 
     co_occurence_matrix_dict = {}
     for gene in confirmed_mutation_dict:
