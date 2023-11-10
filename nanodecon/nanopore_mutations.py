@@ -149,10 +149,8 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
             #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
                 majority_seq = references[gene_name]
-                print (majority_seq)
-                sys.exit()
                 # Obtaining the alignment using your function
-                aligned_ref, aligned_query = extract_alignment(reference[pos-1:pos-1+tlen], seq, cigar_str)
+                aligned_ref, aligned_query = extract_alignment(majority_seq[pos-1:pos-1+tlen], seq, cigar_str)
 
                 # Creating a mutation vector using your function
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
@@ -161,7 +159,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
 
                 # Identifying mutations using your function
                 main_reference = reference_sequences[allele_pair_dict[gene_name]]
-                mutations = identify_mutations(mutation_vector, main_reference[pos-1:pos-1+tlen], confirmed_mutation_dict[gene_name][0])
+                mutations = identify_mutations(mutation_vector, majority_seq[pos-1:pos-1+tlen], confirmed_mutation_dict[gene_name][0])
 
                 # Storing mutations in the dictionary
                 name = read_id + ' ' + allele_pair_dict[gene_name]
