@@ -148,7 +148,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
 
             #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
-                majority_seq = reference_sequences[gene_name]
+                majority_seq = references[gene_name]
                 print (majority_seq)
                 sys.exit()
                 # Obtaining the alignment using your function
