@@ -136,6 +136,10 @@ def derive_mutation_positions2(consensus_dict, arguments):
 
 def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
     #TBD why not just get the mutation list from the confirmed_mutation_dict?
+    #HERE
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
+    sys.exit()
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict,
