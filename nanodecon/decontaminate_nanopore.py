@@ -639,7 +639,7 @@ def build_consensus_dict(arguments, res_file, mat_file):
     # Derive majorotiy sequence TBD
     for item in consensus_dict:
         for position in consensus_dict[item][0]:
-            consensus_dict[item][1] += ['ACGTN-'[position.index(max(position))]]
+            consensus_dict[item][1] += 'ACGTN-'[position.index(max(position))]
     return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict
 
 
