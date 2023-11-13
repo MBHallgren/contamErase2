@@ -54,13 +54,20 @@ def nanopore_decontamination(arguments):
 
     sys.exit()
 
-def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict):
+def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict):
     print (top_alleles)
     print (allele_pair_dict)
     header = 'Gene,MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth'
     for gene in confirmed_mutation_dict:
         for mutation in zip(confirmed_mutation_dict[gene][0], confirmed_mutation_dict[gene][1]):
-            print (mutation)
+            position = mutation[0].split('_')[0]
+            mutation_base = mutation[0].split('_')[1]
+            mutation_depth = mutation[1]
+            majority_base = consensus_dict[gene][1][int(position) - 1]
+            total_depth = sum(consensus_dict[gene][0][int(position) - 1])
+            print ('{},{},{},{},{},{},{}'.format(gene, top_alleles[gene], position, majority_base, mutation_base, mutation_depth, total_depth))
+
+
 def realign_rmlst_to_hits(res_file, name_file):
     rmlst_alleles = set()
     rmlst_genes = dict()
@@ -627,13 +634,9 @@ def build_consensus_dict(arguments, res_file, mat_file):
                                 consensus_dict[gene][0][index][i] += int(line[i])
                             index += 1
     # Derive majorotiy sequence TBD
-    for item in consensus_dict:
-        for position in consensus_dict[item][0]:
-            consensus_dict[item][1] += 'ACGTN-'[position.index(max(position))]
-    for item in consensus_dict:
-        if item == 'BACT000049':
-            for position in zip(consensus_dict[item][1], consensus_dict[item][0]):
-                print(position, sum(position[1]))
+    for gene in consensus_dict:
+        for position in consensus_dict[gene][0]:
+            consensus_dict[gene][1] += 'ACGTN-'[position.index(max(position))]
     return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict
 
 
