@@ -49,31 +49,18 @@ def nanopore_decontamination(arguments):
 
 
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict, consensus_dict)
-    for item in confirmed_mutation_dict:
-        #if item == 'BACT000049':
-        print (item, confirmed_mutation_dict[item])
-    sys.exit()
 
-    #TBD consider if the unvalidated upper mutations should be moved to the lower mutations
-    #Should be consider doing co-occurence on all mutation?
-    upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
-
-
-    upper_validated_rmlst_mutations = upper_co_occuring_mutations_in_reads(arguments, upper_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
-
-    for item in upper_validated_rmlst_mutations:
-        print (item, upper_validated_rmlst_mutations[item])
-    #lower_validated_rmlst_mutations = upper_co_occuring_mutations_in_reads(arguments, lower_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
-    #upper_validated_rmlst_mutations = upper_co_occuring_mutations_in_reads(arguments, upper_validated_rmlst_mutations, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
-
-    #Check for co-occuring mutations
-    #Check for pairwise rmlst schemes
-    #upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
-
-    #for item in mutation_position_dict:
-    #    print (item, mutation_position_dict[item])
+    format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict)
 
     sys.exit()
+
+def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict):
+    print (top_alleles)
+    print (allele_pair_dict)
+    #for gene in confirmed_mutation_dict:
+    #    print ()
+
+
 
 def realign_rmlst_to_hits(res_file, name_file):
     rmlst_alleles = set()
