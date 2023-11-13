@@ -45,13 +45,13 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
 
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
-    sys.exit()
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
     confirmed_mutation_dict = validate_mutations(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
+    sys.exit()
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
 
 
