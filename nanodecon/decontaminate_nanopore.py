@@ -65,7 +65,7 @@ def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consen
             mutation_depth = mutation[1]
             majority_base = consensus_dict[gene][1][int(position) - 1]
             total_depth = sum(consensus_dict[gene][0][int(position) - 1])
-            print ('{},{},{},{},{},{},{}'.format(gene, top_alleles[gene], position, majority_base, mutation_base, mutation_depth, total_depth))
+            print ('{},{},{},{},{},{},{}'.format(gene, allele_pair_dict[gene], position, majority_base, mutation_base, mutation_depth, total_depth))
 
 
 def realign_rmlst_to_hits(res_file, name_file):
