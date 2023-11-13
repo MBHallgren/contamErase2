@@ -195,7 +195,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
                     adjusted_mutation_dict[gene][0].append(confirmed_mutation_dict[gene][0][i])
                     adjusted_mutation_dict[gene][1].append(confirmed_mutation_dict[gene][1][i])
                     break
-                elif (relative_depth >= arguments.coc * arguments.mrd):
+                elif (relative_depth >= arguments.mrd):
                     adjusted_mutation_dict[gene][0].append(confirmed_mutation_dict[gene][0][i])
                     adjusted_mutation_dict[gene][1].append(confirmed_mutation_dict[gene][1][i])
                     break
