@@ -41,17 +41,20 @@ def nanopore_decontamination(arguments):
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
 
+
+
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
 
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
+    sys.exit()
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
     confirmed_mutation_dict = validate_mutations(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
 
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
-    sys.exit()
+
     #TBD consider if the unvalidated upper mutations should be moved to the lower mutations
     #Should be consider doing co-occurence on all mutation?
     upper_validated_rmlst_mutations = validate_mutations(arguments, upper_confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
@@ -114,7 +117,7 @@ def derive_mutation_positions2(consensus_dict, arguments):
     all_confirmed_mutation_dict = {}
     for item in consensus_dict:
         all_confirmed_mutation_dict[item] = [[], []]
-        for i in range(len(consensus_dict[item])):
+        for i in range(len(consensus_dict[item][0])):
             positions = consensus_dict[item][i][:4]
             max_number = max(positions)
             index_of_max = positions.index(max_number)
@@ -608,9 +611,9 @@ def build_consensus_dict(arguments, res_file, mat_file):
                 else:
                     correct_size_alleles.add(allele)
                     if gene not in consensus_dict:
-                        consensus_dict[gene] = []
+                        consensus_dict[gene] = [[],'']
                         for i in range(int(line[3])):
-                            consensus_dict[gene].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
+                            consensus_dict[gene][0].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
 
     with open(mat_file, 'r') as f:
         correct_size_flag = False
@@ -631,8 +634,12 @@ def build_consensus_dict(arguments, res_file, mat_file):
                         if line[0] != '-': #excludes read gaps. Reconsider?
                             line = line[1:]
                             for i in range(len(line)):
-                                consensus_dict[gene][index][i] += int(line[i])
+                                consensus_dict[gene][0][index][i] += int(line[i])
                             index += 1
+    # Derive majorotiy sequence TBD
+    for item in consensus_dict:
+        for position in consensus_dict[item][0]:
+            consensus_dict[item][1] += ['ACGTN-'[position.index(max(position))]]
     return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict
 
 
