@@ -19,8 +19,6 @@ def nanopore_decontamination(arguments):
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
     primary_species = primary.split()[1] + ' ' + primary.split()[2]
-    print(primary_species)
-    print(primary_species)
 
     #TBD make this non-verbose
     headers = produce_species_specific_kma_db(primary_species,
@@ -714,7 +712,7 @@ def derive_all_typed_rmlst_genes_from_input_reads(filename):
 
 def number_of_bases_in_file(filename):
     gzipped, type = determine_file_type(filename)
-    print (gzipped, type)
+    #print (gzipped, type)
     if type == 'fasta':
         sum = 0
         with open(filename, 'r') as f:
