@@ -55,9 +55,8 @@ def nanopore_decontamination(arguments):
     sys.exit()
 
 def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict):
-    print (top_alleles)
-    print (allele_pair_dict)
     header = 'Gene,MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth'
+    print (header)
     for gene in confirmed_mutation_dict:
         for mutation in zip(confirmed_mutation_dict[gene][0], confirmed_mutation_dict[gene][1]):
             position = mutation[0].split('_')[0]
@@ -161,15 +160,15 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print ("gene:", gene)
-            print("Mutation names:", mutation_list)
-            print ("Depth:", depth_list)
+            #print ("gene:", gene)
+            #print("Mutation names:", mutation_list)
+            #print ("Depth:", depth_list)
             average_depth = sum(confirmed_mutation_dict[gene][1]) / len(confirmed_mutation_dict[gene][1])
-            print ("Average depth:", average_depth)
-            print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
+            #print ("Average depth:", average_depth)
+            #print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
-                print(f"{mutation_name}: {row}")
+                #print(f"{mutation_name}: {row}")
 
             co_occurence_matrix_dict[gene] = co_occurrence_matrix
 
@@ -198,15 +197,12 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
 
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
-    print (len(reads_mutation_dict))
     for read in reads_mutation_dict:
         reference = reads_mutation_dict[read][1]
         read_mutation_set = set(reads_mutation_dict[read][0])
         gene_mutation_set = set(mutation_position_dict[reference][1])
         if read_mutation_set != set():
             common_elements = read_mutation_set & gene_mutation_set
-            if 'BACT000001' in reference:
-                print (reference, read_mutation_set, gene_mutation_set, common_elements)
             if common_elements != set():
                 if reference + '_' + str(common_elements) not in mutation_count_dict:
                     mutation_count_dict[reference + '_' + str(common_elements)] = 1
@@ -214,17 +210,6 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
                     mutation_count_dict[reference + '_' + str(common_elements)] += 1
 
     sorted_items = sorted(mutation_count_dict.items(), key=lambda item: item[1], reverse=True)
-    for key, value in sorted_items:
-        if 'BACT000049' in key:
-            print(f"{key}: {value}")
-
-    for key, value in sorted_items:
-        if 'BACT000038' in key:
-            print(f"{key}: {value}")
-
-    for key, value in sorted_items:
-        if 'BACT000001' in key:
-            print(f"{key}: {value}")
 
 def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_file):
     correct_length_dict = derive_correct_length_headers(arguments, gene_score_dict, fsa_file)
@@ -355,8 +340,6 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                                 index = 4
                                 sys.exit('Check here')
                             #relative_depth = consensus_dict[allele][i][index] / total_base_count
-                            if allele == 'BACT000001_10827':
-                                print (i+1, sequence[i], consensus_dict[gene][i])
                             nucleotide_index = ['A', 'C', 'G', 'T']
                             a_depth = consensus_dict[gene][i][0]
                             c_depth = consensus_dict[gene][i][1]
@@ -411,8 +394,6 @@ def derive_mutation_positions(consensus_dict, fsa_file, headers, arguments, top_
                 index = 4
                 sys.exit('Check here')
             # relative_depth = consensus_dict[allele][i][index] / total_base_count
-            if allele == 'BACT000001_10827':
-                print(i + 1, sequence[i], consensus_dict[gene][i])
             nucleotide_index = ['A', 'C', 'G', 'T']
             a_depth = consensus_dict[gene][i][0]
             c_depth = consensus_dict[gene][i][1]
