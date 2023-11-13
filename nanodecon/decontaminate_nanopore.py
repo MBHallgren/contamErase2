@@ -190,7 +190,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gen
             for number_of_co_occurences in row:
                 total_depth = sum(consensus_dict[gene][0][i])
                 relative_depth = confirmed_mutation_dict[gene][1][i] / total_depth
-                print (confirmed_mutation_dict[gene][0][i], relative_depth, total_depth)
                 if float(number_of_co_occurences) >= float(threshold):
                     adjusted_mutation_dict[gene][0].append(confirmed_mutation_dict[gene][0][i])
                     adjusted_mutation_dict[gene][1].append(confirmed_mutation_dict[gene][1][i])
