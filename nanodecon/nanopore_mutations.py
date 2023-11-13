@@ -114,7 +114,7 @@ def identify_mutations(mutation_vector, reference_sequence, gene_mutations):
 
     return mutations
 
-def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, confirmed_mutation_dict, rmlst_fsa_file):
+def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, confirmed_mutation_dict, rmlst_fsa_file, consensus_dict):
     """
     Parses a SAM file, extracts necessary information and finds mutations in each read.
 
@@ -127,7 +127,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
     """
 
     #references = parse_sam_get_references(sam_file_path)
-    references = parse_fsa_get_references(rmlst_fsa_file)
+    #references = parse_fsa_get_references(rmlst_fsa_file)
     #reference_sequences = load_references_from_fasta(fasta_file, references)
 
     mutations_dict = {}
@@ -148,7 +148,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
 
             #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
-                majority_seq = references[gene_name]
+                majority_seq = consensus_dict[gene_name][1]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(majority_seq[pos-1:pos-1+tlen], seq, cigar_str)
 

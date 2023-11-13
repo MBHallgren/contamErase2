@@ -53,6 +53,7 @@ def nanopore_decontamination(arguments):
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict, consensus_dict)
     for item in confirmed_mutation_dict:
         print (item, confirmed_mutation_dict[item])
+    sys.exit()
 
     #TBD consider if the unvalidated upper mutations should be moved to the lower mutations
     #Should be consider doing co-occurence on all mutation?
@@ -139,11 +140,6 @@ def derive_mutation_positions2(consensus_dict, arguments):
 def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict, consensus_dict):
     #TBD why not just get the mutation list from the confirmed_mutation_dict?
     #HERE
-    for item in consensus_dict:
-        print (item, consensus_dict[item][1])
-    sys.exit()
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict,
