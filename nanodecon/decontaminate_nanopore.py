@@ -57,11 +57,10 @@ def nanopore_decontamination(arguments):
 def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict):
     print (top_alleles)
     print (allele_pair_dict)
-    #for gene in confirmed_mutation_dict:
-    #    print ()
-
-
-
+    header = 'Gene,MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth'
+    for gene in confirmed_mutation_dict:
+        for mutation in zip(confirmed_mutation_dict[gene][0], confirmed_mutation_dict[gene][1]):
+            print (mutation)
 def realign_rmlst_to_hits(res_file, name_file):
     rmlst_alleles = set()
     rmlst_genes = dict()
