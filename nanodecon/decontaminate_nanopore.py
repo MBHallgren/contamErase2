@@ -50,7 +50,7 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict, consensus_dict)
 
-    format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict)
+    format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict)
 
     sys.exit()
 
