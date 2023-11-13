@@ -171,7 +171,8 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
                 mutations_dict[name] = mutations
 
                 if gene_name == 'BACT000049':
-                    print (mutations)
+                    if '4_G' in mutations or '6_T' in mutations or '9_C' in mutations:
+                        print (name)
     return mutations_dict
 
 def parse_fsa_get_references(fsa_file_path):
