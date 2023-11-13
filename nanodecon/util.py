@@ -4,7 +4,7 @@ import os
 from nanodecon import kmergenetyper
 def number_of_bases_in_file(filename):
     gzipped, type = determine_file_type(filename)
-    print (gzipped, type)
+    #print (gzipped, type)
     #determine type#
     if type == 'fasta':
         sum = 0
