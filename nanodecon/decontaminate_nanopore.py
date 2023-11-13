@@ -52,7 +52,8 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict, consensus_dict)
     for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
+        if item == 'BACT000049':
+            print (item, confirmed_mutation_dict[item])
     sys.exit()
 
     #TBD consider if the unvalidated upper mutations should be moved to the lower mutations
@@ -645,6 +646,10 @@ def build_consensus_dict(arguments, res_file, mat_file):
     for item in consensus_dict:
         for position in consensus_dict[item][0]:
             consensus_dict[item][1] += 'ACGTN-'[position.index(max(position))]
+    for item in consensus_dict:
+        if item == 'BACT000049':
+            for position in zip(consensus_dict[item][1], consensus_dict[item][0]):
+                print(position, sum(position[1]))
     return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict
 
 
