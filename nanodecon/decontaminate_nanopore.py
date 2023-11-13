@@ -49,11 +49,10 @@ def nanopore_decontamination(arguments):
         #Can we do something to include novel mutations if the signal is strong enough?
     confirmed_mutation_dict = validate_mutations(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
+
+    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict, consensus_dict)
     for item in confirmed_mutation_dict:
         print (item, confirmed_mutation_dict[item])
-    sys.exit()
-    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict)
-
 
     #TBD consider if the unvalidated upper mutations should be moved to the lower mutations
     #Should be consider doing co-occurence on all mutation?
@@ -137,16 +136,20 @@ def derive_mutation_positions2(consensus_dict, arguments):
 
 
 
-def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict):
+def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict, consensus_dict):
     #TBD why not just get the mutation list from the confirmed_mutation_dict?
     #HERE
+    for item in consensus_dict:
+        print (item, consensus_dict[item][1])
+    sys.exit()
     for item in confirmed_mutation_dict:
         print (item, confirmed_mutation_dict[item])
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        arguments.output + '/specie.fsa',
                                                        allele_pair_dict,
                                                        confirmed_mutation_dict,
-                                                       arguments.output + '/rmlst_alignment.fsa')
+                                                       arguments.output + '/rmlst_alignment.fsa',
+                                                       consensus_dict)
 
     co_occurence_matrix_dict = {}
     for gene in confirmed_mutation_dict:
