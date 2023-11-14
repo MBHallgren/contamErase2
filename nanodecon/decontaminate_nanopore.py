@@ -1,7 +1,7 @@
 import os
 import sys
 import gzip
-import from Bio import SeqIO
+from Bio import SeqIO
 from nanodecon import kma
 from nanodecon import util
 from itertools import combinations
