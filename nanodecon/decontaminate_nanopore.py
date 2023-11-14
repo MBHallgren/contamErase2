@@ -14,11 +14,11 @@ from nanodecon.nanopore_mutations import create_mutation_vector
 from nanodecon.nanopore_mutations import identify_mutations
 
 def nanopore_decontamination(arguments):
-    #os.system('mkdir ' + arguments.output)
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/bacteria_alignment",
-    #              arguments.db_dir + "/bac_db",
-    #              "-mem_mode -1t1 -t {} -ID 10 -ont -eq 14 -mct 0.5".format(arguments.threads)).run()
+    os.system('mkdir ' + arguments.output)
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/bacteria_alignment",
+                  arguments.db_dir + "/bac_db",
+                  "-mem_mode -1t1 -t {} -ID 10 -ont -eq 14 -mct 0.5".format(arguments.threads)).run()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
@@ -30,35 +30,28 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
 
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/initial_rmlst_alignment",
-    #              arguments.output + '/specie_db',
-    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5".format(
-    #                  arguments.threads, arguments.output)).run()
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/initial_rmlst_alignment",
+                  arguments.output + '/specie_db',
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5".format(arguments.threads, arguments.output)).run()
 
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/initial_rmlst_alignment",
-    #              arguments.output + '/specie_db',
-    #              "-mem_mode -t 16 -ID 90 -ont".format(
-    #                  arguments.threads, arguments.output)).run()
+    os.system('gunzip ' + arguments.output + '/initial_rmlst_alignment.frag.gz')
 
-    #os.system('gunzip ' + arguments.output + '/initial_rmlst_alignment.frag.gz')
+    extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
-    #extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
+    os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
 
-    #os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
-
-    #index_top_hits_db(arguments.output)
+    index_top_hits_db(arguments.output)
 
     arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
     #
 
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/rmlst_alignment",
-    #              arguments.output + '/top_hits_db',
-    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/rmlst_alignment",
+                  arguments.output + '/top_hits_db',
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
     #TMP removed -oa above
-    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
@@ -67,9 +60,9 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
     number = 0
-    for item in confirmed_mutation_dict:
-        number += len(confirmed_mutation_dict[item][0])
-    print('Number of mutations: ' + str(number))
+    #for item in confirmed_mutation_dict:
+    #    number += len(confirmed_mutation_dict[item][0])
+    #print('Number of mutations: ' + str(number))
 
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
@@ -77,16 +70,16 @@ def nanopore_decontamination(arguments):
     confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
     #TBD: make this non-verbose
-    number = 0
-    for item in confirmed_mutation_dict:
-        number += len(confirmed_mutation_dict[item][0])
-    print ('Number of mutations: ' + str(number))
+    #number = 0
+    #for item in confirmed_mutation_dict:
+    #    number += len(confirmed_mutation_dict[item][0])
+    #print ('Number of mutations: ' + str(number))
 
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict)
-    number = 0
-    for item in confirmed_mutation_dict:
-        number += len(confirmed_mutation_dict[item][0])
-    print ('Number of mutations: ' + str(number))
+    #number = 0
+    #for item in confirmed_mutation_dict:
+    #    number += len(confirmed_mutation_dict[item][0])
+    #print ('Number of mutations: ' + str(number))
 
     format_output(confirmed_mutation_dict, consensus_dict)
 
@@ -159,7 +152,7 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
                         adjusted_consensus_dict[rname][0][i][nucleotide_list.index(mutation_vector[i])] += 1
                     else:
                         total_black_list_count += 1
-    print ('Total blacklisted positions: ' + str(total_black_list_count))
+    #print ('Total blacklisted positions: ' + str(total_black_list_count))
     return adjusted_consensus_dict, black_listed_positions
 
 def derive_aligned_reads_for_gene(sam_file, gene):
@@ -309,15 +302,15 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print ("alelle:", alelle)
-            print("Mutation names:", mutation_list)
+            #print ("alelle:", alelle)
+            #print("Mutation names:", mutation_list)
             #print ("Depth:", depth_list)
             average_depth = sum(confirmed_mutation_dict[alelle][1]) / len(confirmed_mutation_dict[alelle][1])
-            print ("Average depth:", average_depth)
-            print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
-            for i, row in enumerate(co_occurrence_matrix):
-                mutation_name = mutation_list[i]
-                print(f"{mutation_name}: {row}")
+            #print ("Average depth:", average_depth)
+            #print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
+            #for i, row in enumerate(co_occurrence_matrix):
+            #    mutation_name = mutation_list[i]
+            #    print(f"{mutation_name}: {row}")
 
             co_occurence_matrix_dict[alelle] = [co_occurrence_matrix, mutation_list]
 
@@ -798,7 +791,7 @@ def output_rmlst_hits_nanopore(arguments, frag_file, rmlst_hits):
             line = line.strip().split('\t')
             if line[-2] in rmlst_hits:
                 intra_species_reads.add(line[-1])
-    print (len(intra_species_reads), 'intra species reads')
+    #print (len(intra_species_reads), 'intra species reads')
     with open('{}/{}.txt'.format(arguments.output, 'intra_species_reads'), 'w') as write_file:
         for read in intra_species_reads:
             write_file.write(read + '\n')
