@@ -424,7 +424,7 @@ def derive_correct_length_headers(consensus_dict, fsa_file):
     if gene != None:
         if sequence != '':
             if len(sequence) == correct_length_dict[gene][0]:
-                correct_length_dict[gene][1].append(allele)
+                correct_length_dict[gene][1].append(sequence)
 
     return correct_length_dict
 
