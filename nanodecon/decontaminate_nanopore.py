@@ -372,10 +372,8 @@ def validate_mutations(consensus_dict, fsa_file):
         mutations_found_in_rmlst_genes[gene] = set()
         previous_variants = set()
         for sequence in correct_length_dict[gene][1]:
-            print (sequence)
             for i in range(len(sequence)):
-                print (i, sequence[i])
-                previous_variants += '{}_{}'.format(i, sequence[i])
+                previous_variants.add('{}_{}'.format(i+1, sequence[i]))
         mutations_found_in_rmlst_genes[gene] = previous_variants
 
     for item in mutations_found_in_rmlst_genes:
