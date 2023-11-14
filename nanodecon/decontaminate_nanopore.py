@@ -70,12 +70,11 @@ def nanopore_decontamination(arguments):
     for item in confirmed_mutation_dict:
         number += len(confirmed_mutation_dict[item][0])
     print('Number of mutations: ' + str(number))
-    sys.exit()
 
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
         #Add significant but non biological mutations.
-    confirmed_mutation_dict = validate_mutations(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    confirmed_mutation_dict = validate_mutations(confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
     #TBD: make this non-verbose
     number = 0
@@ -365,22 +364,24 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
 
     sorted_items = sorted(mutation_count_dict.items(), key=lambda item: item[1], reverse=True)
 
-def validate_mutations(arguments, mutation_position_dict, gene_score_dict, fsa_file):
-    correct_length_dict = derive_correct_length_headers(arguments, gene_score_dict, fsa_file)
+def validate_mutations(consensus_dict, fsa_file):
+    correct_length_dict = derive_correct_length_headers(consensus_dict, fsa_file)
     mutations_found_in_rmlst_genes = dict()
-    for allele in mutation_position_dict:
+    for allele in consensus_dict:
         gene = allele.split('_')[0]
         mutations_found_in_rmlst_genes[gene] = set()
-        for template_gene in correct_length_dict:
-            if template_gene == gene:
-                for template_allele in correct_length_dict[template_gene]:
-                    #print (allele, template_allele)
-                    confirmed_mutations = validate_mutation_positions(mutation_position_dict[allele][0], correct_length_dict[template_gene][template_allele], allele)
-                    if confirmed_mutations != set():
-                        if gene not in mutations_found_in_rmlst_genes:
-                            mutations_found_in_rmlst_genes[gene] = confirmed_mutations
-                        else:
-                            mutations_found_in_rmlst_genes[gene] = mutations_found_in_rmlst_genes[gene] | confirmed_mutations
+        previous_variants = set()
+        for sequence in correct_length_dict[gene][1]:
+            for i in range(len(sequence)):
+                previous_variants += '{}_{}'.format(i, sequence[i])
+        mutations_found_in_rmlst_genes[gene] = previous_variants
+
+    for item in mutations_found_in_rmlst_genes:
+        print (item, mutations_found_in_rmlst_genes[item])
+    sys.exit()
+
+
+
     return_dict = dict()
     for item in mutation_position_dict:
         return_dict[item] = [[], [], 0]
@@ -400,20 +401,20 @@ def validate_mutation_positions(mutations, sequence, allele):
         if sequence[int(position) - 1] == mutant:
             confirmed_mutations.add(mutation)
     return confirmed_mutations
-def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
+def derive_correct_length_headers(consensus_dict, fsa_file):
     correct_length_dict = {}
+    for allele in consensus_dict:
+        gene = allele.split('_')[0]
+        correct_length_dict[gene] = [len(consensus_dict[allele][0]), []]
     sequence = ''
-    gene = None
     with open(fsa_file, 'r') as f:
         for line in f:
             if line.startswith('>'):
                 if gene != None:
                     if gene in gene_score_dict:
                         if sequence != '':
-                            if len(sequence) == gene_score_dict[gene][-1][0]:
-                                if gene not in correct_length_dict:
-                                    correct_length_dict[gene] = {}
-                                correct_length_dict[gene][allele] = sequence
+                            if len(sequence) == correct_length_dict[gene][0]:
+                                correct_length_dict[gene][1].append(allele)
                 header = line.strip()[1:]
                 allele = header
                 gene = allele.split('_')[0]
@@ -423,10 +424,8 @@ def derive_correct_length_headers(arguments, gene_score_dict, fsa_file):
     if gene != None:
         if gene in gene_score_dict:
             if sequence != '':
-                if len(sequence) == gene_score_dict[gene][-1][0]:
-                    if gene not in correct_length_dict:
-                        correct_length_dict[gene] = {}
-                    correct_length_dict[gene][allele] = sequence
+                if len(sequence) == correct_length_dict[gene][0]:
+                    correct_length_dict[gene][1].append(allele)
 
     return correct_length_dict
 
