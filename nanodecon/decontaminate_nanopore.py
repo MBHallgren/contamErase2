@@ -35,7 +35,7 @@ def nanopore_decontamination(arguments):
 
     #extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
-    #os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 --headcrop 50 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
+    #os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
 
     arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
     #
@@ -56,6 +56,10 @@ def nanopore_decontamination(arguments):
 
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
+    number = 0
+    for item in confirmed_mutation_dict:
+        number += len(confirmed_mutation_dict[item][0])
+    print('Number of mutations: ' + str(number))
 
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
@@ -73,6 +77,7 @@ def nanopore_decontamination(arguments):
         number += len(confirmed_mutation_dict[item][0])
     print ('Number of mutations: ' + str(number))
 
+    sys.exit()
     format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict)
 
     sys.exit()
