@@ -380,13 +380,13 @@ def validate_mutations(consensus_dict, fsa_file, confirmed_mutations):
 
     return_dict = dict()
     for allele in confirmed_mutations:
-        return_dict[item] = [[], [], 0]
-        for i in range(len(confirmed_mutations[item][0])):
-            if mutation_position_dict[item][0][i] in mutations_found_in_rmlst_genes[allele.split('_')[0]]:
-                return_dict[item][0].append(mutation_position_dict[item][0][i])
-                return_dict[item][1].append(mutation_position_dict[item][1][i])
-        if return_dict[item][1] != []:
-            return_dict[item][2] = min(return_dict[item][1])
+        return_dict[allele] = [[], [], 0]
+        for i in range(len(confirmed_mutations[allele][0])):
+            if mutation_position_dict[allele][0][i] in mutations_found_in_rmlst_genes[allele.split('_')[0]]:
+                return_dict[allele][0].append(mutation_position_dict[allele][0][i])
+                return_dict[allele][1].append(mutation_position_dict[allele][1][i])
+        if return_dict[allele][1] != []:
+            return_dict[allele][2] = min(return_dict[allele][1])
     return return_dict
 
 def validate_mutation_positions(mutations, sequence, allele):
