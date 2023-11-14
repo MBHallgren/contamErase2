@@ -9,6 +9,7 @@ from itertools import combinations
 
 from nanodecon.intra_species_detection import determine_intra_species_contamination_nanopore
 from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
+from nanodecon.nanopore_mutations import extract_alignment
 
 def nanopore_decontamination(arguments):
     os.system('mkdir ' + arguments.output)
@@ -59,9 +60,6 @@ def nanopore_decontamination(arguments):
 
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
-    for item in consensus_dict:
-        print (item, consensus_dict[item])
-    sys.exit()
 
     consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
 
@@ -133,9 +131,48 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
 
     adjusted_consensus_dict = {}
 
-    for gene in consensus_dict:
-        adjusted_consensus_dict[gene] = [[], '']
-        derive_aligned_reads = derive_aligned_reads_for_gene(sam_file, gene)
+    for allele in consensus_dict:
+        adjusted_consensus_dict[allele] = [[], consensus_dict[gene][1]]
+        for position in consensus_dict[allele][0]:
+            adjusted_consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0])
+
+    for alignment in sam_file:
+        if alignment[0] == '@':
+            continue
+        cols = alignment.strip().split('\t')
+        qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
+        read_id = qname.split(' ')[0]
+        template_seq = adjusted_consensus_dict[rname][1]
+        pos = int(pos)
+        tlen = int(tlen)
+
+        if pos == 1 and len(seq) >= tlen: #We will only consider read that span the entire gene.
+            # Obtaining the alignment using your function
+            aligned_ref, aligned_query = extract_alignment(majority_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
+            print (aligned_ref, aligned_query)
+            sys.exit()
+            # Creating a mutation vector using your function
+            mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
+            # print (mutation_vector, len(mutation_vector))
+            # print (reference, len(reference))
+
+            # Identifying mutations using your function
+            # main_reference = reference_sequences[allele_pair_dict[gene_name]]
+            mutations = identify_mutations(mutation_vector, majority_seq[pos - 1:pos - 1 + tlen],
+                                           confirmed_mutation_dict[gene_name][0])
+
+            # Storing mutations in the dictionary
+            name = read_id + ' ' + allele_pair_dict[gene_name]
+            # if 'BACT000038' in rname:
+            #    print (rname, mutations)
+            # print("Aligned Reference: ", aligned_ref, len(aligned_ref))
+            # print("Aligned Query:     ", aligned_query, len(aligned_query))
+            # Multiple can occur, issue?
+            mutations_dict[name] = mutations
+
+            if gene_name == 'BACT000049':
+                if '4_G' in mutations or '6_T' in mutations or '9_C' in mutations:
+                    print(name)
 
 def derive_aligned_reads_for_gene(sam_file, gene):
     aligned_reads = []
