@@ -65,7 +65,6 @@ def nanopore_decontamination(arguments):
 
     consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
 
-    sys.exit()
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
     number = 0
     for item in confirmed_mutation_dict:
