@@ -289,6 +289,10 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                        read_positions_blacklisted_dict)
     for item in reads_mutation_dict:
         print (item, reads_mutation_dict[item])
+
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
+
     sys.exit()
 
     co_occurence_matrix_dict = {}
