@@ -33,7 +33,7 @@ def nanopore_decontamination(arguments):
 
     #os.system('gunzip ' + arguments.output + '/rmlst_mapping.frag.gz')
 
-    extract_mapped_rmlst_read(arguments.output)
+    extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
     sys.exit()
     #
