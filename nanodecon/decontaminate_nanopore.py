@@ -83,7 +83,7 @@ def nanopore_decontamination(arguments):
     sys.exit()
 
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
-    black_listed_positions = blacklist_positions(fastq_file, 10)
+    black_listed_positions = blacklist_positions(fastq_file, 20)
     for item in black_listed_positions:
         print (item, black_listed_positions[item])
         print ('')
