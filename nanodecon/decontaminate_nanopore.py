@@ -155,25 +155,13 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
                 print (aligned_ref)
                 print (aligned_query)
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
-                print (mutation_vector)
-                sys.exit()
-                # print (mutation_vector, len(mutation_vector))
-                # print (reference, len(reference))
+                for i in range(len(mutation_vector)):
+                    nucleotide_list = ['A', 'C', 'G', 'T', 'N', '-']
+                    if mutation_vector[i] in nucleotide_list:
+                        adjusted_consensus_dict[rname][0][i][nucleotide_list.index(mutation_vector[i])] += 1
 
-                # Identifying mutations using your function
-                # main_reference = reference_sequences[allele_pair_dict[gene_name]]
-                mutations = identify_mutations(mutation_vector, template_seq[pos - 1:pos - 1 + tlen],
-                                               confirmed_mutation_dict[gene_name][0])
-
-
-                # Storing mutations in the dictionary
-                name = read_id + ' ' + allele_pair_dict[gene_name]
-                # if 'BACT000038' in rname:
-                #    print (rname, mutations)
-                # print("Aligned Reference: ", aligned_ref, len(aligned_ref))
-                # print("Aligned Query:     ", aligned_query, len(aligned_query))
-                # Multiple can occur, issue?
-                mutations_dict[name] = mutations
+    for allele in adjusted_consensus_dict:
+        print (allele, adjusted_consensus_dict[allele][0])
 
 def derive_aligned_reads_for_gene(sam_file, gene):
     aligned_reads = []
