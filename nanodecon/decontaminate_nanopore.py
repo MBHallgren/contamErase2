@@ -33,11 +33,11 @@ def nanopore_decontamination(arguments):
 
     #os.system('gunzip ' + arguments.output + '/rmlst_mapping.frag.gz')
 
-    extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
+    #extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
-    os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 --headcrop 50 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
+    #os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 --headcrop 50 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
 
-    sys.exit()
+    arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
     #
 
     kma.KMARunner(arguments.nanopore,
