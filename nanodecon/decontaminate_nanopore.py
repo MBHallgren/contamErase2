@@ -11,11 +11,11 @@ from nanodecon.intra_species_detection import determine_intra_species_contaminat
 from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
 
 def nanopore_decontamination(arguments):
-    #os.system('mkdir ' + arguments.output)
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/bacteria_alignment",
-    #              arguments.db_dir + "/bac_db",
-    #              "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
+    os.system('mkdir ' + arguments.output)
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/bacteria_alignment",
+                  arguments.db_dir + "/bac_db",
+                  "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
@@ -26,27 +26,32 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/rmlst_mapping",
-    #              arguments.output + '/specie_db',
-    #              "-mem_mode -t 16 -ID 90 -ont".format(
-    #                  arguments.threads, arguments.output)).run()
 
-    #os.system('gunzip ' + arguments.output + '/rmlst_mapping.frag.gz')
 
-    #extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
-    #os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/rmlst_mapping",
+                  arguments.output + '/specie_db',
+                  "-mem_mode -t 16 -ID 90 -ont".format(
+                      arguments.threads, arguments.output)).run()
+
+    os.system('gunzip ' + arguments.output + '/rmlst_mapping.frag.gz')
+
+    extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
+
+    os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
+
+    index_top_hits_db(arguments.output)
 
     arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
     #
 
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/rmlst_alignment",
-    #              arguments.output + '/specie_db',
-    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/rmlst_alignment",
+                  arguments.output + '/top_hits_db',
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
     #TMP removed -oa above
-
+    sys.exit()
     #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
@@ -82,12 +87,62 @@ def nanopore_decontamination(arguments):
 
     sys.exit()
 
+def index_top_hits_db(output):
+    infile = output + '/rmlst_mapping.res'
+
+    top_hits = {}
+    with open(infile, 'r') as f:
+        for line in f:
+            if not line.startswith('#'):
+                line = line.strip().split('\t')
+                allele = line[0]
+                gene = allele.split('_')[0]
+                if gene not in top_hits:
+                    top_hits[gene] = [allele, line[1], 0]
+                else:
+                    if line[1] > top_hits[gene][1]:
+                        top_hits[gene] = [allele, line[1], 0]
+
+    name_file = output + '/specie_db.name'
+    t = 1
+    with open(name_file, 'r') as f:
+        for line in f:
+            line = line.strip()
+            allele = line
+            gene = allele.split('_')[0]
+            if gene in top_hits:
+                if top_hits[gene][0] == allele:
+                    top_hits[gene][-1] = t
+            t += 1
+
+    cmd = ''
+    for item in top_hits:
+        cmd += str(top_hits[item][-1]) + ','
+    cmd = cmd[:-1]
+    os.system('kma seq2fasta -seqs {} -o {}'.format(cmd, output + '/top_hits.fsa'))
+    os.system('kma index -i {} -o {}' .format(output + '/top_hits.fsa', output + '/top_hits_db'))
+
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
-    black_listed_positions = blacklist_positions(fastq_file, 20)
-    for item in black_listed_positions:
-        print (item, black_listed_positions[item])
-        print ('')
-    sys.exit()
+    black_listed_positions = blacklist_positions(fastq_file, 14)
+
+    adjusted_consensus_dict = {}
+
+    for gene in consensus_dict:
+        adjusted_consensus_dict[gene] = [[], '']
+        derive_aligned_reads = derive_aligned_reads_for_gene(sam_file, gene)
+
+def derive_aligned_reads_for_gene(sam_file, gene):
+    aligned_reads = []
+    for line in open(sam_file):
+        if line[0] == '@':
+            continue
+        cols = line.strip().split('\t')
+        qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
+        read_id = qname.split(' ')[0]
+        gene_name = rname.split('_')[0]
+        if gene_name == gene:
+
+    return aligned_reads
 
 def blacklist_positions(fastq_file, quality_threshold):
     blacklist_dict = {}
