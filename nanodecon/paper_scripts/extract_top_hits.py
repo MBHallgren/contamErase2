@@ -1,7 +1,7 @@
 import os
 import sys
 
-infile = '/home/people/malhal/test/test_10_intra/rmlst_alignment.res'
+infile = '/home/people/malhal/test/test_10_5/rmlst_alignment.res'
 
 top_hits = {}
 with open(infile, 'r') as f:
@@ -18,7 +18,7 @@ with open(infile, 'r') as f:
 
 print (top_hits)
 
-name_file = '/home/people/malhal/test/test_10_intra/specie_db.name'
+name_file = '/home/people/malhal/test/test_10_5/specie_db.name'
 t = 1
 with open(name_file, 'r') as f:
     for line in f:
