@@ -94,7 +94,7 @@ def extract_mapped_rmlst_read(output, nanopore):
             line = line.rstrip()
             line = line.split('\t')
             read_set.add(line[-1])
-    with open(output + 'rmlst_reads.txt', 'w') as f:
+    with open(output + '/rmlst_reads.txt', 'w') as f:
         for item in read_set:
             f.write(item + '\n')
     os.system('seqtk subseq {} {} > {}'.format(nanopore, output + '/rmlst_reads.txt',
