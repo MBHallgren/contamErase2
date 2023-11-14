@@ -14,11 +14,11 @@ from nanodecon.nanopore_mutations import create_mutation_vector
 from nanodecon.nanopore_mutations import identify_mutations
 
 def nanopore_decontamination(arguments):
-    os.system('mkdir ' + arguments.output)
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 10 -ont -eq 14 -mct 0.5".format(arguments.threads)).run()
+    #os.system('mkdir ' + arguments.output)
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 10 -ont -eq 14 -mct 0.5".format(arguments.threads)).run()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
@@ -30,11 +30,11 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
 
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/initial_rmlst_alignment",
-                  arguments.output + '/specie_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5".format(
-                      arguments.threads, arguments.output)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/initial_rmlst_alignment",
+    #              arguments.output + '/specie_db',
+    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5".format(
+    #                  arguments.threads, arguments.output)).run()
 
     #kma.KMARunner(arguments.nanopore,
     #              arguments.output + "/initial_rmlst_alignment",
@@ -42,23 +42,23 @@ def nanopore_decontamination(arguments):
     #              "-mem_mode -t 16 -ID 90 -ont".format(
     #                  arguments.threads, arguments.output)).run()
 
-    os.system('gunzip ' + arguments.output + '/initial_rmlst_alignment.frag.gz')
+    #os.system('gunzip ' + arguments.output + '/initial_rmlst_alignment.frag.gz')
 
-    extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
+    #extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
-    os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
+    #os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
 
-    index_top_hits_db(arguments.output)
+    #index_top_hits_db(arguments.output)
 
     arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
     #
 
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/rmlst_alignment",
-                  arguments.output + '/top_hits_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/rmlst_alignment",
+    #              arguments.output + '/top_hits_db',
+    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
     #TMP removed -oa above
-    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
@@ -74,7 +74,7 @@ def nanopore_decontamination(arguments):
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
         #Add significant but non biological mutations.
-    confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa')
+    confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
     #TBD: make this non-verbose
     number = 0
@@ -82,6 +82,8 @@ def nanopore_decontamination(arguments):
         number += len(confirmed_mutation_dict[item][0])
     print ('Number of mutations: ' + str(number))
 
+
+    sys.exit()
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict, consensus_dict)
     number = 0
     for item in confirmed_mutation_dict:
@@ -364,7 +366,7 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
 
     sorted_items = sorted(mutation_count_dict.items(), key=lambda item: item[1], reverse=True)
 
-def validate_mutations(consensus_dict, fsa_file):
+def validate_mutations(consensus_dict, fsa_file, confirmed_mutations):
     correct_length_dict = derive_correct_length_headers(consensus_dict, fsa_file)
     mutations_found_in_rmlst_genes = dict()
     for allele in consensus_dict:
@@ -372,22 +374,15 @@ def validate_mutations(consensus_dict, fsa_file):
         mutations_found_in_rmlst_genes[gene] = set()
         previous_variants = set()
         for sequence in correct_length_dict[gene][1]:
-            print (sequence)
             for i in range(len(sequence)):
                 previous_variants.add('{}_{}'.format(i+1, sequence[i]))
         mutations_found_in_rmlst_genes[gene] = previous_variants
 
-    #for item in mutations_found_in_rmlst_genes:
-    #    print (item, mutations_found_in_rmlst_genes[item])
-    sys.exit()
-
-
-
     return_dict = dict()
-    for item in mutation_position_dict:
+    for allele in confirmed_mutations:
         return_dict[item] = [[], [], 0]
-        for i in range(len(mutation_position_dict[item][0])):
-            if mutation_position_dict[item][0][i] in mutations_found_in_rmlst_genes[item.split('_')[0]]:
+        for i in range(len(confirmed_mutations[item][0])):
+            if mutation_position_dict[item][0][i] in mutations_found_in_rmlst_genes[allele.split('_')[0]]:
                 return_dict[item][0].append(mutation_position_dict[item][0][i])
                 return_dict[item][1].append(mutation_position_dict[item][1][i])
         if return_dict[item][1] != []:
