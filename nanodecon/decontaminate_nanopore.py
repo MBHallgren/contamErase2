@@ -115,11 +115,11 @@ def index_top_hits_db(output):
                     top_hits[gene][-1] = t
             t += 1
 
-    cmd = ''
+    seqs = ''
     for item in top_hits:
-        cmd += str(top_hits[item][-1]) + ','
-    cmd = cmd[:-1]
-    os.system('kma seq2fasta -seqs {} -o {}'.format(cmd, output + '/top_hits.fsa'))
+        seqs += str(top_hits[item][-1]) + ','
+    seqs = seqs[:-1]
+    os.system('kma seq2fasta -seqs {} -t_db {} > {}/top_hits.fsa'.format(seqs, output + '/specie_db', output))
     os.system('kma index -i {} -o {}' .format(output + '/top_hits.fsa', output + '/top_hits_db'))
 
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
