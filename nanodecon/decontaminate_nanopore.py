@@ -140,7 +140,7 @@ def derive_aligned_reads_for_gene(sam_file, gene):
         qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
         read_id = qname.split(' ')[0]
         gene_name = rname.split('_')[0]
-        if gene_name == gene:
+        #if gene_name == gene:
 
     return aligned_reads
 
