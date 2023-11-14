@@ -297,7 +297,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
             for read in reads_mutation_dict:
                 read_alelle = read.split(' ')[1]
-                if read_gene == alelle:
+                if read_alelle == alelle:
                     read_mutations = reads_mutation_dict[read]
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
                     if len(valid_mutations) > 1:
