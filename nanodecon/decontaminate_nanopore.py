@@ -87,15 +87,19 @@ def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consen
             total_depth = sum(consensus_dict[gene][0][int(position) - 1])
             print ('{},{},{},{},{},{},{}'.format(gene, allele_pair_dict[gene], position, majority_base, mutation_base, mutation_depth, total_depth))
 
-def extract_mapped_rmlst_read(output):
+def extract_mapped_rmlst_read(output, nanopore):
     read_set = set()
     with open(output + '/rmlst_mapping.frag', 'r') as frag:
         for line in frag:
             line = line.rstrip()
             line = line.split('\t')
             read_set.add(line[-1])
-    for item in read_set:
-        print (item)
+    with open(output + 'rmlst_reads.txt', 'w') as f:
+        for item in read_set:
+            f.write(item + '\n')
+    os.system('seqtk subseq {} {} > {}'.format(nanopore, output + 'rmlst_reads.txt',
+                                               output + 'rmlst_reads.fastq'))
+
 
 def realign_rmlst_to_hits(res_file, name_file):
     rmlst_alleles = set()
