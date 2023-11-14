@@ -707,15 +707,18 @@ def build_consensus_dict(res_file, mat_file):
             if not line.startswith('#'):
                 line = line.strip().split('\t')
                 allele = line[0]
+                length = int(line[3])
                 consensus_dict[allele] = [[], '']
-                consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
+                for i in range(length):
+                    consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
 
     with open(mat_file, 'r') as f:
         for line in f:
             line = line.strip()
             if line.startswith('#'):
-                allele = line[1:]
+                allele = line[1:].strip()
                 index = 0
+            elif line != '':
                 line = line.split('\t')
                 if line[0] != '-': #excludes read gaps. Reconsider?
                     line = line[1:]
