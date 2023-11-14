@@ -88,10 +88,6 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
         print (item, black_listed_positions[item])
         print ('')
     sys.exit()
-    with open(fastq_file, 'r') as fastq:
-    blacklist_dict = dict()
-    for gene in consensus_dict:
-        blacklist_dict[gene] = dict()
 
 def blacklist_positions(fastq_file, quality_threshold):
     blacklist_dict = {}
