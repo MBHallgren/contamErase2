@@ -155,7 +155,7 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
                 print (aligned_ref)
                 print (aligned_query)
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
-                printn (mutation_vector)
+                print (mutation_vector)
                 sys.exit()
                 # print (mutation_vector, len(mutation_vector))
                 # print (reference, len(reference))
