@@ -287,23 +287,17 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                        confirmed_mutation_dict,
                                                        consensus_dict,
                                                        read_positions_blacklisted_dict)
-    for item in reads_mutation_dict:
-        print (item, reads_mutation_dict[item])
 
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
-
-    sys.exit()
 
     co_occurence_matrix_dict = {}
-    for gene in confirmed_mutation_dict:
-        mutation_list = confirmed_mutation_dict[gene][0]
+    for alelle in confirmed_mutation_dict:
+        mutation_list = confirmed_mutation_dict[alelle][0]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
             for read in reads_mutation_dict:
-                read_gene = read.split(' ')[1].split('_')[0]
-                if read_gene == gene:
+                read_alelle = read.split(' ')[1]
+                if read_gene == alelle:
                     read_mutations = reads_mutation_dict[read]
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
                     if len(valid_mutations) > 1:
@@ -316,36 +310,36 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print ("gene:", gene)
+            print ("alelle:", alelle)
             print("Mutation names:", mutation_list)
             #print ("Depth:", depth_list)
-            average_depth = sum(confirmed_mutation_dict[gene][1]) / len(confirmed_mutation_dict[gene][1])
+            average_depth = sum(confirmed_mutation_dict[alelle][1]) / len(confirmed_mutation_dict[alelle][1])
             print ("Average depth:", average_depth)
             print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
                 print(f"{mutation_name}: {row}")
 
-            co_occurence_matrix_dict[gene] = co_occurrence_matrix
+            co_occurence_matrix_dict[alelle] = co_occurrence_matrix
 
     adjusted_mutation_dict = {}
-    for gene in co_occurence_matrix_dict:
-        adjusted_mutation_dict[gene] = [[], []]
-        average_depth = sum(confirmed_mutation_dict[gene][1]) / len(confirmed_mutation_dict[gene][1])
+    for alelle in co_occurence_matrix_dict:
+        adjusted_mutation_dict[alelle] = [[], []]
+        average_depth = sum(confirmed_mutation_dict[alelle][1]) / len(confirmed_mutation_dict[alelle][1])
         threshold = average_depth * 0.5 # TBD reconsider
         if threshold < 3: # Can we justifiably set this to 3?
             threshold = 3
-        for i, row in enumerate(co_occurence_matrix_dict[gene]):
+        for i, row in enumerate(co_occurence_matrix_dict[alelle]):
             for number_of_co_occurences in row:
-                total_depth = sum(consensus_dict[gene][0][i])
-                relative_depth = confirmed_mutation_dict[gene][1][i] / total_depth
+                total_depth = sum(consensus_dict[alelle][0][i])
+                relative_depth = confirmed_mutation_dict[alelle][1][i] / total_depth
                 if float(number_of_co_occurences) >= float(threshold):
-                    adjusted_mutation_dict[gene][0].append(confirmed_mutation_dict[gene][0][i])
-                    adjusted_mutation_dict[gene][1].append(confirmed_mutation_dict[gene][1][i])
+                    adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
+                    adjusted_mutation_dict[alelle][1].append(confirmed_mutation_dict[alelle][1][i])
                     break
                 elif (relative_depth >= arguments.mrd):
-                    adjusted_mutation_dict[gene][0].append(confirmed_mutation_dict[gene][0][i])
-                    adjusted_mutation_dict[gene][1].append(confirmed_mutation_dict[gene][1][i])
+                    adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
+                    adjusted_mutation_dict[alelle][1].append(confirmed_mutation_dict[alelle][1][i])
                     break
 
     return adjusted_mutation_dict
