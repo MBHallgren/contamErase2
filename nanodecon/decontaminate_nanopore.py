@@ -83,13 +83,13 @@ def nanopore_decontamination(arguments):
     print ('Number of mutations: ' + str(number))
 
 
-    sys.exit()
-    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict, consensus_dict)
+    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict)
     number = 0
     for item in confirmed_mutation_dict:
         number += len(confirmed_mutation_dict[item][0])
     print ('Number of mutations: ' + str(number))
 
+    sys.exit()
     format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict)
 
     sys.exit()
@@ -281,20 +281,16 @@ def derive_mutation_positions2(consensus_dict, arguments):
 
 
 
-def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, fsa_file, allele_pair_dict, consensus_dict):
+def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict):
     #TBD why not just get the mutation list from the confirmed_mutation_dict?
     #HERE
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
-                                                       arguments.output + '/specie.fsa',
-                                                       allele_pair_dict,
                                                        confirmed_mutation_dict,
-                                                       arguments.output + '/rmlst_alignment.fsa',
                                                        consensus_dict)
 
     co_occurence_matrix_dict = {}
     for gene in confirmed_mutation_dict:
         mutation_list = confirmed_mutation_dict[gene][0]
-        depth_list = confirmed_mutation_dict[gene][1]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]

@@ -114,7 +114,7 @@ def identify_mutations(mutation_vector, reference_sequence, gene_mutations):
 
     return mutations
 
-def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, confirmed_mutation_dict, rmlst_fsa_file, consensus_dict):
+def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consensus_dict):
     """
     Parses a SAM file, extracts necessary information and finds mutations in each read.
 
@@ -141,7 +141,6 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
             cols = line.strip().split('\t')
             qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
             read_id = qname.split(' ')[0]
-            gene_name = rname.split('_')[0]
 
             # Convert string columns to appropriate types
             pos = int(pos)
@@ -149,7 +148,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
 
             #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
-                majority_seq = consensus_dict[gene_name][1]
+                majority_seq = consensus_dict[rname][1]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(majority_seq[pos-1:pos-1+tlen], seq, cigar_str)
 
@@ -163,7 +162,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
                 mutations = identify_mutations(mutation_vector, majority_seq[pos-1:pos-1+tlen], confirmed_mutation_dict[gene_name][0])
 
                 # Storing mutations in the dictionary
-                name = read_id + ' ' + allele_pair_dict[gene_name]
+                name = read_id + ' ' + rname
                 #if 'BACT000038' in rname:
                 #    print (rname, mutations)
                     #print("Aligned Reference: ", aligned_ref, len(aligned_ref))
