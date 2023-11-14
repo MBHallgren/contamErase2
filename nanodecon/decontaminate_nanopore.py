@@ -132,7 +132,7 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
     adjusted_consensus_dict = {}
 
     for allele in consensus_dict:
-        adjusted_consensus_dict[allele] = [[], consensus_dict[gene][1]]
+        adjusted_consensus_dict[allele] = [[], consensus_dict[allele][1]]
         for position in consensus_dict[allele][0]:
             adjusted_consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0])
 
