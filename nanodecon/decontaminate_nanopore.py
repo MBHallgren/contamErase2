@@ -131,6 +131,11 @@ def index_top_hits_db(output):
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
     black_listed_positions = blacklist_positions(fastq_file, 14)
 
+    for item in black_listed_positions:
+        print (item, black_listed_positions[item])
+
+    sys.exit()
+
     adjusted_consensus_dict = {}
 
     for allele in consensus_dict:
@@ -138,6 +143,7 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
         for position in consensus_dict[allele][0]:
             adjusted_consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0])
 
+    total_black_list_count = 0
     with open(sam_file, 'r') as sam_file:
         for alignment in sam_file:
             if alignment[0] == '@':
@@ -157,12 +163,12 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
                 for i in range(len(mutation_vector)):
                     nucleotide_list = ['A', 'C', 'G', 'T', 'N', '-']
-                    if mutation_vector[i] in nucleotide_list:
+                    if i not in black_listed_positions[rname]:
                         adjusted_consensus_dict[rname][0][i][nucleotide_list.index(mutation_vector[i])] += 1
-
-    for allele in adjusted_consensus_dict:
-        print (allele, adjusted_consensus_dict[allele][0])
-    sys.exit()
+                    else:
+                        total_black_list_count += 1
+    print ('Total blacklisted positions: ' + str(total_black_list_count))
+    return adjusted_consensus_dict, black_listed_positions
 
 def derive_aligned_reads_for_gene(sam_file, gene):
     aligned_reads = []
