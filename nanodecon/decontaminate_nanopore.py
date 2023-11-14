@@ -162,6 +162,7 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
 
     for allele in adjusted_consensus_dict:
         print (allele, adjusted_consensus_dict[allele][0])
+    sys.exit()
 
 def derive_aligned_reads_for_gene(sam_file, gene):
     aligned_reads = []
