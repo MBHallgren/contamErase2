@@ -136,43 +136,40 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
         for position in consensus_dict[allele][0]:
             adjusted_consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0])
 
-    for alignment in sam_file:
-        if alignment[0] == '@':
-            continue
-        cols = alignment.strip().split('\t')
-        qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
-        read_id = qname.split(' ')[0]
-        template_seq = adjusted_consensus_dict[rname][1]
-        pos = int(pos)
-        tlen = int(tlen)
+    with open(sam_file, 'r') as sam_file:
+        for alignment in sam_file:
+            if alignment[0] == '@':
+                continue
+            cols = alignment.strip().split('\t')
+            qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
+            read_id = qname.split(' ')[0]
+            template_seq = adjusted_consensus_dict[rname][1]
+            pos = int(pos)
+            tlen = int(tlen)
 
-        if pos == 1 and len(seq) >= tlen: #We will only consider read that span the entire gene.
-            # Obtaining the alignment using your function
-            aligned_ref, aligned_query = extract_alignment(majority_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
-            print (aligned_ref, aligned_query)
-            sys.exit()
-            # Creating a mutation vector using your function
-            mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
-            # print (mutation_vector, len(mutation_vector))
-            # print (reference, len(reference))
+            if pos == 1 and len(seq) >= tlen: #We will only consider read that span the entire gene.
+                # Obtaining the alignment using your function
+                aligned_ref, aligned_query = extract_alignment(majority_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
+                print (aligned_ref, aligned_query)
+                sys.exit()
+                # Creating a mutation vector using your function
+                mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
+                # print (mutation_vector, len(mutation_vector))
+                # print (reference, len(reference))
 
-            # Identifying mutations using your function
-            # main_reference = reference_sequences[allele_pair_dict[gene_name]]
-            mutations = identify_mutations(mutation_vector, majority_seq[pos - 1:pos - 1 + tlen],
-                                           confirmed_mutation_dict[gene_name][0])
+                # Identifying mutations using your function
+                # main_reference = reference_sequences[allele_pair_dict[gene_name]]
+                mutations = identify_mutations(mutation_vector, majority_seq[pos - 1:pos - 1 + tlen],
+                                               confirmed_mutation_dict[gene_name][0])
 
-            # Storing mutations in the dictionary
-            name = read_id + ' ' + allele_pair_dict[gene_name]
-            # if 'BACT000038' in rname:
-            #    print (rname, mutations)
-            # print("Aligned Reference: ", aligned_ref, len(aligned_ref))
-            # print("Aligned Query:     ", aligned_query, len(aligned_query))
-            # Multiple can occur, issue?
-            mutations_dict[name] = mutations
-
-            if gene_name == 'BACT000049':
-                if '4_G' in mutations or '6_T' in mutations or '9_C' in mutations:
-                    print(name)
+                # Storing mutations in the dictionary
+                name = read_id + ' ' + allele_pair_dict[gene_name]
+                # if 'BACT000038' in rname:
+                #    print (rname, mutations)
+                # print("Aligned Reference: ", aligned_ref, len(aligned_ref))
+                # print("Aligned Query:     ", aligned_query, len(aligned_query))
+                # Multiple can occur, issue?
+                mutations_dict[name] = mutations
 
 def derive_aligned_reads_for_gene(sam_file, gene):
     aligned_reads = []
