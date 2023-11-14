@@ -149,7 +149,7 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
 
             if pos == 1 and len(seq) >= tlen: #We will only consider read that span the entire gene.
                 # Obtaining the alignment using your function
-                aligned_ref, aligned_query = extract_alignment(majority_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
+                aligned_ref, aligned_query = extract_alignment(template_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
                 print (aligned_ref, aligned_query)
                 sys.exit()
                 # Creating a mutation vector using your function
