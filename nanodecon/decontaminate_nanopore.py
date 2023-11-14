@@ -325,7 +325,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
     adjusted_mutation_dict = {}
     for alelle in co_occurence_matrix_dict:
-        print (alelle)
         adjusted_mutation_dict[alelle] = [[], []]
         average_depth = sum(confirmed_mutation_dict[alelle][1]) / len(confirmed_mutation_dict[alelle][1])
         threshold = average_depth * 0.5 # TBD reconsider
@@ -336,13 +335,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
         for i in range(len(matrix)):
             row = matrix[i]
             mutation = mutation_list[i]
-            print (row, mutation)
-            sys.exit()
-            #mutation =
+            position = int(mutation.split('_')[0])
             for number_of_co_occurences in row:
-                total_depth = sum(consensus_dict[alelle][0][i])
-                print (consensus_dict[alelle][0][i])
-                print (total_depth)
+                total_depth = sum(consensus_dict[alelle][0][position - 1])
                 relative_depth = confirmed_mutation_dict[alelle][1][i] / total_depth
                 if float(number_of_co_occurences) >= float(threshold):
                     adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
