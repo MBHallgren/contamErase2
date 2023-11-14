@@ -97,8 +97,8 @@ def extract_mapped_rmlst_read(output, nanopore):
     with open(output + 'rmlst_reads.txt', 'w') as f:
         for item in read_set:
             f.write(item + '\n')
-    os.system('seqtk subseq {} {} > {}'.format(nanopore, output + 'rmlst_reads.txt',
-                                               output + 'rmlst_reads.fastq'))
+    os.system('seqtk subseq {} {} > {}'.format(nanopore, output + '/rmlst_reads.txt',
+                                               output + '/rmlst_reads.fastq'))
 
 
 def realign_rmlst_to_hits(res_file, name_file):
