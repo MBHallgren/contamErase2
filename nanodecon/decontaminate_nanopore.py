@@ -711,26 +711,17 @@ def build_consensus_dict(res_file, mat_file):
                 consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
 
     with open(mat_file, 'r') as f:
-        correct_size_flag = False
         for line in f:
             line = line.strip()
             if line.startswith('#'):
                 allele = line[1:]
-                gene = allele.split('_')[0]
-                if allele in correct_size_alleles:
-                    correct_size_flag = True
-                    index = 0
-                else:
-                    correct_size_flag = False
-            else:
-                if line != '':
-                    if correct_size_flag:
-                        line = line.split('\t')
-                        if line[0] != '-': #excludes read gaps. Reconsider?
-                            line = line[1:]
-                            for i in range(len(line)):
-                                consensus_dict[gene][0][index][i] += int(line[i])
-                            index += 1
+                index = 0
+                line = line.split('\t')
+                if line[0] != '-': #excludes read gaps. Reconsider?
+                    line = line[1:]
+                    for i in range(len(line)):
+                        consensus_dict[gene][0][index][i] += int(line[i])
+                    index += 1
     for gene in consensus_dict:
         for position in consensus_dict[gene][0]:
             consensus_dict[gene][1] += 'ACGTN-'[position.index(max(position))]
