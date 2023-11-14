@@ -93,7 +93,10 @@ def extract_mapped_rmlst_read(output):
         for line in frag:
             line = line.rstrip()
             line = line.split('\t')
-            print (line[-1], line[-2])
+            read_set.add(line[-1])
+    for item in read_set:
+        print (item)
+
 def realign_rmlst_to_hits(res_file, name_file):
     rmlst_alleles = set()
     rmlst_genes = dict()
