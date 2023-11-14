@@ -159,7 +159,7 @@ def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consens
 
                 # Identifying mutations using your function
                 #main_reference = reference_sequences[allele_pair_dict[gene_name]]
-                mutations = identify_mutations(mutation_vector, majority_seq[pos-1:pos-1+tlen], confirmed_mutation_dict[gene_name][0])
+                mutations = identify_mutations(mutation_vector, majority_seq[pos-1:pos-1+tlen], confirmed_mutation_dict[rname][0])
 
                 # Storing mutations in the dictionary
                 name = read_id + ' ' + rname
