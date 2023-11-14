@@ -51,7 +51,7 @@ def nanopore_decontamination(arguments):
                   arguments.output + '/top_hits_db',
                   "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
     #TMP removed -oa above
-    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
