@@ -26,6 +26,14 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
     kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/rmlst_mapping",
+                  arguments.output + '/specie_db',
+                  "-mem_mode -t 16 -ID 90 -ont".format(
+                      arguments.threads, arguments.output)).run()
+    sys.exit()
+    #
+
+    kma.KMARunner(arguments.nanopore,
                   arguments.output + "/rmlst_alignment",
                   arguments.output + '/specie_db',
                   "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
