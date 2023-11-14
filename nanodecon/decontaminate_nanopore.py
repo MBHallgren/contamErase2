@@ -202,7 +202,7 @@ def format_output(confirmed_mutation_dict, consensus_dict):
             mutation_depth = mutation[1]
             majority_base = consensus_dict[alelle][1][int(position) - 1]
             total_depth = sum(consensus_dict[alelle][0][int(position) - 1])
-            print ('{},{},{},{},{},{},{}'.format(alelle, position, majority_base, mutation_base, mutation_depth, total_depth))
+            print ('{},{},{},{},{},{}'.format(alelle, position, majority_base, mutation_base, mutation_depth, total_depth))
 
 def extract_mapped_rmlst_read(output, nanopore):
     read_set = set()
