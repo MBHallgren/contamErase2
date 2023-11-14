@@ -1,6 +1,7 @@
 import os
 import sys
 import gzip
+import from Bio import SeqIO
 from nanodecon import kma
 from nanodecon import util
 from itertools import combinations
@@ -52,8 +53,7 @@ def nanopore_decontamination(arguments):
                                                                                    arguments.output + '/rmlst_alignment.res',
                                                                                    arguments.output + '/rmlst_alignment.mat')
 
-
-
+    consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
     number = 0
@@ -63,6 +63,7 @@ def nanopore_decontamination(arguments):
 
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
+        #Add significant but non biological mutations.
     confirmed_mutation_dict = validate_mutations(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
     #TBD: make this non-verbose
@@ -80,6 +81,34 @@ def nanopore_decontamination(arguments):
     format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict)
 
     sys.exit()
+
+def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
+    black_listed_positions = blacklist_positions(fastq_file, 14)
+    for item in black_listed_positions:
+        print (item, black_listed_positions[item])
+        print ('')
+    sys.exit()
+    with open(fastq_file, 'r') as fastq:
+    blacklist_dict = dict()
+    for gene in consensus_dict:
+        blacklist_dict[gene] = dict()
+
+def blacklist_positions(fastq_file, quality_threshold):
+    blacklist_dict = {}
+    for record in SeqIO.parse(fastq_file, "fastq"):
+        # Initialize the blacklist for this read
+        blacklist = []
+
+        # Check each quality score
+        for pos, score in enumerate(record.letter_annotations["phred_quality"]):
+            if score < quality_threshold:
+                # Add the position to the blacklist (positions are 0-indexed)
+                blacklist.append(pos)
+
+        # Add the blacklist to the dictionary with the read ID as the key
+        blacklist_dict[record.id] = blacklist
+
+    return blacklist_dict
 
 def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict):
     header = 'Gene,MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth'

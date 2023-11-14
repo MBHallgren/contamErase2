@@ -129,6 +129,7 @@ def parse_sam_and_find_mutations(sam_file_path, fasta_file, allele_pair_dict, co
     #references = parse_sam_get_references(sam_file_path)
     #references = parse_fsa_get_references(rmlst_fsa_file)
     #reference_sequences = load_references_from_fasta(fasta_file, references)
+    quality_dict = {}
 
     mutations_dict = {}
     with open(sam_file_path, 'r') as sam_file:
