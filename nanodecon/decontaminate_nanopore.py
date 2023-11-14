@@ -57,12 +57,15 @@ def nanopore_decontamination(arguments):
     #TMP removed -oa above
     os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
-    odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
-                                                                                   arguments.output + '/rmlst_alignment.res',
-                                                                                   arguments.output + '/rmlst_alignment.mat')
+    consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
+                                          arguments.output + '/rmlst_alignment.mat')
+    for item in consensus_dict:
+        print (item, consensus_dict[item])
+    sys.exit()
 
-    #consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
+    consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
 
+    sys.exit()
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
     number = 0
     for item in confirmed_mutation_dict:
@@ -697,26 +700,15 @@ def extract_max_scored_alleles(res_file):
     return gene_score_dict, max_scored_alleles, allele_pair_dict
 
 
-def build_consensus_dict(arguments, res_file, mat_file):
-    gene_score_dict, top_alleles, allele_pair_dict = extract_max_scored_alleles(res_file)
-    non_alignment_matches = {}
+def build_consensus_dict(res_file, mat_file):
     consensus_dict = {}
-    odd_size_alleles = set()
-    correct_size_alleles = set()
     with open(res_file, 'r') as f:
         for line in f:
             if not line.startswith('#'):
                 line = line.strip().split('\t')
                 allele = line[0]
-                gene = allele.split('_')[0]
-                if int(line[3]) != gene_score_dict[gene][-1][0]:
-                    odd_size_alleles.add(line[0])
-                else:
-                    correct_size_alleles.add(allele)
-                    if gene not in consensus_dict:
-                        consensus_dict[gene] = [[],'']
-                        for i in range(int(line[3])):
-                            consensus_dict[gene][0].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
+                consensus_dict[allele] = [[], '']
+                consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
 
     with open(mat_file, 'r') as f:
         correct_size_flag = False
@@ -739,11 +731,10 @@ def build_consensus_dict(arguments, res_file, mat_file):
                             for i in range(len(line)):
                                 consensus_dict[gene][0][index][i] += int(line[i])
                             index += 1
-    # Derive majorotiy sequence TBD
     for gene in consensus_dict:
         for position in consensus_dict[gene][0]:
             consensus_dict[gene][1] += 'ACGTN-'[position.index(max(position))]
-    return odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict
+    return consensus_dict
 
 
 def produce_final_output_nanopore(arguments, frag_file, primary, candidate_rmlst_dict_results, black_list_plasmid, black_list_viral, black_list_human):
