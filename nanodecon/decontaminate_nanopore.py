@@ -82,7 +82,7 @@ def nanopore_decontamination(arguments):
         number += len(confirmed_mutation_dict[item][0])
     print ('Number of mutations: ' + str(number))
 
-    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict)
+    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict)
     number = 0
     for item in confirmed_mutation_dict:
         number += len(confirmed_mutation_dict[item][0])
@@ -280,12 +280,13 @@ def derive_mutation_positions2(consensus_dict, arguments):
 
 
 
-def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict):
+def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict):
     #TBD why not just get the mutation list from the confirmed_mutation_dict?
     #HERE
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        confirmed_mutation_dict,
-                                                       consensus_dict)
+                                                       consensus_dict,
+                                                       read_positions_blacklisted_dict)
     for item in reads_mutation_dict:
         print (item, reads_mutation_dict[item])
     sys.exit()
