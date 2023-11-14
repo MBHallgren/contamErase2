@@ -131,11 +131,6 @@ def index_top_hits_db(output):
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
     black_listed_positions = blacklist_positions(fastq_file, 14)
 
-    for item in black_listed_positions:
-        print (item, black_listed_positions[item])
-
-    sys.exit()
-
     adjusted_consensus_dict = {}
 
     for allele in consensus_dict:
@@ -163,7 +158,7 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
                 for i in range(len(mutation_vector)):
                     nucleotide_list = ['A', 'C', 'G', 'T', 'N', '-']
-                    if i not in black_listed_positions[rname]:
+                    if i not in black_listed_positions[read_id]:
                         adjusted_consensus_dict[rname][0][i][nucleotide_list.index(mutation_vector[i])] += 1
                     else:
                         total_black_list_count += 1
