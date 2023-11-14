@@ -35,6 +35,8 @@ def nanopore_decontamination(arguments):
 
     extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
+    os.system('echo {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 --headcrop 50 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
+
     sys.exit()
     #
 
