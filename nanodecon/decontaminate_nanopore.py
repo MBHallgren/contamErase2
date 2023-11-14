@@ -10,6 +10,8 @@ from itertools import combinations
 from nanodecon.intra_species_detection import determine_intra_species_contamination_nanopore
 from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
 from nanodecon.nanopore_mutations import extract_alignment
+from nanodecon.nanopore_mutations import create_mutation_vector
+from nanodecon.nanopore_mutations import identify_mutations
 
 def nanopore_decontamination(arguments):
     os.system('mkdir ' + arguments.output)
@@ -150,17 +152,19 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
             if pos == 1 and len(seq) >= tlen: #We will only consider read that span the entire gene.
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(template_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
-                print (aligned_ref, aligned_query)
-                sys.exit()
-                # Creating a mutation vector using your function
+                print (aligned_ref)
+                print (aligned_query)
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
+                printn (mutation_vector)
+                sys.exit()
                 # print (mutation_vector, len(mutation_vector))
                 # print (reference, len(reference))
 
                 # Identifying mutations using your function
                 # main_reference = reference_sequences[allele_pair_dict[gene_name]]
-                mutations = identify_mutations(mutation_vector, majority_seq[pos - 1:pos - 1 + tlen],
+                mutations = identify_mutations(mutation_vector, template_seq[pos - 1:pos - 1 + tlen],
                                                confirmed_mutation_dict[gene_name][0])
+
 
                 # Storing mutations in the dictionary
                 name = read_id + ' ' + allele_pair_dict[gene_name]
