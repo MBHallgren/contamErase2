@@ -41,13 +41,13 @@ def nanopore_decontamination(arguments):
     arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
     #
 
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/rmlst_alignment",
-                  arguments.output + '/specie_db',
-                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/rmlst_alignment",
+    #              arguments.output + '/specie_db',
+    #              "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
     #TMP removed -oa above
 
-    os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
+    #os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     odd_size_alleles, non_alignment_matches, consensus_dict, top_alleles, allele_pair_dict, gene_score_dict = build_consensus_dict(arguments,
                                                                                    arguments.output + '/rmlst_alignment.res',
@@ -83,7 +83,7 @@ def nanopore_decontamination(arguments):
     sys.exit()
 
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
-    black_listed_positions = blacklist_positions(fastq_file, 14)
+    black_listed_positions = blacklist_positions(fastq_file, 10)
     for item in black_listed_positions:
         print (item, black_listed_positions[item])
         print ('')
