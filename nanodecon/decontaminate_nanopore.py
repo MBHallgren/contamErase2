@@ -10,11 +10,11 @@ from nanodecon.intra_species_detection import determine_intra_species_contaminat
 from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
 
 def nanopore_decontamination(arguments):
-    os.system('mkdir ' + arguments.output)
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
+    #os.system('mkdir ' + arguments.output)
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 10 -ont".format(arguments.threads)).run()
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
@@ -25,11 +25,16 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/rmlst_mapping",
-                  arguments.output + '/specie_db',
-                  "-mem_mode -t 16 -ID 90 -ont".format(
-                      arguments.threads, arguments.output)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/rmlst_mapping",
+    #              arguments.output + '/specie_db',
+    #              "-mem_mode -t 16 -ID 90 -ont".format(
+    #                  arguments.threads, arguments.output)).run()
+
+    #os.system('gunzip ' + arguments.output + '/rmlst_mapping.frag.gz')
+
+    extract_mapped_rmlst_read(arguments.output)
+
     sys.exit()
     #
 
@@ -82,7 +87,13 @@ def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consen
             total_depth = sum(consensus_dict[gene][0][int(position) - 1])
             print ('{},{},{},{},{},{},{}'.format(gene, allele_pair_dict[gene], position, majority_base, mutation_base, mutation_depth, total_depth))
 
-
+def extract_mapped_rmlst_read(output):
+    read_set = set()
+    with open(output + '/rmlst_mapping.frag', 'r') as frag:
+        for line in frag:
+            line = line.rstrip()
+            line = line.split('\t')
+            print (line[-1], line[-2])
 def realign_rmlst_to_hits(res_file, name_file):
     rmlst_alleles = set()
     rmlst_genes = dict()
