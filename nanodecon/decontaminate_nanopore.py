@@ -372,10 +372,7 @@ def validate_mutations(consensus_dict, fsa_file):
         mutations_found_in_rmlst_genes[gene] = set()
         previous_variants = set()
         for sequence in correct_length_dict[gene][1]:
-            print (sequence)
             for i in range(len(sequence)):
-                print (i)
-                print (sequence[i])
                 previous_variants += '{}_{}'.format(i, sequence[i])
         mutations_found_in_rmlst_genes[gene] = previous_variants
 
@@ -416,7 +413,7 @@ def derive_correct_length_headers(consensus_dict, fsa_file):
                 if gene != None:
                     if sequence != '':
                         if len(sequence) == correct_length_dict[gene][0]:
-                            correct_length_dict[gene][1].append(allele)
+                            correct_length_dict[gene][1].append(sequence)
                 header = line.strip()[1:]
                 allele = header
                 gene = allele.split('_')[0]
