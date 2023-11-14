@@ -63,7 +63,7 @@ def nanopore_decontamination(arguments):
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
 
-    #consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
+    consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
     number = 0
@@ -74,7 +74,7 @@ def nanopore_decontamination(arguments):
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
         #Add significant but non biological mutations.
-    confirmed_mutation_dict = validate_mutations(confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
+    confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa')
 
     #TBD: make this non-verbose
     number = 0
