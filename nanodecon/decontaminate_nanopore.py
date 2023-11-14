@@ -45,8 +45,18 @@ def nanopore_decontamination(arguments):
         #Can we do something to include novel mutations if the signal is strong enough?
     confirmed_mutation_dict = validate_mutations(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa')
 
+    #TBD: make this non-verbose
+    number = 0
+    for item in confirmed_mutation_dict:
+        number += len(confirmed_mutation_dict[item][0])
+    print ('Number of mutations: ' + str(number))
 
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, gene_score_dict, arguments.output + '/specie.fsa', allele_pair_dict, consensus_dict)
+    number = 0
+    for item in confirmed_mutation_dict:
+        number += len(confirmed_mutation_dict[item][0])
+    print ('Number of mutations: ' + str(number))
+    sys.exit()
 
     format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict)
 
