@@ -720,11 +720,12 @@ def build_consensus_dict(res_file, mat_file):
                 if line[0] != '-': #excludes read gaps. Reconsider?
                     line = line[1:]
                     for i in range(len(line)):
-                        consensus_dict[gene][0][index][i] += int(line[i])
+                        consensus_dict[allele][0][index][i] += int(line[i])
                     index += 1
-    for gene in consensus_dict:
-        for position in consensus_dict[gene][0]:
-            consensus_dict[gene][1] += 'ACGTN-'[position.index(max(position))]
+
+    for allele in consensus_dict:
+        for position in consensus_dict[allele][0]:
+            consensus_dict[allele][1] += 'ACGTN-'[position.index(max(position))]
     return consensus_dict
 
 
