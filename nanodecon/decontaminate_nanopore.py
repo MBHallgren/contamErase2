@@ -88,7 +88,7 @@ def nanopore_decontamination(arguments):
         number += len(confirmed_mutation_dict[item][0])
     print ('Number of mutations: ' + str(number))
 
-    format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict)
+    format_output(confirmed_mutation_dict, consensus_dict)
 
     sys.exit()
 
@@ -192,17 +192,17 @@ def blacklist_positions(fastq_file, quality_threshold):
 
     return blacklist_dict
 
-def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict):
+def format_output(confirmed_mutation_dict, consensus_dict):
     header = 'Gene,MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth'
     print (header)
-    for gene in confirmed_mutation_dict:
-        for mutation in zip(confirmed_mutation_dict[gene][0], confirmed_mutation_dict[gene][1]):
+    for alelle in confirmed_mutation_dict:
+        for mutation in zip(confirmed_mutation_dict[alelle][0], confirmed_mutation_dict[alelle][1]):
             position = mutation[0].split('_')[0]
             mutation_base = mutation[0].split('_')[1]
             mutation_depth = mutation[1]
-            majority_base = consensus_dict[gene][1][int(position) - 1]
-            total_depth = sum(consensus_dict[gene][0][int(position) - 1])
-            print ('{},{},{},{},{},{},{}'.format(gene, allele_pair_dict[gene], position, majority_base, mutation_base, mutation_depth, total_depth))
+            majority_base = consensus_dict[alelle][1][int(position) - 1]
+            total_depth = sum(consensus_dict[alelle][0][int(position) - 1])
+            print ('{},{},{},{},{},{},{}'.format(alelle, position, majority_base, mutation_base, mutation_depth, total_depth))
 
 def extract_mapped_rmlst_read(output, nanopore):
     read_set = set()
