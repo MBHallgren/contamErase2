@@ -321,7 +321,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 print(f"{mutation_name}: {row}")
 
             co_occurence_matrix_dict[alelle] = co_occurrence_matrix
-    sys.exit()
+
     adjusted_mutation_dict = {}
     for alelle in co_occurence_matrix_dict:
         print (alelle)
@@ -331,6 +331,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
         if threshold < 3: # Can we justifiably set this to 3?
             threshold = 3
         for i, row in enumerate(co_occurence_matrix_dict[alelle]):
+            print(i, row)
             for number_of_co_occurences in row:
                 total_depth = sum(consensus_dict[alelle][0][i])
                 print (consensus_dict[alelle][0][i])
