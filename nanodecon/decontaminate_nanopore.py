@@ -80,8 +80,9 @@ def nanopore_decontamination(arguments):
     number = 0
     for item in confirmed_mutation_dict:
         number += len(confirmed_mutation_dict[item][0])
+        print (item, confirmed_mutation_dict[item])
     print ('Number of mutations: ' + str(number))
-
+    sys.exit()
 
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict)
     number = 0
