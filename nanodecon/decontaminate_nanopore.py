@@ -411,10 +411,9 @@ def derive_correct_length_headers(consensus_dict, fsa_file):
         for line in f:
             if line.startswith('>'):
                 if gene != None:
-                    if gene in gene_score_dict:
-                        if sequence != '':
-                            if len(sequence) == correct_length_dict[gene][0]:
-                                correct_length_dict[gene][1].append(allele)
+                    if sequence != '':
+                        if len(sequence) == correct_length_dict[gene][0]:
+                            correct_length_dict[gene][1].append(allele)
                 header = line.strip()[1:]
                 allele = header
                 gene = allele.split('_')[0]
