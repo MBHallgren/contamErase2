@@ -27,15 +27,19 @@ def nanopore_decontamination(arguments):
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
 
-
-
     kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/rmlst_mapping",
+                  arguments.output + "/initial_rmlst_alignment",
                   arguments.output + '/specie_db',
-                  "-mem_mode -t 16 -ID 90 -ont".format(
+                  "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5".format(
                       arguments.threads, arguments.output)).run()
 
-    os.system('gunzip ' + arguments.output + '/rmlst_mapping.frag.gz')
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/initial_rmlst_alignment",
+    #              arguments.output + '/specie_db',
+    #              "-mem_mode -t 16 -ID 90 -ont".format(
+    #                  arguments.threads, arguments.output)).run()
+
+    os.system('gunzip ' + arguments.output + '/initial_rmlst_alignment.frag.gz')
 
     extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
@@ -87,7 +91,7 @@ def nanopore_decontamination(arguments):
     sys.exit()
 
 def index_top_hits_db(output):
-    infile = output + '/rmlst_mapping.res'
+    infile = output + '/initial_rmlst_alignment.res'
 
     top_hits = {}
     with open(infile, 'r') as f:
@@ -174,7 +178,7 @@ def format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consen
 
 def extract_mapped_rmlst_read(output, nanopore):
     read_set = set()
-    with open(output + '/rmlst_mapping.frag', 'r') as frag:
+    with open(output + '/initial_rmlst_alignment.frag', 'r') as frag:
         for line in frag:
             line = line.rstrip()
             line = line.split('\t')
