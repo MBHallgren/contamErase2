@@ -321,7 +321,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 print(f"{mutation_name}: {row}")
 
             co_occurence_matrix_dict[alelle] = co_occurrence_matrix
-
+    sys.exit()
     adjusted_mutation_dict = {}
     for alelle in co_occurence_matrix_dict:
         print (alelle)
