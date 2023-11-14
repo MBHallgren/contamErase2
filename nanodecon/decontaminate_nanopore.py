@@ -153,8 +153,6 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
             if pos == 1 and len(seq) >= tlen: #We will only consider read that span the entire gene.
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(template_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
-                print (aligned_ref)
-                print (aligned_query)
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
                 for i in range(len(mutation_vector)):
                     nucleotide_list = ['A', 'C', 'G', 'T', 'N', '-']
