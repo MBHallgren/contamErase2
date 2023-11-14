@@ -88,7 +88,6 @@ def nanopore_decontamination(arguments):
         number += len(confirmed_mutation_dict[item][0])
     print ('Number of mutations: ' + str(number))
 
-    sys.exit()
     format_output(confirmed_mutation_dict, top_alleles, allele_pair_dict, consensus_dict)
 
     sys.exit()
