@@ -327,29 +327,32 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
 
     adjusted_mutation_dict = {}
-    for alelle in co_occurence_matrix_dict:
-        adjusted_mutation_dict[alelle] = [[], []]
-        average_depth = sum(confirmed_mutation_dict[alelle][1]) / len(confirmed_mutation_dict[alelle][1])
-        threshold = average_depth * 0.5 # TBD reconsider
-        if threshold < 3: # Can we justifiably set this to 3?
-            threshold = 3
-        matrix = co_occurence_matrix_dict[alelle][0]
-        mutation_list = co_occurence_matrix_dict[alelle][1]
-        for i in range(len(matrix)):
-            row = matrix[i]
-            mutation = mutation_list[i]
-            position = int(mutation.split('_')[0])
-            for number_of_co_occurences in row:
-                total_depth = sum(consensus_dict[alelle][0][position - 1])
-                relative_depth = confirmed_mutation_dict[alelle][1][i] / total_depth
-                if float(number_of_co_occurences) >= float(threshold):
-                    adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
-                    adjusted_mutation_dict[alelle][1].append(confirmed_mutation_dict[alelle][1][i])
-                    break
-                elif (relative_depth >= arguments.mrd):
-                    adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
-                    adjusted_mutation_dict[alelle][1].append(confirmed_mutation_dict[alelle][1][i])
-                    break
+    for alelle in confirmed_mutation_dict:
+        if allele in co_occurence_matrix_dict:
+            adjusted_mutation_dict[alelle] = [[], []]
+            average_depth = sum(confirmed_mutation_dict[alelle][1]) / len(confirmed_mutation_dict[alelle][1])
+            threshold = average_depth * 0.5 # TBD reconsider
+            if threshold < 3: # Can we justifiably set this to 3?
+                threshold = 3
+            matrix = co_occurence_matrix_dict[alelle][0]
+            mutation_list = co_occurence_matrix_dict[alelle][1]
+            for i in range(len(matrix)):
+                row = matrix[i]
+                mutation = mutation_list[i]
+                position = int(mutation.split('_')[0])
+                for number_of_co_occurences in row:
+                    total_depth = sum(consensus_dict[alelle][0][position - 1])
+                    relative_depth = confirmed_mutation_dict[alelle][1][i] / total_depth
+                    if float(number_of_co_occurences) >= float(threshold):
+                        adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
+                        adjusted_mutation_dict[alelle][1].append(confirmed_mutation_dict[alelle][1][i])
+                        break
+                    elif (relative_depth >= arguments.mrd):
+                        adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
+                        adjusted_mutation_dict[alelle][1].append(confirmed_mutation_dict[alelle][1][i])
+                        break
+        else:
+            adjusted_mutation_dict[alelle] = confirmed_mutation_dict[alelle]
 
     return adjusted_mutation_dict
 
