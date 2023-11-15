@@ -290,6 +290,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                        consensus_dict,
                                                        read_positions_blacklisted_dict)
 
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
 
     co_occurence_matrix_dict = {}
     for allele in confirmed_mutation_dict:
