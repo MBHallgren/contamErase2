@@ -246,7 +246,7 @@ def calculate_random_error_rate(consensus_dict):
     return (error_count/2) / base_count
 
 def validate_rmlst_genes_illumina():
-    #Only include alelle of same length as primary's alelle
+    #Only include allele of same length as primary's allele
     #Do direct validation from .res file, if depth > threshold
     pass
 

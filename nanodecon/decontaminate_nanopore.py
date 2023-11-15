@@ -195,14 +195,14 @@ def blacklist_positions(fastq_file, quality_threshold):
 def format_output(confirmed_mutation_dict, consensus_dict):
     header = 'Gene,MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth'
     print (header)
-    for alelle in confirmed_mutation_dict:
-        for mutation in zip(confirmed_mutation_dict[alelle][0], confirmed_mutation_dict[alelle][1]):
+    for allele in confirmed_mutation_dict:
+        for mutation in zip(confirmed_mutation_dict[allele][0], confirmed_mutation_dict[allele][1]):
             position = mutation[0].split('_')[0]
             mutation_base = mutation[0].split('_')[1]
             mutation_depth = mutation[1]
-            majority_base = consensus_dict[alelle][1][int(position) - 1]
-            total_depth = sum(consensus_dict[alelle][0][int(position) - 1])
-            print ('{},{},{},{},{},{}'.format(alelle, position, majority_base, mutation_base, mutation_depth, total_depth))
+            majority_base = consensus_dict[allele][1][int(position) - 1]
+            total_depth = sum(consensus_dict[allele][0][int(position) - 1])
+            print ('{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth))
 
 def extract_mapped_rmlst_read(output, nanopore):
     read_set = set()
@@ -293,14 +293,14 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
 
     co_occurence_matrix_dict = {}
-    for alelle in confirmed_mutation_dict:
-        mutation_list = confirmed_mutation_dict[alelle][0]
+    for allele in confirmed_mutation_dict:
+        mutation_list = confirmed_mutation_dict[allele][0]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
             for read in reads_mutation_dict:
-                read_alelle = read.split(' ')[1]
-                if read_alelle == alelle:
+                read_allele = read.split(' ')[1]
+                if read_allele == allele:
                     read_mutations = reads_mutation_dict[read]
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
                     if len(valid_mutations) > 1:
@@ -313,46 +313,46 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print ("alelle:", alelle)
+            print ("allele:", allele)
             print("Mutation names:", mutation_list)
             #print ("Depth:", depth_list)
-            average_depth = sum(confirmed_mutation_dict[alelle][1]) / len(confirmed_mutation_dict[alelle][1])
+            average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
             print ("Average depth:", average_depth)
             print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
                 print(f"{mutation_name}: {row}")
 
-            co_occurence_matrix_dict[alelle] = [co_occurrence_matrix, mutation_list]
+            co_occurence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
 
 
     adjusted_mutation_dict = {}
-    for alelle in confirmed_mutation_dict:
+    for allele in confirmed_mutation_dict:
         if allele in co_occurence_matrix_dict:
-            adjusted_mutation_dict[alelle] = [[], []]
-            average_depth = sum(confirmed_mutation_dict[alelle][1]) / len(confirmed_mutation_dict[alelle][1])
+            adjusted_mutation_dict[allele] = [[], []]
+            average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
             threshold = average_depth * 0.5 # TBD reconsider
             if threshold < 3: # Can we justifiably set this to 3?
                 threshold = 3
-            matrix = co_occurence_matrix_dict[alelle][0]
-            mutation_list = co_occurence_matrix_dict[alelle][1]
+            matrix = co_occurence_matrix_dict[allele][0]
+            mutation_list = co_occurence_matrix_dict[allele][1]
             for i in range(len(matrix)):
                 row = matrix[i]
                 mutation = mutation_list[i]
                 position = int(mutation.split('_')[0])
                 for number_of_co_occurences in row:
-                    total_depth = sum(consensus_dict[alelle][0][position - 1])
-                    relative_depth = confirmed_mutation_dict[alelle][1][i] / total_depth
+                    total_depth = sum(consensus_dict[allele][0][position - 1])
+                    relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
                     if float(number_of_co_occurences) >= float(threshold):
-                        adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
-                        adjusted_mutation_dict[alelle][1].append(confirmed_mutation_dict[alelle][1][i])
+                        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                         break
                     elif (relative_depth >= arguments.mrd):
-                        adjusted_mutation_dict[alelle][0].append(confirmed_mutation_dict[alelle][0][i])
-                        adjusted_mutation_dict[alelle][1].append(confirmed_mutation_dict[alelle][1][i])
+                        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                         break
         else:
-            adjusted_mutation_dict[alelle] = confirmed_mutation_dict[alelle]
+            adjusted_mutation_dict[allele] = confirmed_mutation_dict[allele]
 
     return adjusted_mutation_dict
 
