@@ -282,6 +282,10 @@ def derive_mutation_positions2(consensus_dict, arguments):
 def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict):
     #TBD why not just get the mutation list from the confirmed_mutation_dict?
     #HERE
+
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
+
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        confirmed_mutation_dict,
                                                        consensus_dict,
