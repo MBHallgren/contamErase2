@@ -88,6 +88,8 @@ def nanopore_decontamination(arguments):
         number += len(confirmed_mutation_dict[item][0])
     print('Number of mutations: ' + str(number))
 
+    #TBD could we keep iteration until conversion?
+
     format_output(confirmed_mutation_dict, consensus_dict)
 
     sys.exit()
@@ -283,9 +285,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
     #TBD why not just get the mutation list from the confirmed_mutation_dict?
     #HERE
 
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
-
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        confirmed_mutation_dict,
                                                        consensus_dict,
@@ -352,8 +351,21 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                         break
         else:
-            adjusted_mutation_dict[allele] = confirmed_mutation_dict[allele]
-            print ('FAIL {}'.format(allele), adjusted_mutation_dict[allele])
+            if confirmed_mutation_dict[allele][0] != []:
+                matrix = confirmed_mutation_dict[allele][0]
+                mutation_list = confirmed_mutation_dict[allele][1]
+                for i in range(len(matrix)):
+                    row = matrix[i]
+                    mutation = mutation_list[i]
+                    position = int(mutation.split('_')[0])
+                    total_depth = sum(consensus_dict[allele][0][position - 1])
+                    relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
+                    if relative_depth >= arguments.mrd:
+                        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+            else:
+                adjusted_mutation_dict[allele] = [[], []]
+
 
     return adjusted_mutation_dict
 
