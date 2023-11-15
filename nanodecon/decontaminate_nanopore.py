@@ -353,6 +353,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                         break
         else:
+            adjusted_mutation_dict[allele] = [[], []]
             if confirmed_mutation_dict[allele][0] != []:
                 mutation = confirmed_mutation_dict[allele][0][0]
                 position = int(mutation.split('_')[0])
@@ -361,8 +362,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if relative_depth >= arguments.mrd:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
-            else:
-                adjusted_mutation_dict[allele] = [[], []]
 
 
     return adjusted_mutation_dict
