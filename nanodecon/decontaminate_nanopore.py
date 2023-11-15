@@ -353,6 +353,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                         break
         else:
             adjusted_mutation_dict[allele] = confirmed_mutation_dict[allele]
+            print ('FAIL {}'.format(allele), adjusted_mutation_dict[allele])
 
     return adjusted_mutation_dict
 
