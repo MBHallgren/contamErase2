@@ -101,7 +101,7 @@ def nanopore_decontamination(arguments):
 def prune_close_by_mutations(confirmed_mutation_dict, consensus_dict):
 
     for gene in confirmed_mutation_dict:
-        print (gene, consensus_dict[gene])
+        print (gene, confirmed_mutation_dict[gene])
 
     return confirmed_mutation_dict
 
@@ -141,8 +141,9 @@ def index_top_hits_db(output):
     os.system('kma index -i {} -o {}' .format(output + '/top_hits.fsa', output + '/top_hits_db'))
 
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
-    black_listed_positions = blacklist_positions(fastq_file, 2)
-
+    #Both of the below are in the consensus dict
+    black_listed_positions = blacklist_positions(fastq_file, 2) #TBD fix this. Bases in the start of genes are removed with a higher value
+    #TBD also check the last position in the consensus dict. all of them return 6 0's right now.
     adjusted_consensus_dict = {}
 
     for allele in consensus_dict:
