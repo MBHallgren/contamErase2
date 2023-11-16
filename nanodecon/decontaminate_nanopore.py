@@ -100,7 +100,7 @@ def nanopore_decontamination(arguments):
         print (item, confirmed_mutation_dict[item])
     #print ('second co-occuring mutations: ' + str(co_occuring_mutations))
     confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict, co_occuring_mutations)
-    print ('filtered mutations'')
+    print ('filtered mutations')
     for item in confirmed_mutation_dict:
         print (item, confirmed_mutation_dict[item])
     #number = 0
