@@ -141,7 +141,7 @@ def index_top_hits_db(output):
     os.system('kma index -i {} -o {}' .format(output + '/top_hits.fsa', output + '/top_hits_db'))
 
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
-    black_listed_positions = blacklist_positions(fastq_file, 14)
+    black_listed_positions = blacklist_positions(fastq_file, 2)
 
     adjusted_consensus_dict = {}
 
