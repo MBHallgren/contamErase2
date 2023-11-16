@@ -203,26 +203,28 @@ rates = [1, 2, 3, 4, 5]
 file_depths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 print ('experiment,totalsnvs,totalbiologicalsnvscorrect,missingbiologicalsnvscorrect,totalprimarysnvsfound, noise')
+#print ('MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth')
 for rate in rates:
     for file_depth in file_depths:
-        confindr_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr/{}/{}/intra_contamination.csv'.format(rate, file_depth)
+        results_file = '/home/people/malhal/papers/rmlst/benchmarking/mine/{}/{}_results.csv'.format(rate, file_depth)
+        #confindr_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr/{}/{}/intra_contamination.csv'.format(rate, file_depth)
         confindr_dict = dict()
-        with open(confindr_file, 'r') as f:
+        with open(results_file, 'r') as f:
             for line in f:
-                if line.startswith('allele'):
+                if line.startswith('Gene'):
                     headers = line.strip().split(',')
+                    headers = line[1:]
                 else:
                     line = line.strip().split(',')
                     allele = line[0]
                     gene = allele.split('_')[0]
-                    mutation = line[1] + '_' + line[4].split(':')[0]
+                    mutation = line[1] + '_' + line[3]
                     if gene.startswith('BACT'):
                         if gene not in confindr_dict:
-                            confindr_dict[gene] = [[mutation], [line[7]]]
+                            confindr_dict[gene] = [[mutation], [line[4]]]
                         else:
                             confindr_dict[gene][0].append(mutation)
-                            confindr_dict[gene][1].append(line[7])
-
+                            confindr_dict[gene][1].append(line[4])
 
         total_snvs, total_bio_snvs_found_correctly, total_primary_snvs_found, noise, remaining_snvs, remaining_bio_snvs = derive_biological_rmlst_snvs_results(biological_rmlst_snvs, confindr_dict)
 
@@ -235,15 +237,10 @@ for rate in rates:
         for item in all_biological_snvs:
             if item not in total_bio_snvs_found_correctly:
                 missing_biological_snvs.append(item)
-        print (missing_biological_snvs)
+        #print (missing_biological_snvs)
         #BACT000038 is a problem. 4 not IDd. Are these called correctly? check again. TBD
         #BACT000030 2 mutations. ID'ed with co-occurence!
-        #BACT000040_240_A #This is known and needs to be fixed.' #Not perfect rmlst alignment
-        #['BACT000030_489_T', 'BACT000030_492_T', 'BACT000038_222_T', 'BACT000038_225_C', 'BACT000038_369_A', 'BACT000038_370_T', 'BACT000040_240_A']
-
-        #30 doesn't find any of the 2. Check multiple alignment again of consensus sequences.
-        #38 doesn't find the 4. Check multiple alignment again of consensus sequences.
-        #40, 240 A is found. Look into why this is an error. Are we expecting something else?
+        #BACT000040_240_A #This is known and needs to be fixed.'
 
         print (str(rate) + '/' + str(file_depth), total_snvs, len(total_bio_snvs_found_correctly), len(missing_biological_snvs), len(total_primary_snvs_found), len(noise), sep=',')
 

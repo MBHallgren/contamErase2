@@ -83,6 +83,8 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
                                                                    read_positions_blacklisted_dict)
+
+    confirmed_mutation_dict = prune_close_by_mutations(confirmed_mutation_dict, consensus_dict)
     #number = 0
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
@@ -90,9 +92,18 @@ def nanopore_decontamination(arguments):
 
     #TBD could we keep iteration until conversion?
 
+    #After conversion prune close-by mutations
+
     format_output(confirmed_mutation_dict, consensus_dict)
 
     sys.exit()
+
+def prune_close_by_mutations(confirmed_mutation_dict, consensus_dict):
+
+    for gene in confirmed_mutation_dict:
+        print (gene, consensus_dict[gene])
+
+    return confirmed_mutation_dict
 
 def index_top_hits_db(output):
     infile = output + '/initial_rmlst_alignment.res'
@@ -360,6 +371,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if relative_depth >= arguments.mrd:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
+
 
 
     return adjusted_mutation_dict
