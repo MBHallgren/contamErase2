@@ -75,16 +75,16 @@ def nanopore_decontamination(arguments):
     #    number += len(confirmed_mutation_dict[item][0])
     #print ('Number of mutations: ' + str(number))
 
-    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict)
+    confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict)
     #number = 0
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
     #print ('Number of mutations: ' + str(number))
 
-    confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
+    confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
                                                                    read_positions_blacklisted_dict)
 
-    confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict)
+    confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict, co_occuring_mutations)
 
     #number = 0
     #for item in confirmed_mutation_dict:
@@ -100,7 +100,7 @@ def nanopore_decontamination(arguments):
     sys.exit()
 
 
-def filter_mutations(data):
+def filter_mutations(data, co_occuring_mutations):
     """
     Filter out mutations that have any other mutation within a 5 position range on either side.
 
@@ -110,7 +110,7 @@ def filter_mutations(data):
     """
     filtered_data = {}
 
-    for gene, (mutations, depths) in data.items():
+    for allele, (mutations, depths) in data.items():
         # Split mutations into position and base, and convert positions to integers
         split_mutations = [(int(mutation.split('_')[0]), mutation) for mutation in mutations]
 
@@ -119,12 +119,18 @@ def filter_mutations(data):
         filtered_depths = []
         for i, (pos, mutation) in enumerate(split_mutations):
             # Check if there's any mutation within 5 positions on either side
-            if not any(abs(pos - other_pos) <= 5 and other_pos != pos for other_pos, _ in split_mutations):
+            check_name = allele + '_' + mutation
+            if check_name in co_occuring_mutations:
                 filtered_mutations.append(mutation)
                 filtered_depths.append(depths[i])
+            else:
+                if not any(abs(pos - other_pos) <= 5 and other_pos != pos for other_pos, _ in split_mutations):
+                    filtered_mutations.append(mutation)
+                    filtered_depths.append(depths[i])
+
 
         # Add filtered data to the result
-        filtered_data[gene] = [filtered_mutations, filtered_depths]
+        filtered_data[allele] = [filtered_mutations, filtered_depths]
 
     return filtered_data
 
@@ -332,6 +338,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                        consensus_dict,
                                                        read_positions_blacklisted_dict)
 
+    co_occuring_mutations = set()
 
     co_occurence_matrix_dict = {}
     for allele in confirmed_mutation_dict:
@@ -387,6 +394,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     if float(number_of_co_occurences) >= float(threshold):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+                        co_occuring_mutations.add(allele + '_' + mutation)
                         break
                     elif (relative_depth >= arguments.mrd):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
@@ -405,7 +413,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
 
 
-    return adjusted_mutation_dict
+    return adjusted_mutation_dict, co_occuring_mutations
 
 
     #pass
