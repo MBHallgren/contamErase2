@@ -68,7 +68,7 @@ def nanopore_decontamination(arguments):
         #Can we do something to include novel mutations if the signal is strong enough?
         #Add significant but non biological mutations.
 
-    bio_validation_set(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
+    bio_validation_dict = bio_validation_dict(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
     #confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
@@ -80,7 +80,7 @@ def nanopore_decontamination(arguments):
     #    number += len(confirmed_mutation_dict[item][0])
     #print ('Number of mutations: ' + str(number))
 
-    confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict)
+    confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
     #print ('first co-occuring mutations: ' + str(co_occuring_mutations))
     #number = 0
     #for item in confirmed_mutation_dict:
@@ -89,7 +89,7 @@ def nanopore_decontamination(arguments):
 
 
     confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
-                                                                   read_positions_blacklisted_dict)
+                                                                   read_positions_blacklisted_dict, bio_validation_dict)
 
     #print ('second co-occuring mutations: ' + str(co_occuring_mutations))
     confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict, co_occuring_mutations)
@@ -106,13 +106,36 @@ def nanopore_decontamination(arguments):
 
     sys.exit()
 
-def bio_validation_set(consensus_dict, fsa_file, confirmed_mutation_dict):
+def bio_validation_dict(consensus_dict, fsa_file, confirmed_mutation_dict):
     correct_length_dict = derive_correct_length_headers(consensus_dict, fsa_file)
-
+    mutation_dict = dict()
     for item in correct_length_dict:
-        print(item, correct_length_dict[item])
-    sys.exit()
+        for i in range(len(correct_length_dict[item])):
+            mutation_dict[item] = set()
+            mutation_dict[item].add(item + str(i) + '_' + correct_length_dict[item][i])
+    return mutation_dict
 
+def find_mutations_within_proximity(data, proxi):
+    """
+    Find mutations that are within a specified proximity of another mutation.
+
+    :param data: A dictionary where each key is a gene identifier and the value is a list of two lists:
+                 the first list contains mutations and the second list contains their depths.
+    :param proxi: The proximity within which another mutation can't be.
+    :return: A list of mutations which are within the specified proximity of another mutation.
+    """
+    mutations_within_proximity = []
+
+    for gene, (mutations, depths) in data.items():
+        # Split mutations into position and base, and convert positions to integers
+        split_mutations = [(int(mutation.split('_')[0]), mutation) for mutation in mutations]
+
+        for i, (pos, mutation) in enumerate(split_mutations):
+            # Check if there's any mutation within 'proxi' positions
+            if any(abs(pos - other_pos) <= proxi and other_pos != pos for other_pos, _ in split_mutations):
+                mutations_within_proximity.append(mutation)
+
+    return mutations_within_proximity
 
 def filter_mutations(data, co_occuring_mutations):
     """
@@ -343,7 +366,7 @@ def derive_mutation_positions2(consensus_dict, arguments):
 
 
 
-def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict):
+def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict):
     #TBD why not just get the mutation list from the confirmed_mutation_dict?
     #HERE
 
@@ -402,6 +425,11 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             for i in range(len(matrix)):
                 row = matrix[i]
                 mutation = mutation_list[i]
+                proxi_mutations = find_mutations_within_proximity(mutation_list, 5)
+                if proxi_mutations != []:
+                    print ("Mutation:", mutation)
+                    print ("Proxi mutations:", proxi_mutations)
+                    print (mutation_list)
                 position = int(mutation.split('_')[0])
                 for number_of_co_occurences in row:
                     if float(number_of_co_occurences) >= float(threshold):
@@ -426,7 +454,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
 
-
+    sys.exit()
 
     return adjusted_mutation_dict, co_occuring_mutations
 
