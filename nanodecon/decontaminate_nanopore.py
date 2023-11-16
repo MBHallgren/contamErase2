@@ -391,17 +391,18 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 mutation = mutation_list[i]
                 position = int(mutation.split('_')[0])
                 for number_of_co_occurences in row:
-                    total_depth = sum(consensus_dict[allele][0][position - 1])
-                    relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
                     if float(number_of_co_occurences) >= float(threshold):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                         co_occuring_mutations.add(allele + '_' + mutation)
                         break
-                if (relative_depth >= arguments.mrd):
-                    adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
-                    adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
-                    break
+                total_depth = sum(consensus_dict[allele][0][position - 1])
+                relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
+                if (allele + '_' + mutation) not in co_occuring_mutations:
+                    if (relative_depth >= arguments.mrd):
+                        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+                        break
         else:
             adjusted_mutation_dict[allele] = [[], []]
             if confirmed_mutation_dict[allele][0] != []:
