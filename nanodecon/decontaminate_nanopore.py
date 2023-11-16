@@ -68,7 +68,7 @@ def nanopore_decontamination(arguments):
         #Can we do something to include novel mutations if the signal is strong enough?
         #Add significant but non biological mutations.
 
-    bio_validation_set(consensus_dict, fsa_file, confirmed_mutation_dict)
+    bio_validation_set(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
     #confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
