@@ -60,6 +60,9 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
     number = 0
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
+    print ('first derive')
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
     #print('Number of mutations: ' + str(number))
@@ -68,6 +71,11 @@ def nanopore_decontamination(arguments):
         #Can we do something to include novel mutations if the signal is strong enough?
         #Add significant but non biological mutations.
     confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
+    print ('existing validations')
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
+
+
 
     #TBD: make this non-verbose
     #number = 0
@@ -81,13 +89,20 @@ def nanopore_decontamination(arguments):
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
     #print ('Number of mutations: ' + str(number))
+    print ('first co-occuring mutations')
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
 
     confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
                                                                    read_positions_blacklisted_dict)
-
+    print ('second co-occuring mutations')
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
     #print ('second co-occuring mutations: ' + str(co_occuring_mutations))
     confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict, co_occuring_mutations)
-
+    print ('filtered mutations'')
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
     #number = 0
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
