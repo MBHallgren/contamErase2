@@ -60,9 +60,6 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
     number = 0
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
-    print ('first derive')
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
     #print('Number of mutations: ' + str(number))
@@ -71,9 +68,6 @@ def nanopore_decontamination(arguments):
         #Can we do something to include novel mutations if the signal is strong enough?
         #Add significant but non biological mutations.
     confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
-    print ('existing validations')
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
 
 
 
@@ -89,20 +83,13 @@ def nanopore_decontamination(arguments):
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
     #print ('Number of mutations: ' + str(number))
-    print ('first co-occuring mutations')
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
+
 
     confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
                                                                    read_positions_blacklisted_dict)
-    print ('second co-occuring mutations')
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
+
     #print ('second co-occuring mutations: ' + str(co_occuring_mutations))
     confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict, co_occuring_mutations)
-    print ('filtered mutations')
-    for item in confirmed_mutation_dict:
-        print (item, confirmed_mutation_dict[item])
     #number = 0
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
@@ -378,15 +365,15 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print ("allele:", allele)
-            print("Mutation names:", mutation_list)
+            #print ("allele:", allele)
+            #print("Mutation names:", mutation_list)
             #print ("Depth:", depth_list)
             average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
-            print ("Average depth:", average_depth)
-            print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
-            for i, row in enumerate(co_occurrence_matrix):
-                mutation_name = mutation_list[i]
-                print(f"{mutation_name}: {row}")
+            #print ("Average depth:", average_depth)
+            #print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
+            #for i, row in enumerate(co_occurrence_matrix):
+            #    mutation_name = mutation_list[i]
+            #    print(f"{mutation_name}: {row}")
 
             co_occurence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
 
