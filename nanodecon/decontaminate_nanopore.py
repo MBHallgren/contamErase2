@@ -109,10 +109,11 @@ def nanopore_decontamination(arguments):
 def bio_validation_mutations(consensus_dict, fsa_file, confirmed_mutation_dict):
     correct_length_dict = derive_correct_length_headers(consensus_dict, fsa_file)
     mutation_dict = dict()
-    for item in correct_length_dict:
-        for i in range(len(correct_length_dict[item])):
-            mutation_dict[item] = set()
-            mutation_dict[item].add(item + str(i) + '_' + correct_length_dict[item][i])
+    for gene in correct_length_dict:
+        mutation_dict[gene] = set()
+        for allele in correct_length_dict[gene]:
+            for i in range(len(correct_length_dict[gene][allele])):
+                mutation_dict[gene].add(str(i) + '_' + correct_length_dict[item][i])
     return mutation_dict
 
 def find_mutations_within_proximity(data, proxi):
