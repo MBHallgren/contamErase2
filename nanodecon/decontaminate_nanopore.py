@@ -67,6 +67,7 @@ def nanopore_decontamination(arguments):
     #Consider this, can we exclude all novel mutations?
         #Can we do something to include novel mutations if the signal is strong enough?
         #Add significant but non biological mutations.
+
     #confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
 
@@ -365,15 +366,15 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            #print ("allele:", allele)
-            #print("Mutation names:", mutation_list)
+            print ("allele:", allele)
+            print("Mutation names:", mutation_list)
             #print ("Depth:", depth_list)
             average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
-            #print ("Average depth:", average_depth)
-            #print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
-            #for i, row in enumerate(co_occurrence_matrix):
-            #    mutation_name = mutation_list[i]
-            #    print(f"{mutation_name}: {row}")
+            print ("Average depth:", average_depth)
+            print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
+            for i, row in enumerate(co_occurrence_matrix):
+                mutation_name = mutation_list[i]
+                print(f"{mutation_name}: {row}")
 
             co_occurence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
 
@@ -439,6 +440,13 @@ def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     sorted_items = sorted(mutation_count_dict.items(), key=lambda item: item[1], reverse=True)
 
 def validate_mutations(consensus_dict, fsa_file, confirmed_mutations):
+    """
+    Checks if a mutation exists in the database or is completely novel
+    :param consensus_dict:
+    :param fsa_file:
+    :param confirmed_mutations:
+    :return:
+    """
     correct_length_dict = derive_correct_length_headers(consensus_dict, fsa_file)
     mutations_found_in_rmlst_genes = dict()
     for allele in consensus_dict:
