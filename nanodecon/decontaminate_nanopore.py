@@ -116,28 +116,6 @@ def bio_validation_mutations(consensus_dict, fsa_file, confirmed_mutation_dict):
                 mutation_dict[gene].add(str(i) + '_' + sequence[i])
     return mutation_dict
 
-def find_mutations_within_proximity(data, proxi):
-    """
-    Find mutations that are within a specified proximity of another mutation.
-
-    :param data: A dictionary where each key is a gene identifier and the value is a list of two lists:
-                 the first list contains mutations and the second list contains their depths.
-    :param proxi: The proximity within which another mutation can't be.
-    :return: A list of mutations which are within the specified proximity of another mutation.
-    """
-    mutations_within_proximity = []
-
-    for gene, (mutations, depths) in data.items():
-        # Split mutations into position and base, and convert positions to integers
-        split_mutations = [(int(mutation.split('_')[0]), mutation) for mutation in mutations]
-
-        for i, (pos, mutation) in enumerate(split_mutations):
-            # Check if there's any mutation within 'proxi' positions
-            if any(abs(pos - other_pos) <= proxi and other_pos != pos for other_pos, _ in split_mutations):
-                mutations_within_proximity.append(mutation)
-
-    return mutations_within_proximity
-
 def filter_mutations(data, co_occuring_mutations):
     """
     Filter out mutations that have any other mutation within a 5 position range on either side.
@@ -459,9 +437,25 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
     return adjusted_mutation_dict, co_occuring_mutations
 
+def find_mutations_within_proximity(mutations, proxi):
+    """
+    Find mutations that are within a specified proximity of another mutation.
 
-    #pass
+    :param mutations: A list of mutations.
+    :param proxi: The proximity within which another mutation can't be.
+    :return: A list of mutations which are within the specified proximity of another mutation.
+    """
+    mutations_within_proximity = []
 
+    # Split mutations into position and base, and convert positions to integers
+    split_mutations = [(int(mutation.split('_')[0]), mutation) for mutation in mutations]
+
+    for i, (pos, mutation) in enumerate(split_mutations):
+        # Check if there's any mutation within 'proxi' positions
+        if any(abs(pos - other_pos) <= proxi and other_pos != pos for other_pos, _ in split_mutations):
+            mutations_within_proximity.append(mutation)
+
+    return mutations_within_proximity
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
     for read in reads_mutation_dict:
