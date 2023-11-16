@@ -111,9 +111,9 @@ def bio_validation_mutations(consensus_dict, fsa_file, confirmed_mutation_dict):
     mutation_dict = dict()
     for gene in correct_length_dict:
         mutation_dict[gene] = set()
-        for allele in correct_length_dict[gene]:
-            for i in range(len(correct_length_dict[gene][allele])):
-                mutation_dict[gene].add(str(i) + '_' + correct_length_dict[item][i])
+        for sequence in correct_length_dict[gene][1]:
+            for i in range(len(sequence)):
+                mutation_dict[gene].add(str(i) + '_' + sequence[i])
     return mutation_dict
 
 def find_mutations_within_proximity(data, proxi):
