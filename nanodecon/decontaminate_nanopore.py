@@ -84,7 +84,8 @@ def nanopore_decontamination(arguments):
     confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
                                                                    read_positions_blacklisted_dict)
 
-    confirmed_mutation_dict = prune_close_by_mutations(confirmed_mutation_dict, consensus_dict)
+    confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict)
+
     #number = 0
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
@@ -97,6 +98,35 @@ def nanopore_decontamination(arguments):
     format_output(confirmed_mutation_dict, consensus_dict)
 
     sys.exit()
+
+
+def filter_mutations(data):
+    """
+    Filter out mutations that have any other mutation within a 5 position range on either side.
+
+    :param data: A dictionary where each key is a gene identifier and the value is a list of two lists:
+                 the first list contains mutations and the second list contains their depths.
+    :return: A filtered dictionary with the same structure.
+    """
+    filtered_data = {}
+
+    for gene, (mutations, depths) in data.items():
+        # Split mutations into position and base, and convert positions to integers
+        split_mutations = [(int(mutation.split('_')[0]), mutation) for mutation in mutations]
+
+        # Filter mutations
+        filtered_mutations = []
+        filtered_depths = []
+        for i, (pos, mutation) in enumerate(split_mutations):
+            # Check if there's any mutation within 5 positions on either side
+            if not any(abs(pos - other_pos) <= 5 and other_pos != pos for other_pos, _ in split_mutations):
+                filtered_mutations.append(mutation)
+                filtered_depths.append(depths[i])
+
+        # Add filtered data to the result
+        filtered_data[gene] = [filtered_mutations, filtered_depths]
+
+    return filtered_data
 
 def prune_close_by_mutations(confirmed_mutation_dict, consensus_dict):
 
