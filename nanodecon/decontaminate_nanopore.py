@@ -419,7 +419,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                                 co_occuring_mutations.add(allele + '_' + mutation)
                                 break
-                            else:
                 total_depth = sum(consensus_dict[allele][0][position - 1])
                 relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
                 if (allele + '_' + mutation) not in co_occuring_mutations and proxi_mutations == []:
