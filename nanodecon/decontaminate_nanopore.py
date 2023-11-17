@@ -59,7 +59,7 @@ def nanopore_decontamination(arguments):
     consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
-    number = 0
+    #number = 0
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
     #print('Number of mutations: ' + str(number))
@@ -92,7 +92,7 @@ def nanopore_decontamination(arguments):
                                                                    read_positions_blacklisted_dict, bio_validation_dict)
 
     #print ('second co-occuring mutations: ' + str(co_occuring_mutations))
-    confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict, co_occuring_mutations)
+    #confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict, co_occuring_mutations)
     #number = 0
     #for item in confirmed_mutation_dict:
     #    number += len(confirmed_mutation_dict[item][0])
@@ -392,8 +392,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
 
     adjusted_mutation_dict = {}
-    b1 = 0
-    b2 = 0
     for allele in confirmed_mutation_dict:
         if allele in co_occurence_matrix_dict:
             adjusted_mutation_dict[allele] = [[], []]
@@ -406,25 +404,19 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             for i in range(len(matrix)):
                 row = matrix[i]
                 mutation = mutation_list[i]
-                proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
-
-                if proxi_mutations != []:
-                    if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
-                        b1 += 1
-                    else:
-                        b2 += 1
-
-
                 position = int(mutation.split('_')[0])
+                proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
                 for number_of_co_occurences in row:
                     if float(number_of_co_occurences) >= float(threshold):
-                        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
-                        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
-                        co_occuring_mutations.add(allele + '_' + mutation)
-                        break
+                        if proxi_mutations != []:
+                            if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
+                                adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                                adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+                                co_occuring_mutations.add(allele + '_' + mutation)
+                                break
                 total_depth = sum(consensus_dict[allele][0][position - 1])
                 relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
-                if (allele + '_' + mutation) not in co_occuring_mutations:
+                if (allele + '_' + mutation) not in co_occuring_mutations and proxi_mutations == []:
                     if (relative_depth >= arguments.mrd):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
@@ -438,10 +430,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if relative_depth >= arguments.mrd:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
-    print (b1)
-    print (b2)
-    sys.exit()
-
     return adjusted_mutation_dict, co_occuring_mutations
 
 def check_biological_existance(proxi_list, bio_validation_dict, allele, specific_mutation):
