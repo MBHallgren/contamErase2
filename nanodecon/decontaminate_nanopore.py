@@ -381,8 +381,15 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             print ("allele:", allele)
             print("Mutation names:", mutation_list)
             print ("Depth:", depth_list)
-            average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
+            #average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
+            #positional_depth = sum(consensus_dict[allele][0][0]) / len(consensus_dict[allele][0][0])
+            total_gene_depth = 0
+            for i in range(len(consensus_dict[allele][0])):
+                total_gene_depth += sum(consensus_dict[allele][0][i])
+            average_depth = total_gene_depth / len(consensus_dict[allele][0])
             print ("Average depth:", average_depth)
+            print ("Average depth:", average_depth)
+            sys.exit()
             print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
