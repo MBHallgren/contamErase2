@@ -439,6 +439,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
 def check_biological_existance(proxi_list, bio_validation_dict, allele, specific_mutation):
     gene = allele.split('_')[0]
+    if gene == 'BACT000004':
+        print (bio_validation_dict[gene])
+    sys.exit()
     proxi_list.append(specific_mutation)
     for item in proxi_list:
         if item in bio_validation_dict[gene]:
