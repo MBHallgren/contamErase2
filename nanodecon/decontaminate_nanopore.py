@@ -113,7 +113,7 @@ def bio_validation_mutations(consensus_dict, fsa_file, confirmed_mutation_dict):
         mutation_dict[gene] = set()
         for sequence in correct_length_dict[gene][1]:
             for i in range(len(sequence)):
-                mutation_dict[gene].add(str(i) + '_' + sequence[i])
+                mutation_dict[gene].add(str(i+1) + '_' + sequence[i])
     return mutation_dict
 
 def filter_mutations(data, co_occuring_mutations):
@@ -392,6 +392,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
 
     adjusted_mutation_dict = {}
+    b1 = 0
+    b2 = 0
     for allele in confirmed_mutation_dict:
         if allele in co_occurence_matrix_dict:
             adjusted_mutation_dict[allele] = [[], []]
@@ -415,10 +417,13 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                             break
                         else:
                             if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
+                                b1 += 1
                                 adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                                 adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                                 co_occuring_mutations.add(allele + '_' + mutation)
                                 break
+                            else:
+                                b2 += 1
                 total_depth = sum(consensus_dict[allele][0][position - 1])
                 relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
                 if (allele + '_' + mutation) not in co_occuring_mutations and proxi_mutations == []:
@@ -435,6 +440,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if relative_depth >= arguments.mrd:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
+    print (b1)
+    print (b2)
     return adjusted_mutation_dict, co_occuring_mutations
 
 def check_biological_existance(proxi_list, bio_validation_dict, allele, specific_mutation):
@@ -442,12 +449,6 @@ def check_biological_existance(proxi_list, bio_validation_dict, allele, specific
     gene = allele.split('_')[0]
     proxi_list.append(specific_mutation)
     print_list = list()
-    if gene.endswith('004'):
-        for item in bio_validation_dict[gene]:
-            print_list.append(item)
-        print_list.sort()
-        print (print_list)
-        sys.exit()
     for item in proxi_list:
         if item in bio_validation_dict[gene]:
             return True
