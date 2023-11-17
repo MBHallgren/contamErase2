@@ -438,10 +438,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
     return adjusted_mutation_dict, co_occuring_mutations
 
 def check_biological_existance(proxi_list, bio_validation_dict, allele, specific_mutation):
-    print (proxi_list, allele, specific_mutation)
     gene = allele.split('_')[0]
     proxi_list.append(specific_mutation)
-    print_list = list()
     for item in proxi_list:
         if item in bio_validation_dict[gene]:
             return True
