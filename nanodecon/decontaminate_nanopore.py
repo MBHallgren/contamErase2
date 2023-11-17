@@ -406,6 +406,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 mutation = mutation_list[i]
                 position = int(mutation.split('_')[0])
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
+                if allele.startswith('BACT000004'):
+                    print (allele, mutation, proxi_mutations)
                 for number_of_co_occurences in row:
                     if float(number_of_co_occurences) >= float(threshold): #Positive co-occurence
                         if proxi_mutations == []:
