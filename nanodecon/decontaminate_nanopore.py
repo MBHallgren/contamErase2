@@ -407,9 +407,16 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 position = int(mutation.split('_')[0])
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
                 for number_of_co_occurences in row:
-                    if float(number_of_co_occurences) >= float(threshold):
-                        if proxi_mutations != []:
+                    if float(number_of_co_occurences) >= float(threshold): #Positive co-occurence
+                        if proxi_mutations == []:
+                            print ("mutation {} was added and has no proxi {}".format(mutation, proxi_mutations))
+                            adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                            adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+                            co_occuring_mutations.add(allele + '_' + mutation)
+                            break
+                        else:
                             if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
+                                print ("mutation {} was added and has proxi {} and passed biological check".format(mutation, proxi_mutations))
                                 adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                                 adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                                 co_occuring_mutations.add(allele + '_' + mutation)
@@ -437,6 +444,7 @@ def check_biological_existance(proxi_list, bio_validation_dict, allele, specific
     proxi_list.append(specific_mutation)
     for item in proxi_list:
         if item in bio_validation_dict[gene]:
+            print ("mutation {} in allele {} was added and has proxi {} and passed biological check for mutation {}".format(specific_mutation, allele, proxi_list, item))
             return True
     return False
 
