@@ -386,7 +386,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
-                print(f"{mutation_name}: {row}")
+                print(f"{mutation_name}: {row} {check_single_mutation_exisistance(bio_validation_dict, allele, mutation_name)}")
 
             co_occurence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
 
@@ -436,6 +436,12 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
     return adjusted_mutation_dict, co_occuring_mutations
+
+def check_single_mutation_exisistance(bio_validation_dict, allele, specific_mutation):
+    gene = allele.split('_')[0]
+    if specific_mutation in bio_validation_dict[gene]:
+        return True
+    return False
 
 def check_biological_existance(proxi_list, bio_validation_dict, allele, specific_mutation):
     gene = allele.split('_')[0]
