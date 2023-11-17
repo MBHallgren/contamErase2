@@ -392,6 +392,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
 
     adjusted_mutation_dict = {}
+    b1 = 0
+    b2 = 0
     for allele in confirmed_mutation_dict:
         if allele in co_occurence_matrix_dict:
             adjusted_mutation_dict[allele] = [[], []]
@@ -405,8 +407,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 row = matrix[i]
                 mutation = mutation_list[i]
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
-                b1 = 0
-                b2 = 0
+
                 if proxi_mutations != []:
                     if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
                         b1 += 1
