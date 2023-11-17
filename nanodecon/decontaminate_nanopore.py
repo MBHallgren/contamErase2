@@ -406,11 +406,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 mutation = mutation_list[i]
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
                 if proxi_mutations != []:
-                    print (mutation)
-                    print (mutation_list)
-                    print (proxi_mutations)
-                #if proxi_mutations != []:
-                #    if check_biological_existance(proxi_mutations)
+                    if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
+                        print ('biological validation')
 
                 position = int(mutation.split('_')[0])
                 for number_of_co_occurences in row:
@@ -440,8 +437,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
     return adjusted_mutation_dict, co_occuring_mutations
 
-def check_biological_existance(proxi_list, bio_validation_dict, allele):
+def check_biological_existance(proxi_list, bio_validation_dict, allele, specific_mutation):
     gene = allele.split('_')[0]
+    proxi_list.append(specific_mutation)
     for item in proxi_list:
         if item in bio_validation_dict[gene]:
             return True
