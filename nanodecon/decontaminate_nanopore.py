@@ -445,6 +445,7 @@ def check_biological_existance(proxi_list, bio_validation_dict, allele, specific
     if gene.endswith('004'):
         for item in bio_validation_dict[gene]:
             print_list.append(item)
+        print_list.sort()
         print (print_list)
         sys.exit()
     for item in proxi_list:
