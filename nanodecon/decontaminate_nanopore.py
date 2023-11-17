@@ -414,7 +414,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                             co_occuring_mutations.add(allele + '_' + mutation)
                             break
                         else:
-                            print(allele, mutation, proxi_mutations)
+                            print(allele, mutation, proxi_mutations, 'HERE')
                             if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
                                 adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                                 adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
