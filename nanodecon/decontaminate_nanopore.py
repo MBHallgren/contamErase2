@@ -409,18 +409,19 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 for number_of_co_occurences in row:
                     if float(number_of_co_occurences) >= float(threshold): #Positive co-occurence
                         if proxi_mutations == []:
-                            print ("mutation {} was added and has no proxi {}".format(mutation, proxi_mutations))
                             adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                             adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                             co_occuring_mutations.add(allele + '_' + mutation)
                             break
                         else:
                             if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
-                                print ("mutation {} was added and has proxi {} and passed biological check".format(mutation, proxi_mutations))
+                                #print ("mutation {} was added and has proxi {} and passed biological check".format(mutation, proxi_mutations))
                                 adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                                 adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                                 co_occuring_mutations.add(allele + '_' + mutation)
                                 break
+                            else:
+                                print ("mutation {} was not added and has proxi {} and failed biological check".format(mutation, proxi_mutations))
                 total_depth = sum(consensus_dict[allele][0][position - 1])
                 relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
                 if (allele + '_' + mutation) not in co_occuring_mutations and proxi_mutations == []:
