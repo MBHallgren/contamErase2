@@ -442,6 +442,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
     print (b1)
     print (b2)
+    sys.exit()
     return adjusted_mutation_dict, co_occuring_mutations
 
 def check_biological_existance(proxi_list, bio_validation_dict, allele, specific_mutation):
