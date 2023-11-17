@@ -409,7 +409,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     print (mutation)
                     print (mutation_list)
                     print (proxi_mutations)
-                sys.exit()
                 #if proxi_mutations != []:
                 #    if check_biological_existance(proxi_mutations)
 
