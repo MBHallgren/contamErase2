@@ -441,13 +441,9 @@ def check_biological_existance(proxi_list, bio_validation_dict, allele, specific
     print (proxi_list, allele, specific_mutation)
     gene = allele.split('_')[0]
     proxi_list.append(specific_mutation)
-    print_list = []
     print (gene)
-    for h in bio_validation_dict:
-        print (h)
-    sys.exit()
-
-    print (print_list.sort())
+    print (bio_validation_dict[gene])
+    #print (print_list.sort())
     for item in proxi_list:
         if item in bio_validation_dict[gene]:
             return True
