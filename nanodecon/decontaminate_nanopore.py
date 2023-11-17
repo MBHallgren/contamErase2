@@ -446,6 +446,7 @@ def check_biological_existance(proxi_list, bio_validation_dict, allele, specific
         if item in bio_validation_dict[gene]:
             print ("mutation {} in allele {} was added and has proxi {} and passed biological check for mutation {}".format(specific_mutation, allele, proxi_list, item))
             return True
+    print ("mutation {} in allele {} was added and has proxi {} and failed biological check".format(specific_mutation, allele, proxi_list))
     return False
 
 def find_mutations_proximity_specific_mutation(mutations, specific_mutation, proxi):
