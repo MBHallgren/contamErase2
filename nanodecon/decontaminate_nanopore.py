@@ -465,7 +465,8 @@ def find_mutations_proximity_specific_mutation(mutations, specific_mutation, pro
     for pos, mutation in split_mutations:
         # Check if the mutation is within 'proxi' positions of the specific mutation
         if abs(pos - specific_mutation_pos) <= proxi:
-            proximity_mutations.append(mutation)
+            if mutation != specific_mutation:
+                proximity_mutations.append(mutation)
 
     return proximity_mutations
 
