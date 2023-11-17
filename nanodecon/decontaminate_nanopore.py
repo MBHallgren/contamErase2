@@ -404,11 +404,15 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             for i in range(len(matrix)):
                 row = matrix[i]
                 mutation = mutation_list[i]
-                proxi_mutations = find_mutations_within_proximity(mutation_list, 5)
+                proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
                 if proxi_mutations != []:
-                    print ("Mutation:", mutation)
-                    print ("Proxi mutations:", proxi_mutations)
+                    print (mutation)
                     print (mutation_list)
+                    print (proxi_mutations)
+                sys.exit()
+                #if proxi_mutations != []:
+                #    if check_biological_existance(proxi_mutations)
+
                 position = int(mutation.split('_')[0])
                 for number_of_co_occurences in row:
                     if float(number_of_co_occurences) >= float(threshold):
@@ -437,25 +441,35 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
     return adjusted_mutation_dict, co_occuring_mutations
 
-def find_mutations_within_proximity(mutations, proxi):
+def check_biological_existance(proxi_list, bio_validation_dict, allele):
+    gene = allele.split('_')[0]
+    for item in proxi_list:
+        if item in bio_validation_dict[gene]:
+            return True
+    return False
+
+def find_mutations_proximity_specific_mutation(mutations, specific_mutation, proxi):
     """
-    Find mutations that are within a specified proximity of another mutation.
+    Find mutations that are within a specified proximity of a specific mutation.
 
     :param mutations: A list of mutations.
+    :param specific_mutation: The specific mutation to compare others against.
     :param proxi: The proximity within which another mutation can't be.
-    :return: A list of mutations which are within the specified proximity of another mutation.
+    :return: A list of mutations which are within the specified proximity of the specific mutation.
     """
-    mutations_within_proximity = []
+    specific_mutation_pos = int(specific_mutation.split('_')[0])
+    proximity_mutations = []
 
     # Split mutations into position and base, and convert positions to integers
     split_mutations = [(int(mutation.split('_')[0]), mutation) for mutation in mutations]
 
-    for i, (pos, mutation) in enumerate(split_mutations):
-        # Check if there's any mutation within 'proxi' positions
-        if any(abs(pos - other_pos) <= proxi and other_pos != pos for other_pos, _ in split_mutations):
-            mutations_within_proximity.append(mutation)
+    for pos, mutation in split_mutations:
+        # Check if the mutation is within 'proxi' positions of the specific mutation
+        if abs(pos - specific_mutation_pos) <= proxi:
+            proximity_mutations.append(mutation)
 
-    return mutations_within_proximity
+    return proximity_mutations
+
 def determine_mutation_sets(reads_mutation_dict, mutation_position_dict):
     mutation_count_dict = {}
     for read in reads_mutation_dict:
