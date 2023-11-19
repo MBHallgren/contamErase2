@@ -420,7 +420,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
                 if threshold < 3:
                     threshold = 3
-                if allele == 'BACT000051_73535' or allele == 'BACT000045_29' or allele == 'BACT000043_15':
+                if allele == 'BACT000004_1452' or allele == 'BACT000002_48':
                     print ("mutation:", mutation)
                     print ("threshold:", threshold)
                     print ("position_depth:", position_depth)
