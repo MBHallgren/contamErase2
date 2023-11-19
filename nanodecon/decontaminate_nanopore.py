@@ -410,7 +410,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 position_depth = sum(consensus_dict[allele][0][position - 1])
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
                 biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
-                if proxi_mutations == []:
+                if proxi_mutations != []:
                     if biological_existance:
                         threshold = position_depth * arguments.mrd * arguments.coc
                     else:
