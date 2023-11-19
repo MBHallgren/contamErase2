@@ -401,32 +401,33 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
     for allele in confirmed_mutation_dict:
         if allele in co_occurence_matrix_dict:
             adjusted_mutation_dict[allele] = [[], []]
-            average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
-            threshold = average_depth * 0.5 # TBD reconsider
-            if threshold < 3: # Can we justifiably set this to 3?
-                threshold = 3
             matrix = co_occurence_matrix_dict[allele][0]
             mutation_list = co_occurence_matrix_dict[allele][1]
             for i in range(len(matrix)):
                 row = matrix[i]
                 mutation = mutation_list[i]
                 position = int(mutation.split('_')[0])
+                position_depth = sum(consensus_dict[allele][0][position - 1])
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
+                biological_existance = check_biological_existance(bio_validation_dict, allele, mutation)
+                if proxi_mutations == []:
+                    if biological_existance:
+                        threshold = position_depth * arguments.mrd * arguments.coc
+                    else:
+                        threshold = position_depth * arguments.mrd
+                else:
+                    threshold = position_depth * arguments.mrd * arguments.coc
+                if threshold < 3:
+                    threshold = 3
                 for number_of_co_occurences in row:
                     if float(number_of_co_occurences) >= float(threshold): #Positive co-occurence
-                        if proxi_mutations == []:
-                            adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
-                            adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
-                            co_occuring_mutations.add(allele + '_' + mutation)
-                            break
-                        else:
-                            if check_biological_existance(proxi_mutations, bio_validation_dict, allele, mutation):
-                                adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
-                                adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
-                                co_occuring_mutations.add(allele + '_' + mutation)
-                                break
-                total_depth = sum(consensus_dict[allele][0][position - 1])
-                relative_depth = confirmed_mutation_dict[allele][1][i] / total_depth
+                        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+                        co_occuring_mutations.add(allele + '_' + mutation)
+                        break
+
+                #total_depth = sum(consensus_dict[allele][0][position - 1])
+                relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
                 if (allele + '_' + mutation) not in co_occuring_mutations and proxi_mutations == []:
                     if (relative_depth >= arguments.mrd):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
