@@ -268,8 +268,7 @@ def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
             mutation_depth = mutation[1]
             majority_base = consensus_dict[allele][1][int(position) - 1]
             total_depth = sum(consensus_dict[allele][0][int(position) - 1])
-            print (allele, mutation)
-            biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
+            biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation[0])
             if biological_existance:
                 print ('{},{},{},{},{},{}. {}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Previously seen mutation in the database.'))
             else:
