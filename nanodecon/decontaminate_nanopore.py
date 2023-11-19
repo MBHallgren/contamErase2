@@ -102,7 +102,7 @@ def nanopore_decontamination(arguments):
 
     #After conversion prune close-by mutations
 
-    format_output(confirmed_mutation_dict, consensus_dict)
+    format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict)
 
     sys.exit()
 
@@ -258,7 +258,7 @@ def blacklist_positions(fastq_file, quality_threshold):
 
     return blacklist_dict
 
-def format_output(confirmed_mutation_dict, consensus_dict):
+def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
     header = 'Gene,MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth'
     print (header)
     for allele in confirmed_mutation_dict:
@@ -268,7 +268,11 @@ def format_output(confirmed_mutation_dict, consensus_dict):
             mutation_depth = mutation[1]
             majority_base = consensus_dict[allele][1][int(position) - 1]
             total_depth = sum(consensus_dict[allele][0][int(position) - 1])
-            print ('{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth))
+            biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
+            if biological_existance:
+                print ('{},{},{},{},{},{}. {}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Previously seen mutation in the database.'))
+            else:
+                print ('{},{},{},{},{},{}. {}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Novel mutation, never seen before in the database.'))
 
 def extract_mapped_rmlst_read(output, nanopore):
     read_set = set()
@@ -420,14 +424,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
                 if threshold < 3:
                     threshold = 3
-                if allele == 'BACT000004_1452' or allele == 'BACT000002_48':
-                    print ("mutation:", mutation)
-                    print ("threshold:", threshold)
-                    print ("position_depth:", position_depth)
-                    print ("proxi_mutations:", proxi_mutations)
-                    print ("biological_existance:", biological_existance)
-                    print (arguments.mrd)
-                    print (arguments.coc)
                 for number_of_co_occurences in row:
                     if float(number_of_co_occurences) >= float(threshold): #Positive co-occurence
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
