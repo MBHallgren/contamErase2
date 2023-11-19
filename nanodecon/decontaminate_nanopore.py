@@ -424,6 +424,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     print ("threshold:", threshold)
                     print ("position_depth:", position_depth)
                     print ("mutation:", mutation)
+                    print ("proxi_mutations:", proxi_mutations)
+                    print ("biological_existance:", biological_existance)
                 for number_of_co_occurences in row:
                     if float(number_of_co_occurences) >= float(threshold): #Positive co-occurence
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
