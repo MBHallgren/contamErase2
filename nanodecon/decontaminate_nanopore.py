@@ -426,6 +426,12 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 #total_depth = sum(consensus_dict[allele][0][position - 1])
                 relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
                 if (allele + '_' + mutation) not in co_occuring_mutations and proxi_mutations == []:
+                    if mutation == '90_T' and allele == 'BACT000039_31':
+                        print ("Relative depth:", relative_depth)
+                        print ("Threshold:", arguments.mrd)
+                        print ('HERE FOR MUTATION: 90_T')
+                        print (confirmed_mutation_dict[allele][1][i])
+                        print (position_depth)
                     if (relative_depth >= arguments.mrd):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
