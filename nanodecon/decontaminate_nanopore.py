@@ -391,46 +391,25 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 position_depth = sum(consensus_dict[allele][0][position - 1])
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
                 biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
+
                 if proxi_mutations != []:
                     if biological_existance:
-                        threshold = position_depth * arguments.mrd * arguments.coc
+                        co_threshold = position_depth * arguments.mrd * arguments.coc
                     else:
-                        threshold = position_depth * arguments.mrd
+                        co_threshold = position_depth * arguments.mrd
                 else:
-                    threshold = position_depth * arguments.mrd * arguments.coc
+                    co_threshold = position_depth * arguments.mrd * arguments.coc
 
-                if threshold < 3:
-                    threshold = 3
+                if co_threshold < 3:
+                    co_threshold = 3
 
-                if allele == 'BACT000039_31':
-                    print ('')
-                    print("Mutation:", mutation)
-                    print ("Threshold:", threshold)
-                    print ("Position depth:", position_depth)
-                    print ("Proxi mutations:", proxi_mutations)
-                    print ("Biological existance:", biological_existance)
-                    print ("Row:", row)
-
-                for number_of_co_occurences in row:
-                    if mutation == '90_T' and allele == 'BACT000039_31':
-                        print ("Number of co-occurences:", number_of_co_occurences)
-                        print ("Threshold:", threshold)
-                    if float(number_of_co_occurences) >= float(threshold): #Positive co-occurence
-                        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
-                        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
-                        co_occuring_mutations.add(allele + '_' + mutation)
-                        break
-
-                #total_depth = sum(consensus_dict[allele][0][position - 1])
-                relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
-                if (allele + '_' + mutation) not in co_occuring_mutations and proxi_mutations == []:
-                    if mutation == '90_T' and allele == 'BACT000039_31':
-                        print ("Relative depth:", relative_depth)
-                        print ("Threshold:", arguments.mrd)
-                        print ('HERE FOR MUTATION: 90_T')
-                        print (confirmed_mutation_dict[allele][1][i])
-                        print (position_depth)
-                        sys.exit()
+                if check_mutation_co_occurrence(mutation_list, mutation, co_threshold, row): #Co-occuring mutation
+                    adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                    adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+                    co_occuring_mutations.add(allele + '_' + mutation)
+                else:
+                    #add non-co-occuring mutations above mrd
+                    relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
                     if (relative_depth >= arguments.mrd):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
@@ -445,6 +424,29 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
     return adjusted_mutation_dict, co_occuring_mutations
+
+def check_mutation_co_occurrence(list_of_mutation_co_occurrence, threshold, mutation_list, mutation):
+    """
+    Checks if a given mutation co-occurs with another mutation above a specified threshold.
+
+    :param list_of_mutation_co_occurrence: List of co-occurrence counts for each mutation.
+    :param threshold: The threshold value for determining significant co-occurrence.
+    :param mutation_list: List of mutations corresponding to the co-occurrence counts.
+    :param mutation: The mutation to check for co-occurrence.
+    :return: True if the mutation co-occurs with any other mutation above the threshold, False otherwise.
+    """
+    if mutation not in mutation_list:
+        return False
+
+    # Find the index of the mutation in the mutation list
+    mutation_index = mutation_list.index(mutation)
+
+    # Check if the co-occurrence count of the mutation with any other mutation is above the threshold
+    for i, count in enumerate(list_of_mutation_co_occurrence):
+        if i != mutation_index and count >= threshold:
+            return True
+
+    return False
 
 def check_single_mutation_exisistance(bio_validation_dict, allele, specific_mutation):
     gene = allele.split('_')[0]
