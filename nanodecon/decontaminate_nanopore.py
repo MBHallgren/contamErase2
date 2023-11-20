@@ -39,7 +39,7 @@ def nanopore_decontamination(arguments):
 
     extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
-    os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
+    #os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
 
     index_top_hits_db(arguments.output)
 

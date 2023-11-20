@@ -162,7 +162,8 @@ def derive_biological_rmlst_snvs_results(biological_rmlst_snvs, confindr_dict):
     total_primary_snvs_found = list()
     remaining_snvs = dict()
     remaining_bio_snvs = dict()
-    noise = list()
+    noise_novel = list()
+    noise_known = list()
 
     #Also consider non biological rMLST SNVs for primary and secondary samples
     #Consider removing low depth snps to give a better representation of resutls.
@@ -182,12 +183,14 @@ def derive_biological_rmlst_snvs_results(biological_rmlst_snvs, confindr_dict):
                         total_bio_snvs_found_correctly.append(gene + '_' + mutation)
                         found_bio_snvs.append(mutation)
                     else:
-                        if mutation in p5_1028222[gene][0]:
+                        if 'never seen' in confindr_dict[gene][2][mutations.index(mutation)]: #This is a correction of a mistake, remove later
                             total_snvs += 1
-                            total_primary_snvs_found.append(gene + '_' + mutation)
+                            noise_novel.append(gene + '_' + mutation)
+                            remaining_snvs[gene][0].append(mutation)
+                            remaining_snvs[gene][1].append(depths[mutations.index(mutation)])
                         else:
                             total_snvs += 1
-                            noise.append(gene + '_' + mutation)
+                            noise_known.append(gene + '_' + mutation)
                             remaining_snvs[gene][0].append(mutation)
                             remaining_snvs[gene][1].append(depths[mutations.index(mutation)])
 
@@ -197,12 +200,13 @@ def derive_biological_rmlst_snvs_results(biological_rmlst_snvs, confindr_dict):
                 if mutation != '240_A':
                     remaining_bio_snvs[item] = mutation
 
-    return total_snvs, total_bio_snvs_found_correctly, total_primary_snvs_found, noise, remaining_snvs, remaining_bio_snvs
+
+    return total_snvs, total_bio_snvs_found_correctly, remaining_snvs, remaining_bio_snvs, noise_novel, noise_known
 
 rates = [1, 2, 3, 4, 5]
 file_depths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-print ('experiment,totalsnvs,totalbiologicalsnvscorrect,missingbiologicalsnvscorrect,totalprimarysnvsfound, noise')
+print ('experiment,totalsnvs,totalbiologicalsnvscorrect,missingbiologicalsnvscorrect,noise_novel,noise_known')
 #print ('MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth')
 for rate in rates:
     for file_depth in file_depths:
@@ -215,18 +219,20 @@ for rate in rates:
                     headers = line.strip().split(',')
                     headers = line[1:]
                 else:
+                    line=line.replace('. ', ',')
                     line = line.strip().split(',')
                     allele = line[0]
                     gene = allele.split('_')[0]
                     mutation = line[1] + '_' + line[3]
                     if gene.startswith('BACT'):
                         if gene not in confindr_dict:
-                            confindr_dict[gene] = [[mutation], [line[4]]]
+                            confindr_dict[gene] = [[mutation], [line[4]], [line[-1]]]
                         else:
                             confindr_dict[gene][0].append(mutation)
                             confindr_dict[gene][1].append(line[4])
+                            confindr_dict[gene][2].append(line[-1])
 
-        total_snvs, total_bio_snvs_found_correctly, total_primary_snvs_found, noise, remaining_snvs, remaining_bio_snvs = derive_biological_rmlst_snvs_results(biological_rmlst_snvs, confindr_dict)
+        total_snvs, total_bio_snvs_found_correctly, remaining_snvs, remaining_bio_snvs, noise_novel, noise_known = derive_biological_rmlst_snvs_results(biological_rmlst_snvs, confindr_dict)
 
         all_biological_snvs = list()
         missing_biological_snvs = list()
@@ -237,12 +243,13 @@ for rate in rates:
         for item in all_biological_snvs:
             if item not in total_bio_snvs_found_correctly:
                 missing_biological_snvs.append(item)
+                print (item)
         #print (missing_biological_snvs)
         #BACT000038 is a problem. 4 not IDd. Are these called correctly? check again. TBD
         #BACT000030 2 mutations. ID'ed with co-occurence!
         #BACT000040_240_A #This is known and needs to be fixed.'
 
-        print (str(rate) + '/' + str(file_depth), total_snvs, len(total_bio_snvs_found_correctly), len(missing_biological_snvs), len(total_primary_snvs_found), len(noise), sep=',')
+        print (str(rate) + '/' + str(file_depth), total_snvs, len(total_bio_snvs_found_correctly), len(missing_biological_snvs), len(noise_novel), len(noise_known), sep=',')
 
         #TBD current we use 5p mutations for primary SNVs, should also bench are 1-4?
         #TBD Which missing biological SNVs do we see and why?
