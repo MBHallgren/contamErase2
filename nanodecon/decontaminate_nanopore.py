@@ -432,6 +432,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                         print ('HERE FOR MUTATION: 90_T')
                         print (confirmed_mutation_dict[allele][1][i])
                         print (position_depth)
+                        sys.exit()
                     if (relative_depth >= arguments.mrd):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
