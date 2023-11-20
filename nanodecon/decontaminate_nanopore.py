@@ -43,7 +43,7 @@ def nanopore_decontamination(arguments):
 
     index_top_hits_db(arguments.output)
 
-    #arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
+    arguments.nanopore = arguments.output + '/rmlst_reads.fastq'
     #
 
     kma.KMARunner(arguments.nanopore,
@@ -55,7 +55,7 @@ def nanopore_decontamination(arguments):
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
 
-    consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
+    consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/rmlst_reads.fastq')
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
 
