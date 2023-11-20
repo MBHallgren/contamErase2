@@ -62,13 +62,13 @@ def nanopore_decontamination(arguments):
 
     bio_validation_dict = bio_validation_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
-    confirmed_mutation_dict = co_occurence_until_convergence(confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
+    confirmed_mutation_dict = co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
 
     format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict)
 
     sys.exit()
 
-def co_occurence_until_convergence(confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict):
+def co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict):
     """
     Iteratively call upper_co_occuring_mutations_in_reads until no new mutations are found.
     """
@@ -76,8 +76,8 @@ def co_occurence_until_convergence(confirmed_mutation_dict, consensus_dict, read
     current_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
     iteration_count = 0
     while True:
-        confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(confirmed_mutation_dict, consensus_dict,
-                                                                   read_positions_blacklisted_dict, bio_validation_dict)
+        confirmed_mutation_dict, co_occuring_mutations =\
+            upper_co_occuring_mutations_in_reads(confirmed_mutation_dict, consensus_dict,read_positions_blacklisted_dict, bio_validation_dict)
         new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
         if new_count == current_count:
             break
