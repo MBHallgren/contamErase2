@@ -39,11 +39,13 @@ def nanopore_decontamination(arguments):
 
     extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
-    #os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
+    os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 -l 500 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
 
     index_top_hits_db(arguments.output)
 
-    arguments.nanopore = arguments.output + '/rmlst_reads.fastq'
+    #arguments.nanopore = arguments.output + '/rmlst_reads.fastq'
+    arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
+
     #TBD test trim effect
     #Add trimmed here if trim
     #
@@ -57,7 +59,7 @@ def nanopore_decontamination(arguments):
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
 
-    consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/rmlst_reads.fastq')
+    consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.nanopore)
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
 
