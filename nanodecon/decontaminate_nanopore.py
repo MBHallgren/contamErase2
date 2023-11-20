@@ -77,6 +77,7 @@ def co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus
     """
 
     current_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
+    print ('start', current_count)
     iteration_count = 0
     while True:
         confirmed_mutation_dict =\
@@ -342,8 +343,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                        confirmed_mutation_dict,
                                                        consensus_dict,
                                                        read_positions_blacklisted_dict)
-
-    co_occuring_mutations = set()
 
     co_occurence_matrix_dict = {}
     for allele in confirmed_mutation_dict:
