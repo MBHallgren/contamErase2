@@ -421,6 +421,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                         #relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
                         #if (relative_depth >= arguments.mrd):
                         print ('Added single mutation_1: ', allele, mutation)
+                        print (position_depth, confirmed_mutation_dict[allele][1][i])
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
         else:
