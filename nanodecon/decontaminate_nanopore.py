@@ -403,7 +403,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if co_threshold < 3:
                     co_threshold = 3
 
-                if check_mutation_co_occurrence(mutation_list, mutation, co_threshold, row): #Co-occuring mutation
+                if check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation): #Co-occuring mutation
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                     co_occuring_mutations.add(allele + '_' + mutation)
