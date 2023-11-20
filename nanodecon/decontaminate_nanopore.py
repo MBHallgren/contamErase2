@@ -83,12 +83,12 @@ def co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus
         confirmed_mutation_dict =\
             upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,read_positions_blacklisted_dict, bio_validation_dict)
         new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
+        print ('Iteration: ' + str(iteration_count))
+        print ('Current mutation count: ' + str(new_count))
+        iteration_count += 1
         if new_count == current_count:
             break
         current_count = new_count
-        print ('Iteration: ' + str(iteration_count))
-        print ('Current mutation count: ' + str(current_count))
-        iteration_count += 1
     return confirmed_mutation_dict
 
 
