@@ -34,7 +34,7 @@ def main():
     parser.add_argument('--threads', action="store", type=int, dest='threads', default=4,
                         help='Number of threads to use. Default: 4')
 
-    parser.add_argument('--min_n', action="store", type=int, dest='min_n', default=2,
+    parser.add_argument('--min_n', action="store", type=int, dest='min_n', default=3,
                         help='Minimum number of minimum number of nucleotides required to call a SNV for a contaminated nucleotide position.'
                              'The value of min_rd will be using unless a specific min_n integer is given. Default: 2')
     parser.add_argument('--mrd', action="store", type=float, dest='mrd', default=0.03
