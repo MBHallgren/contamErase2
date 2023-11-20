@@ -412,7 +412,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     co_threshold = 3
 
                 if check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation): #Co-occuring mutation
-                    print ('Added co-occuring mutation: ', allele, mutation)
+                    #print ('Added co-occuring mutation: ', allele, mutation)
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                     #co_occuring_mutations.add(allele + '_' + mutation)
@@ -420,8 +420,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     if confirmed_mutation_dict[allele][1][i] >= position_depth * arguments.mrd:
                         #relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
                         #if (relative_depth >= arguments.mrd):
-                        print ('Added single mutation_1: ', allele, mutation)
-                        print (position_depth, confirmed_mutation_dict[allele][1][i])
+                        #print ('Added single mutation_1: ', allele, mutation)
+                        #print (position_depth, confirmed_mutation_dict[allele][1][i])
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
         else:
