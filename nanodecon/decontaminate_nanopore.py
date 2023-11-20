@@ -409,8 +409,14 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     print ("Position depth:", position_depth)
                     print ("Proxi mutations:", proxi_mutations)
                     print ("Biological existance:", biological_existance)
+                    print ("Row:", row)
 
                 for number_of_co_occurences in row:
+                    if mutation == '90_T' and allele == 'BACT000039_31':
+                        print ("Number of co-occurences:", number_of_co_occurences)
+                        print ("Threshold:", threshold)
+                        print ("Co-occurence:", float(number_of_co_occurences))
+                        print ("Co-occuring mutations:", co_occuring_mutations)
                     if float(number_of_co_occurences) >= float(threshold): #Positive co-occurence
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
