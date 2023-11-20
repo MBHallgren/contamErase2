@@ -44,6 +44,7 @@ def nanopore_decontamination(arguments):
     index_top_hits_db(arguments.output)
 
     arguments.nanopore = arguments.output + '/rmlst_reads.fastq'
+    #TBD test trim effect
     #Add trimmed here if trim
     #
 
@@ -82,8 +83,8 @@ def co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus
         if new_count == current_count:
             break
         current_count = new_count
-        print ('Iteration: ' + str(iteration_count))
-        print ('Current mutation count: ' + str(current_count))
+        #print ('Iteration: ' + str(iteration_count))
+        #print ('Current mutation count: ' + str(current_count))
         iteration_count += 1
     return confirmed_mutation_dict
 
