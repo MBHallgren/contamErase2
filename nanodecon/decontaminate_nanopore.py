@@ -43,14 +43,13 @@ def nanopore_decontamination(arguments):
 
     index_top_hits_db(arguments.output)
 
-    arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
+    #arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'
     #
 
     kma.KMARunner(arguments.nanopore,
                   arguments.output + "/rmlst_alignment",
                   arguments.output + '/top_hits_db',
                   "-t {} -ID 10 -ont -md 1.5 -matrix -eq 14 -mct 0.5 -sam 2096> {}/rmlst_alignment.sam".format(arguments.threads, arguments.output)).run()
-    #TMP removed -oa above
     os.system('gunzip ' + arguments.output + '/rmlst_alignment.mat.gz')
 
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
@@ -59,48 +58,19 @@ def nanopore_decontamination(arguments):
     consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.output + '/trimmed_rmlst_reads.fastq')
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
-    #number = 0
-    #for item in confirmed_mutation_dict:
-    #    number += len(confirmed_mutation_dict[item][0])
-    #print('Number of mutations: ' + str(number))
-
-    #Consider this, can we exclude all novel mutations?
-        #Can we do something to include novel mutations if the signal is strong enough?
-        #Add significant but non biological mutations.
 
     bio_validation_dict = bio_validation_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
     #confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
 
-
-    #TBD: make this non-verbose
-    #number = 0
-    #for item in confirmed_mutation_dict:
-    #    number += len(confirmed_mutation_dict[item][0])
-    #print ('Number of mutations: ' + str(number))
-
     confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
-    #print ('first co-occuring mutations: ' + str(co_occuring_mutations))
-    #number = 0
-    #for item in confirmed_mutation_dict:
-    #    number += len(confirmed_mutation_dict[item][0])
-    #print ('Number of mutations: ' + str(number))
+
 
 
     confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
                                                                    read_positions_blacklisted_dict, bio_validation_dict)
 
-    #print ('second co-occuring mutations: ' + str(co_occuring_mutations))
-    #confirmed_mutation_dict = filter_mutations(confirmed_mutation_dict, co_occuring_mutations)
-    #number = 0
-    #for item in confirmed_mutation_dict:
-    #    number += len(confirmed_mutation_dict[item][0])
-    #print('Number of mutations: ' + str(number))
-
-    #TBD could we keep iteration until conversion?
-
-    #After conversion prune close-by mutations
 
     format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict)
 
