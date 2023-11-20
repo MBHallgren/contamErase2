@@ -83,7 +83,7 @@ def co_occurence_until_convergence(confirmed_mutation_dict, consensus_dict, read
             break
         current_count = new_count
         print ('Iteration: ' + str(iteration_count))
-        print ('Current mutation count: ' + str(current_count)
+        print ('Current mutation count: ' + str(current_count))
         iteration_count += 1
     return confirmed_mutation_dict
 
