@@ -62,18 +62,37 @@ def nanopore_decontamination(arguments):
 
     bio_validation_dict = bio_validation_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
-
-    confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
-
-
-
-
-    confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
-                                                                   read_positions_blacklisted_dict, bio_validation_dict)
+    confirmed_mutation_dict = co_occurence_until_convergence(confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
 
     format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict)
 
     sys.exit()
+
+def co_occurence_until_convergence(confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict):
+    """
+    Iteratively call upper_co_occuring_mutations_in_reads until no new mutations are found.
+    """
+
+    current_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
+    iteration_count = 0
+    while True:
+        confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(confirmed_mutation_dict, consensus_dict,
+                                                                   read_positions_blacklisted_dict, bio_validation_dict)
+        new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
+        if new_count == current_count:
+            break
+        current_count = new_count
+        print ('Iteration: ' + str(iteration_count))
+        print ('Current mutation count: ' + str(current_count)
+        iteration_count += 1
+    return confirmed_mutation_dict
+
+
+def count_mutations_in_mutations_dict(mutation_dict):
+    count = 0
+    for item in mutation_dict:
+        count += len(mutation_dict[item][0])
+    return count
 
 def bio_validation_mutations(consensus_dict, fsa_file, confirmed_mutation_dict):
     correct_length_dict = derive_correct_length_headers(consensus_dict, fsa_file)
