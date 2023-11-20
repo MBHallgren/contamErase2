@@ -77,7 +77,7 @@ def co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus
     iteration_count = 0
     while True:
         confirmed_mutation_dict, co_occuring_mutations =\
-            upper_co_occuring_mutations_in_reads(confirmed_mutation_dict, consensus_dict,read_positions_blacklisted_dict, bio_validation_dict)
+            upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,read_positions_blacklisted_dict, bio_validation_dict)
         new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
         if new_count == current_count:
             break
