@@ -327,7 +327,7 @@ def derive_mutation_positions2(consensus_dict, arguments):
                     if positions[t] >= arguments.min_n:
                         total_depth = sum(positions)
                         relative_depth = positions[t] / total_depth
-                        if relative_depth >= arguments.coc * arguments.mrd and positions[t] >= 2: #Only consider mutations with min depth >=2
+                        if relative_depth >= arguments.coc * arguments.mrd: #Only consider mutations with min depth >=2
                             all_confirmed_mutation_dict[item][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
                             all_confirmed_mutation_dict[item][1].append(positions[t])
