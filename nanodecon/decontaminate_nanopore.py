@@ -63,14 +63,19 @@ def nanopore_decontamination(arguments):
 
     #confirmed_mutation_dict = validate_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
+    for item in co_occuring_mutations:
+        print(item, co_occuring_mutations[item])
 
     confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
 
+    for item in co_occuring_mutations:
+        print (item, co_occuring_mutations[item])
 
 
     confirmed_mutation_dict, co_occuring_mutations = upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
                                                                    read_positions_blacklisted_dict, bio_validation_dict)
-
+    for item in co_occuring_mutations:
+        print(item, co_occuring_mutations[item])
 
     format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict)
 
