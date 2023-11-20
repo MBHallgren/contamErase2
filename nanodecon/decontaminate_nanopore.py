@@ -415,9 +415,10 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
                     #co_occuring_mutations.add(allele + '_' + mutation)
                 else:
-                    #add non-co-occuring mutations above mrd
-                    relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
-                    if (relative_depth >= arguments.mrd):
+                    min_depth = max(3, position_depth * arguments.mrd)
+                    if confirmed_mutation_dict[allele][1][i] >= min_depth:
+                        #relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
+                        #if (relative_depth >= arguments.mrd):
                         adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                         adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
         else:
@@ -426,8 +427,10 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 mutation = confirmed_mutation_dict[allele][0][0]
                 position = int(mutation.split('_')[0])
                 total_depth = sum(consensus_dict[allele][0][position - 1])
-                relative_depth = confirmed_mutation_dict[allele][1][0] / total_depth
-                if relative_depth >= arguments.mrd:
+                #relative_depth = confirmed_mutation_dict[allele][1][0] / total_depth
+                min_depth = max(3, total_depth * arguments.mrd)
+                #if relative_depth >= arguments.mrd:
+                if confirmed_mutation_dict[allele][1][0] >= min_depth:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
     return adjusted_mutation_dict
