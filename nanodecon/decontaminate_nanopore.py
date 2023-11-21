@@ -417,45 +417,17 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
                 biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
 
-                if proxi_mutations != []:
-                    if biological_existance:
-                        co_threshold = position_depth * arguments.mrd * arguments.cor
-                    else:
-                        co_threshold = position_depth * arguments.mrd
-                else:
-                    co_threshold = position_depth * arguments.mrd * arguments.cor
-
-                if co_threshold < 3:
-                    co_threshold = 3
-
-
 
                 mutation_threshold = position_depth * arguments.mrd
-                #Rework and check co-occurence
-                co_occurence_list = check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation)
-
-                if allele == 'BACT000002_48':
-                    print ('!!!!!!!!!!!!!!')
-                    print ("Mutation", mutation)
-                    print ("biological_existance" ,biological_existance)
-                    print ("co_threshold", co_threshold)
-                    print ("mutation_threshold initial", mutation_threshold)
-                    print ("mutation_depth", mutation_depth)
-                    print ("position_depth", position_depth)
-                    print ("co_occurence_list", co_occurence_list)
+                co_occurence_list = check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation,
+                                                                 position_depth, cor, pp, mrd, proxi_mutations)
 
                 if co_occurence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
-                if allele == 'BACT000002_48':
-                    print ('After co_occurence_list:', mutation_threshold)
                 if not biological_existance:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
-                if allele == 'BACT000002_48':
-                    print ('After biological_existance:', mutation_threshold)
                 if proxi_mutations != []:
                     mutation_threshold = mutation_threshold + (arguments.pp-1) * position_depth * arguments.mrd
-                if allele == 'BACT000002_48':
-                    print ('After proxi_mutations:', mutation_threshold)
                 if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
@@ -482,7 +454,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
     return adjusted_mutation_dict
 
-def check_mutation_co_occurrence(list_of_mutation_co_occurrence, threshold, mutation_list, mutation):
+def check_mutation_co_occurrence(list_of_mutation_co_occurrence, threshold, mutation_list, mutation,
+                                 position_depth, cor, pp, mrd, proxi_mutations):
     """
     Checks if a given mutation co-occurs with another mutation above a specified threshold.
 
@@ -496,12 +469,18 @@ def check_mutation_co_occurrence(list_of_mutation_co_occurrence, threshold, muta
         #Should never happen
         return [] #no co-occurence and not in proximity
 
+    co_threshold = position_depth * mrd * cor #default co_threshold
+    if co_threshold < 3:
+        co_threshold = 3
+
     # Find the index of the mutation in the mutation list
     mutation_index = mutation_list.index(mutation)
 
     co_occurence_list = []
     # Check if the co-occurrence count of the mutation with any other mutation is above the threshold
     for i, count in enumerate(list_of_mutation_co_occurrence):
+        if mutaion_list[i] in proxi_mutations:
+            co_threshold = co_threshold * pp
         if i != mutation_index and count >= threshold:
             co_occurence_list.append(mutation_list[i])
 
