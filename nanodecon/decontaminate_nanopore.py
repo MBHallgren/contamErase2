@@ -82,14 +82,14 @@ def co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus
     """
 
     current_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
-    print ('start', current_count)
+    #print ('start', current_count)
     iteration_count = 0
     while True:
         confirmed_mutation_dict =\
             upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,read_positions_blacklisted_dict, bio_validation_dict)
         new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
-        print ('Iteration: ' + str(iteration_count))
-        print ('Current mutation count: ' + str(new_count))
+        #print ('Iteration: ' + str(iteration_count))
+        #print ('Current mutation count: ' + str(new_count))
         iteration_count += 1
         if new_count == current_count:
             break
@@ -382,9 +382,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print ("allele:", allele)
-            print("Mutation names:", mutation_list)
-            print ("Depth:", depth_list)
+            #print ("allele:", allele)
+            #print("Mutation names:", mutation_list)
+            #print ("Depth:", depth_list)
             average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
             #positional_depth = sum(consensus_dict[allele][0][0]) / len(consensus_dict[allele][0][0])
             #total_gene_depth = 0
@@ -393,9 +393,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             #average_depth = total_gene_depth / len(consensus_dict[allele][0])
             #threshold = average_depth * arguments.mrd * arguments.cor
             #print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
-            for i, row in enumerate(co_occurrence_matrix):
-                mutation_name = mutation_list[i]
-                print(f"{mutation_name}: {row} {check_single_mutation_exisistance(bio_validation_dict, allele, mutation_name)}")
+            #for i, row in enumerate(co_occurrence_matrix):
+            #    mutation_name = mutation_list[i]
+            #    print(f"{mutation_name}: {row} {check_single_mutation_exisistance(bio_validation_dict, allele, mutation_name)}")
 
             co_occurence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
 
@@ -432,10 +432,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
 
-                #Does in matter if not co-occuring within proximity?
-                    #check this
-                #Should we remove mutations which only co-occur within proximity and neither are biological?
-                    #yes.
+
         else:
             adjusted_mutation_dict[allele] = [[], []]
             if confirmed_mutation_dict[allele][0] != []:
