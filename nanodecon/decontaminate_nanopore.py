@@ -446,7 +446,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
                 if co_occurence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
-               if not biological_existance:
+                if not biological_existance:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
                 if proxi_mutations != []:
                     mutation_threshold = mutation_threshold + (arguments.pp-1) * position_depth * arguments.mrd
