@@ -439,6 +439,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if proxi_mutations != []:
                     mutation_threshold = mutation_threshold + arguments.pp * position_depth * arguments.mrd
 
+                if allele == 'BACT000030_1083':
+                    print ("Final mutation_threshold", mutation_threshold)
                 if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
