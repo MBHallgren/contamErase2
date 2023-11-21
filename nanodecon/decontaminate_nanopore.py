@@ -463,12 +463,13 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             adjusted_mutation_dict[allele] = [[], []]
             if confirmed_mutation_dict[allele][0] != []:
                 mutation_threshold = position_depth * arguments.mrd
+                mutation = confirmed_mutation_dict[allele][0][0]
+                depth = confirmed_mutation_dict[allele][1][0]
+                biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
                 if not biological_existance:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
 
                 #Check for mutation_threshold
-                mutation = confirmed_mutation_dict[allele][0][0]
-                depth = confirmed_mutation_dict[allele][1][0]
                 position = int(mutation.split('_')[0])
                 if depth >= mutation_threshold:
                     #print ('Added single mutation_2: ', allele, mutation)
