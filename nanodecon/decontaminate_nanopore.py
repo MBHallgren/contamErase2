@@ -419,7 +419,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
 
                 mutation_threshold = position_depth * arguments.mrd
-                co_occurence_list = check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation,
+                co_occurence_list = check_mutation_co_occurrence(row, mutation_list, mutation,
                                                                  position_depth, cor, pp, mrd, proxi_mutations)
 
                 if co_occurence_list != []:
@@ -454,7 +454,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
     return adjusted_mutation_dict
 
-def check_mutation_co_occurrence(list_of_mutation_co_occurrence, threshold, mutation_list, mutation,
+def check_mutation_co_occurrence(list_of_mutation_co_occurrence, mutation_list, mutation,
                                  position_depth, cor, pp, mrd, proxi_mutations):
     """
     Checks if a given mutation co-occurs with another mutation above a specified threshold.
@@ -480,8 +480,10 @@ def check_mutation_co_occurrence(list_of_mutation_co_occurrence, threshold, muta
     # Check if the co-occurrence count of the mutation with any other mutation is above the threshold
     for i, count in enumerate(list_of_mutation_co_occurrence):
         if mutaion_list[i] in proxi_mutations:
+            # Add penalty for proximity to make it harder to get the co-occurence reward
+            # for mutations within the proximity
             co_threshold = co_threshold * pp
-        if i != mutation_index and count >= threshold:
+        if i != mutation_index and count >= co_threshold:
             co_occurence_list.append(mutation_list[i])
 
     return co_occurence_list
