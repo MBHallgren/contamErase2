@@ -41,17 +41,14 @@ def main():
                         , help='Minimum related depth (mrd) for validating a single allele SNVs.'
                                ' Any SNV above this threshold in considered a true positive.'
                                'Default: 0.03')
-    parser.add_argument('--coc', action="store", type=float, dest='coc', default=0.5
-                        , help='Co-occuence Cutoff. This value is multiplied with the minimum related depth (mrd) to determine the co-occurence cutoff.'
-                               'Default: 0.5')
-    parser.add_argument('--urd', action="store", type=float, dest='urd', default=0.03
-                        , help='Upper related depth (urd) for validating a SNV.'
-                               ' Any SNV above this threshold in considered a true positive.'
-                               'Default: 0.03')
-    parser.add_argument('--lrd', action="store", type=float, dest='lrd', default=0.01
-                        , help='Lower related depth (lrd) for validating a SNV.'
-                               ' Any SNV above this depth which also is found in another rmlst allele is considered a true positive.'
-                               'Default: 0.01')
+    parser.add_argument('--cor', action="store", type=float, dest='cor', default=0.5
+                        , help='Co-occuence reward. This value is multiplied with the mrd to lower the threshold. Default: 0.5')
+    parser.add_argument('--bp', action="store", type=float, dest='bp', default=1.5
+                        , help='Biological penalty. This value is multiplied with the mrd to'
+                               ' increase the threshold if the mutation is novel and does not'
+                               ' currently exist in the marker gene database. Default: 1.5')
+    #parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.25
+    #                    ,help='proximity penalty. This value is multiplied with the mrd to')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
     args = parser.parse_args()

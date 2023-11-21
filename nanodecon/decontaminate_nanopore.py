@@ -59,6 +59,9 @@ def nanopore_decontamination(arguments):
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
 
+    #Here for the article.
+    #Can we plot the noise distribution?
+    #How often do proximity mutations co-occur?
     consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.nanopore)
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
@@ -66,6 +69,7 @@ def nanopore_decontamination(arguments):
     #print ('Number of mutations found: ' + str(count_mutations_in_mutations_dict(confirmed_mutation_dict)))
     bio_validation_dict = bio_validation_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
+    #TBD. proximity penalty if not co-oocuring
     confirmed_mutation_dict = co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
     format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict)
 
@@ -325,7 +329,7 @@ def derive_mutation_positions2(consensus_dict, arguments):
                     if positions[t] >= arguments.min_n:
                         total_depth = sum(positions)
                         relative_depth = positions[t] / total_depth
-                        if relative_depth >= arguments.coc * arguments.mrd: #Only consider mutations with min depth >=2
+                        if relative_depth >= arguments.cor * arguments.mrd: #Only consider mutations with min depth >=2
                             all_confirmed_mutation_dict[item][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
                             all_confirmed_mutation_dict[item][1].append(positions[t])
@@ -375,7 +379,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             #for i in range(len(consensus_dict[allele][0])):
             #    total_gene_depth += sum(consensus_dict[allele][0][i])
             #average_depth = total_gene_depth / len(consensus_dict[allele][0])
-            #threshold = average_depth * arguments.mrd * arguments.coc
+            #threshold = average_depth * arguments.mrd * arguments.cor
             #print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
             for i, row in enumerate(co_occurrence_matrix):
                 mutation_name = mutation_list[i]
@@ -391,47 +395,66 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             adjusted_mutation_dict[allele] = [[], []]
             matrix = co_occurence_matrix_dict[allele][0]
             mutation_list = co_occurence_matrix_dict[allele][1]
+            depth_list = confirmed_mutation_dict[allele][1]
             for i in range(len(matrix)):
                 row = matrix[i]
                 mutation = mutation_list[i]
                 position = int(mutation.split('_')[0])
                 position_depth = sum(consensus_dict[allele][0][position - 1])
+                mutation_depth = depth_list[i]
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, 5)
                 biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
 
                 if proxi_mutations != []:
                     if biological_existance:
-                        co_threshold = position_depth * arguments.mrd * arguments.coc
+                        co_threshold = position_depth * arguments.mrd * arguments.cor
                     else:
                         co_threshold = position_depth * arguments.mrd
                 else:
-                    co_threshold = position_depth * arguments.mrd * arguments.coc
+                    co_threshold = position_depth * arguments.mrd * arguments.cor
 
                 if co_threshold < 3:
                     co_threshold = 3
+                mutation_threshold = position_depth * arguments.mrd
+                co_occurence_list = check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation)
+                if co_occurence_list != []:
+                    mutation_threshold = mutation_threshold * arguments.cor
+                if not biological_existance:
+                    mutation_threshold = mutation_threshold * arguments.bp
 
-                if check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation): #Co-occuring mutation
-                    #print ('Added co-occuring mutation: ', allele, mutation)
+                if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
-                    #co_occuring_mutations.add(allele + '_' + mutation)
-                else:
-                    if confirmed_mutation_dict[allele][1][i] >= position_depth * arguments.mrd:
-                        #relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
-                        #if (relative_depth >= arguments.mrd):
-                        #print ('Added single mutation_1: ', allele, mutation)
-                        #print (position_depth, confirmed_mutation_dict[allele][1][i])
-                        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
-                        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+
+                #Does in matter if not co-occuring within proximity?
+                #Should we remove mutations which only co-occur within proximity and neither are biological?
+                    #yes.
+
+                #if check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation): #Co-occuring mutation
+                #    #print ('Added co-occuring mutation: ', allele, mutation)
+                #    adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                #    adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
+                #    #co_occuring_mutations.add(allele + '_' + mutation)
+                #else:
+                #    if confirmed_mutation_dict[allele][1][i] >= position_depth * arguments.mrd:
+                #        #relative_depth = confirmed_mutation_dict[allele][1][i] / position_depth
+                #        #if (relative_depth >= arguments.mrd):
+                #        #print ('Added single mutation_1: ', allele, mutation)
+                #        #print (position_depth, confirmed_mutation_dict[allele][1][i])
+                #        adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
+                #        adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
         else:
             adjusted_mutation_dict[allele] = [[], []]
             if confirmed_mutation_dict[allele][0] != []:
+                mutation_threshold = position_depth * arguments.mrd
+                if not biological_existance:
+                    mutation_threshold = mutation_threshold * arguments.bp
+
+                #Check for mutation_threshold
                 mutation = confirmed_mutation_dict[allele][0][0]
+                depth = confirmed_mutation_dict[allele][1][0]
                 position = int(mutation.split('_')[0])
-                total_depth = sum(consensus_dict[allele][0][position - 1])
-                #relative_depth = confirmed_mutation_dict[allele][1][0] / total_depth
-                #if relative_depth >= arguments.mrd:
-                if confirmed_mutation_dict[allele][1][0] >= position_depth * arguments.mrd:
+                if depth >= mutation_threshold:
                     #print ('Added single mutation_2: ', allele, mutation)
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
@@ -448,18 +471,34 @@ def check_mutation_co_occurrence(list_of_mutation_co_occurrence, threshold, muta
     :return: True if the mutation co-occurs with any other mutation above the threshold, False otherwise.
     """
     if mutation not in mutation_list:
-        return False
+        #Should never happen
+        return [] #no co-occurence and not in proximity
 
     # Find the index of the mutation in the mutation list
     mutation_index = mutation_list.index(mutation)
 
+    co_occurence_list = []
     # Check if the co-occurrence count of the mutation with any other mutation is above the threshold
     for i, count in enumerate(list_of_mutation_co_occurrence):
         if i != mutation_index and count >= threshold:
-            return True
+            co_occurence_list.append(mutation_list[i])
 
-    return False
+    return co_occurence_list
 
+    #if co_occurence_list == []:
+    #    return False, False #no co-occurence and in proximity
+    #else:
+    #    if proximity_mutations != []:
+    #        output_list = [element for element in co_occurence_list if element in proximity_mutations]
+    #        if output_list == []:
+    #            return True, False #no co-occurence with any mutations in proximity #This will add a penalty
+    #        else:
+    #            return True, True #co-occuring with another mutation in proximity
+    #    else:
+    #        return True, True #co-occurence and not in proximity
+
+def check_if_co_occurence_in_proximity_mutation():
+    pass
 def check_single_mutation_exisistance(bio_validation_dict, allele, specific_mutation):
     gene = allele.split('_')[0]
     if specific_mutation in bio_validation_dict[gene]:
