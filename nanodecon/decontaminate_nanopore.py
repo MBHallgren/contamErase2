@@ -416,7 +416,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if co_threshold < 3:
                     co_threshold = 3
 
-                if alelle == 'BACT000030_1083':
+                if allele == 'BACT000030_1083':
                     print ('!!!!!!!!!!!!!!')
                     print (mutation)
                     print (biological_existance)
