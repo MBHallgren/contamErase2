@@ -427,15 +427,19 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     print ("Mutation", mutation)
                     print ("biological_existance" ,biological_existance)
                     print ("co_threshold", co_threshold)
-                    print ("mutation_threshold", mutation_threshold)
+                    print ("mutation_threshold initial", mutation_threshold)
                     print ("mutation_depth", mutation_depth)
                     print ("position_depth", position_depth)
                     print ("co_occurence_list", co_occurence_list)
 
                 if co_occurence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
+                if allele == 'BACT000030_1083':
+                    print ("mutation_threshold after co-occurence", mutation_threshold)
                 if not biological_existance:
                     mutation_threshold = mutation_threshold + arguments.bp * position_depth * arguments.mrd
+                if allele == 'BACT000030_1083':
+                    print ("mutation_threshold after biological_existance", mutation_threshold)
                 if proxi_mutations != []:
                     mutation_threshold = mutation_threshold + arguments.pp * position_depth * arguments.mrd
 
