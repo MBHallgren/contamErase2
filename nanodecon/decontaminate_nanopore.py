@@ -14,6 +14,7 @@ from nanodecon.nanopore_mutations import create_mutation_vector
 from nanodecon.nanopore_mutations import identify_mutations
 
 def nanopore_decontamination(arguments):
+    check_arguments(arguments)
     #os.system('mkdir ' + arguments.output)
     #kma.KMARunner(arguments.nanopore,
     #              arguments.output + "/bacteria_alignment",
@@ -94,6 +95,17 @@ def co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus
             break
         current_count = new_count
     return confirmed_mutation_dict
+
+def check_arguments(arguments):
+    if arguments.cor > 1:
+        print ('cor must be between 0 and 1, otherwise it is not a reward.')
+        sys.exit()
+    if arguments.bp < 1:
+        print ('bp must be greater than 1, otherwise it is not a penalty.')
+        sys.exit()
+    if arguments.pp < 1:
+        print ('pp must be greater than 1, otherwise it is not a penalty.')
+        sys.exit()
 
 
 def count_mutations_in_mutations_dict(mutation_dict):
@@ -370,9 +382,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation2][mutation1] += 1
 
             # Print the co-occurrence matrix with mutation names
-            print ("allele:", allele)
-            print("Mutation names:", mutation_list)
-            print ("Depth:", depth_list)
+            #print ("allele:", allele)
+            #print("Mutation names:", mutation_list)
+            #print ("Depth:", depth_list)
             average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
             #positional_depth = sum(consensus_dict[allele][0][0]) / len(consensus_dict[allele][0][0])
             #total_gene_depth = 0
@@ -381,9 +393,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             #average_depth = total_gene_depth / len(consensus_dict[allele][0])
             #threshold = average_depth * arguments.mrd * arguments.cor
             #print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
-            for i, row in enumerate(co_occurrence_matrix):
-                mutation_name = mutation_list[i]
-                print(f"{mutation_name}: {row} {check_single_mutation_exisistance(bio_validation_dict, allele, mutation_name)}")
+            #for i, row in enumerate(co_occurrence_matrix):
+            #    mutation_name = mutation_list[i]
+            #    print(f"{mutation_name}: {row} {check_single_mutation_exisistance(bio_validation_dict, allele, mutation_name)}")
 
             co_occurence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
 
@@ -422,29 +434,23 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 #Rework and check co-occurence
                 co_occurence_list = check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation)
 
-                if allele == 'BACT000030_1083':
-                    print ('!!!!!!!!!!!!!!')
-                    print ("Mutation", mutation)
-                    print ("biological_existance" ,biological_existance)
-                    print ("co_threshold", co_threshold)
-                    print ("mutation_threshold initial", mutation_threshold)
-                    print ("mutation_depth", mutation_depth)
-                    print ("position_depth", position_depth)
-                    print ("co_occurence_list", co_occurence_list)
+                #if allele == 'BACT000030_1083':
+                #    print ('!!!!!!!!!!!!!!')
+                #    print ("Mutation", mutation)
+                #    print ("biological_existance" ,biological_existance)
+                #    print ("co_threshold", co_threshold)
+                #    print ("mutation_threshold initial", mutation_threshold)
+                #    print ("mutation_depth", mutation_depth)
+                #    print ("position_depth", position_depth)
+                #    print ("co_occurence_list", co_occurence_list)
 
                 if co_occurence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
-                if allele == 'BACT000030_1083':
-                    print ("mutation_threshold after co-occurence", mutation_threshold)
-                if not biological_existance:
+               if not biological_existance:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
-                if allele == 'BACT000030_1083':
-                    print ("mutation_threshold after biological_existance", mutation_threshold)
                 if proxi_mutations != []:
                     mutation_threshold = mutation_threshold + (arguments.pp-1) * position_depth * arguments.mrd
 
-                if allele == 'BACT000030_1083':
-                    print ("Final mutation_threshold", mutation_threshold)
                 if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
@@ -458,7 +464,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
             if confirmed_mutation_dict[allele][0] != []:
                 mutation_threshold = position_depth * arguments.mrd
                 if not biological_existance:
-                    mutation_threshold = mutation_threshold * arguments.bp
+                    mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
 
                 #Check for mutation_threshold
                 mutation = confirmed_mutation_dict[allele][0][0]
