@@ -434,23 +434,28 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 #Rework and check co-occurence
                 co_occurence_list = check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation)
 
-                #if allele == 'BACT000030_1083':
-                #    print ('!!!!!!!!!!!!!!')
-                #    print ("Mutation", mutation)
-                #    print ("biological_existance" ,biological_existance)
-                #    print ("co_threshold", co_threshold)
-                #    print ("mutation_threshold initial", mutation_threshold)
-                #    print ("mutation_depth", mutation_depth)
-                #    print ("position_depth", position_depth)
-                #    print ("co_occurence_list", co_occurence_list)
+                if allele == 'BACT000002_48':
+                    print ('!!!!!!!!!!!!!!')
+                    print ("Mutation", mutation)
+                    print ("biological_existance" ,biological_existance)
+                    print ("co_threshold", co_threshold)
+                    print ("mutation_threshold initial", mutation_threshold)
+                    print ("mutation_depth", mutation_depth)
+                    print ("position_depth", position_depth)
+                    print ("co_occurence_list", co_occurence_list)
 
                 if co_occurence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
+                if allele == 'BACT000002_48':
+                    print ('After co_occurence_list:', mutation_threshold)
                 if not biological_existance:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
+                if allele == 'BACT000002_48':
+                    print ('After biological_existance:', mutation_threshold)
                 if proxi_mutations != []:
                     mutation_threshold = mutation_threshold + (arguments.pp-1) * position_depth * arguments.mrd
-
+                if allele == 'BACT000002_48':
+                    print ('After proxi_mutations:', mutation_threshold)
                 if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
