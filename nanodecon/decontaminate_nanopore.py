@@ -420,7 +420,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
                 mutation_threshold = position_depth * arguments.mrd
                 co_occurence_list = check_mutation_co_occurrence(row, mutation_list, mutation,
-                                                                 position_depth, cor, pp, mrd, proxi_mutations)
+                                                                 position_depth, arguments.cor, arguments.pp, arguments.mrd, proxi_mutations)
 
                 if co_occurence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
