@@ -47,8 +47,9 @@ def main():
                         , help='Biological penalty. This value is multiplied with the mrd to'
                                ' increase the threshold if the mutation is novel and does not'
                                ' currently exist in the marker gene database. Default: 1.5')
-    #parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.25
-    #                    ,help='proximity penalty. This value is multiplied with the mrd to')
+    parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.25
+                        ,help='proximity penalty. This value is multiplied with the mrd'
+                              ' to increase the threshold. Default: 1.25')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
     args = parser.parse_args()

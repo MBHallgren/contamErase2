@@ -415,12 +415,16 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
                 if co_threshold < 3:
                     co_threshold = 3
+
                 mutation_threshold = position_depth * arguments.mrd
+                #Rework and check co-occurence
                 co_occurence_list = check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation)
                 if co_occurence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
                 if not biological_existance:
-                    mutation_threshold = mutation_threshold * arguments.bp
+                    mutation_threshold = mutation_threshold + arguments.bp * position_depth * arguments.mrd
+                if proxi_mutations != []:
+                    mutation_threshold = mutation_threshold + arguments.pp * position_depth * arguments.mrd
 
                 if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
