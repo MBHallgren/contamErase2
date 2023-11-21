@@ -416,18 +416,22 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if co_threshold < 3:
                     co_threshold = 3
 
-                if allele == 'BACT000030_1083':
-                    print ('!!!!!!!!!!!!!!')
-                    print (mutation)
-                    print (biological_existance)
-                    print (co_threshold)
-                    print (mutation_depth)
-                    print (position_depth)
 
 
                 mutation_threshold = position_depth * arguments.mrd
                 #Rework and check co-occurence
                 co_occurence_list = check_mutation_co_occurrence(row, co_threshold, mutation_list, mutation)
+
+                if allele == 'BACT000030_1083':
+                    print ('!!!!!!!!!!!!!!')
+                    print ("Mutation", mutation)
+                    print ("biological_existance" ,biological_existance)
+                    print ("co_threshold", co_threshold)
+                    print ("mutation_threshold", mutation_threshold)
+                    print ("mutation_depth", mutation_depth)
+                    print ("position_depth", position_depth)
+                    print ("co_occurence_list", co_occurence_list)
+
                 if co_occurence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
                 if not biological_existance:
