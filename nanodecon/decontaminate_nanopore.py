@@ -440,8 +440,9 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
         else:
             adjusted_mutation_dict[allele] = [[], []]
-            position_depth = sum(consensus_dict[allele][0][position - 1])
             if confirmed_mutation_dict[allele][0] != []:
+                position = int(mutation.split('_')[0])
+                position_depth = sum(consensus_dict[allele][0][position - 1])
                 mutation_threshold = position_depth * arguments.mrd
                 mutation = confirmed_mutation_dict[allele][0][0]
                 depth = confirmed_mutation_dict[allele][1][0]
@@ -450,7 +451,6 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
 
                 #Check for mutation_threshold
-                position = int(mutation.split('_')[0])
                 if depth >= mutation_threshold:
                     #print ('Added single mutation_2: ', allele, mutation)
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
