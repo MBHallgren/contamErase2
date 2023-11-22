@@ -441,10 +441,10 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
         else:
             adjusted_mutation_dict[allele] = [[], []]
             if confirmed_mutation_dict[allele][0] != []:
+                mutation = confirmed_mutation_dict[allele][0][0]
                 position = int(mutation.split('_')[0])
                 position_depth = sum(consensus_dict[allele][0][position - 1])
                 mutation_threshold = position_depth * arguments.mrd
-                mutation = confirmed_mutation_dict[allele][0][0]
                 depth = confirmed_mutation_dict[allele][1][0]
                 biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
                 if not biological_existance:
