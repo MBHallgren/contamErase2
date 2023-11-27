@@ -152,19 +152,19 @@ def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consens
 
             #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
-                t = 0
-                print (consensus_dict[rname][1])
-                if rname == 'BACT000019_1507':
-                    for item in consensus_dict[rname][0]:
-                        print (item, t+1, consensus_dict[rname[1][t]])
-                        t += 1
+                #t = 0
+                #print (consensus_dict[rname][1])
+                ##if rname == 'BACT000019_1507':
+                ##    for item in consensus_dict[rname][0]:
+                #        print (item, t+1, consensus_dict[rname[1][t]])
+                #        t += 1
 
                 majority_seq = consensus_dict[rname][1]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(majority_seq[pos-1:pos-1+tlen], seq, cigar_str)
-                print (rname, pos, tlen)
-                print (aligned_ref)
-                print (aligned_query)
+                #print (rname, pos, tlen)
+                #print (aligned_ref)
+                #print (aligned_query)
                 # Creating a mutation vector using your function
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
                 #print (mutation_vector, len(mutation_vector))
@@ -172,8 +172,8 @@ def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consens
 
                 # Identifying mutations using your function
                 #main_reference = reference_sequences[allele_pair_dict[gene_name]]
-                print (mutation_vector)
-                print (majority_seq[pos-1:pos-1+tlen])
+                #print (mutation_vector)
+                #print (majority_seq[pos-1:pos-1+tlen])
                 #CONTINUE HERE
                 mutations = identify_mutations(mutation_vector, majority_seq[pos-1:pos-1+tlen], confirmed_mutation_dict[rname][0], read_id, read_positions_blacklisted_dict)
                 # Storing mutations in the dictionary
