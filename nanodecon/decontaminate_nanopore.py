@@ -65,6 +65,10 @@ def nanopore_decontamination(arguments):
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
 
+    for item in consensus_dict:
+        print (consensus_dict[item][1])
+        print (len(consensus_dict[item][1]), len(consensus_dict[item][0]))
+    sys.exit()
     #Here for the article.
     #Can we plot the noise distribution?
     #How often do proximity mutations co-occur?
