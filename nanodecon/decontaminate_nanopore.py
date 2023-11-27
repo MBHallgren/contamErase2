@@ -71,10 +71,11 @@ def nanopore_decontamination(arguments):
     consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.nanopore)
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
-    #number = 0
-    #for key in confirmed_mutation_dict:
-    #    number += len(confirmed_mutation_dict[key])
-    #print ('Number of mutations found: ' + str(number))
+    number = 0
+    for key in confirmed_mutation_dict:
+        number += len(confirmed_mutation_dict[key])
+        print (key, confirmed_mutation_dict[key])
+    print ('Number of mutations found: ' + str(number))
 
 
     #print ('Number of mutations found: ' + str(count_mutations_in_mutations_dict(confirmed_mutation_dict)))
