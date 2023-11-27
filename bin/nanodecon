@@ -14,32 +14,20 @@ __version__ = version.__version__
 from nanodecon import decontaminate
 
 def main():
-    description = 'NanoDecon - A tool for decontamination of Nanopore sequencing data. Version: ' + __version__
+    description = 'NanoMGT - Nanopore Marker Gene Typing, Version: ' + __version__
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('--illumina', action="store", type=str, dest='illumina', nargs='+',
-                        default=None, help='Paired end illumina files.')
     parser.add_argument('--nanopore', action="store", type=str, dest='nanopore',
-                        default=None, help='Nanopore input files.')
-    parser.add_argument('--db_dir', action="store", type=str, dest='db_dir', help='Path to NanoDecon databases.'
-                                                                                  'Should contain the following files: '
-                                                                                  'bac_db, euk_db, viral_db, rmlst_db, plasmid_db')
-    parser.add_argument('--ugt', action="store", default = 10, type=int, dest='ugt', help='Number of unique rmlst genes'
-                                                                                                             'required to positively identify something as an intra-species contamination.'
-                                                                                                             'A lower number will be more likely to remove intra-species contaminations, '
-                                                                                                             'but could also do so for false-positives.')
-
-    parser.add_argument('-filter', action='store_true', dest='filter', default=False,
-                        help='Filter out reads of identified contaminations. Default: False')
+                        default=None, help='Nanopore input.')
+    parser.add_argument('--db_dir', action="store", type=str, dest='db_dir', help='Path to NanoMGT databases.')
     parser.add_argument('--o', action="store", type=str, dest='output', help='Output directory')
     parser.add_argument('--threads', action="store", type=int, dest='threads', default=4,
                         help='Number of threads to use. Default: 4')
-
     parser.add_argument('--min_n', action="store", type=int, dest='min_n', default=3,
-                        help='Minimum number of minimum number of nucleotides required to call a SNV for a contaminated nucleotide position.'
-                             'The value of min_rd will be using unless a specific min_n integer is given. Default: 2')
+                        help='Minimum number of minimum number of nucleotides required to call a SNV to be called.'
+                             ' Default: 3')
     parser.add_argument('--mrd', action="store", type=float, dest='mrd', default=0.03
                         , help='Minimum related depth (mrd) for validating a single allele SNVs.'
-                               ' Any SNV above this threshold in considered a true positive.'
+                               ' Any SNV above this threshold in considered a true positive (If not affected by rewards or penalties.'
                                'Default: 0.03')
     parser.add_argument('--cor', action="store", type=float, dest='cor', default=0.5
                         , help='Co-occuence reward. This value is multiplied with the mrd to lower the threshold. Default: 0.5')
@@ -50,7 +38,10 @@ def main():
     parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.35
                         ,help='proximity penalty. This value is multiplied with the mrd'
                               ' to increase the threshold. Default: 1.35')
+    parser.add_argument('--q_score', action="store", type=int, dest='q_score', default=14
+                        , help='Reads with an average q-score below this threshold are filtered out. Default: 14')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
+    #TBD add proximity distance.
 
     args = parser.parse_args()
     decontaminate.decontaminate(args)

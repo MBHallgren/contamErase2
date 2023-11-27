@@ -16,6 +16,10 @@ from nanodecon.nanopore_mutations import identify_mutations
 def nanopore_decontamination(arguments):
     check_arguments(arguments)
     os.system('mkdir ' + arguments.output)
+
+    os.system('cat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
+
+
     kma.KMARunner(arguments.nanopore,
                   arguments.output + "/bacteria_alignment",
                   arguments.db_dir + "/bac_db",
@@ -26,6 +30,7 @@ def nanopore_decontamination(arguments):
     primary_species = primary.split()[1] + ' ' + primary.split()[2]
 
     #TBD make this non-verbose
+    #TBD trimming should be first thing in the pipeline
     headers = produce_species_specific_kma_db(primary_species,
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
@@ -40,9 +45,9 @@ def nanopore_decontamination(arguments):
 
     extract_mapped_rmlst_read(arguments.output, arguments.nanopore)
 
-    os.system('cat {}/rmlst_reads.fastq | NanoFilt -q 14 > {}/trimmed_rmlst_reads.fastq'.format(arguments.output, arguments.output))
-
     index_top_hits_db(arguments.output)
+
+    sys.exit()
 
     #arguments.nanopore = arguments.output + '/rmlst_reads.fastq'
     arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'

@@ -148,6 +148,7 @@ with open(final_mutation_file, 'r') as f:
 
 
 def derive_biological_rmlst_snvs_results(biological_rmlst_snvs, confindr_dict):
+    #Rework how we derive biological_rmlst_snvs
     all_results_depths = np.array([])
     for gene in confindr_dict:
         depths = confindr_dict[gene][1]
@@ -243,7 +244,7 @@ for rate in rates:
         for item in all_biological_snvs:
             if item not in total_bio_snvs_found_correctly:
                 missing_biological_snvs.append(item)
-                print (item)
+                #print (item)
         #print (missing_biological_snvs)
         #BACT000038 is a problem. 4 not IDd. Are these called correctly? check again. TBD
         #BACT000030 2 mutations. ID'ed with co-occurence!

@@ -11,11 +11,11 @@ for item in files:
 
 """
 
-bf_rates = [2, 4]
+bf_rates = [1, 2, 3, 4, 5]
 
 path = '/home/people/malhal/contamErase/benchmarking/confindr/data/nanopore/'
 for rate in bf_rates:
     for i in range(1, 11, 1):
         os.system(
-            'confindr -i {}/{}/ -o {}/{} -d /home/people/malhal/contamErase/benchmarking/confindr/rmlst_db/ --rmlst -b 2 -bf 0.0{} -dt Nanopore -q 14'
+            'confindr -i {}/{}/ -o {}/{} -d /home/people/malhal/contamErase/benchmarking/confindr/rmlst_db/ --rmlst -b 3 -bf 0.0{} -dt Nanopore -q 14'
             .format(path, i, rate, i, rate))
