@@ -18,6 +18,7 @@ def nanopore_decontamination(arguments):
     os.system('mkdir ' + arguments.output)
 
     os.system('cat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
+    arguments.nanopore = arguments.output + '/trimmed_reads.fastq'
 
 
     kma.KMARunner(arguments.nanopore,
@@ -47,7 +48,6 @@ def nanopore_decontamination(arguments):
 
     index_top_hits_db(arguments.output)
 
-    sys.exit()
 
     #arguments.nanopore = arguments.output + '/rmlst_reads.fastq'
     arguments.nanopore = arguments.output + '/trimmed_rmlst_reads.fastq'

@@ -1,8 +1,8 @@
 import os
 import sys
 
-file_1 = '1028222.res'
-file_2 = '1028247.res'
+file_1 = 'barcode03_q10sup.res'
+file_2 = 'barcode09_q10sup.res'
 
 list_1 = list()
 list_2 = list()
