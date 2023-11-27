@@ -152,6 +152,12 @@ def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consens
 
             #Should be start pos of the alignment and not of the read
             if pos == 1 and len(seq) >= tlen:
+                t = 0
+                if rname == 'BACT000019_1507':
+                    for item in consensus_dict[rname][0]:
+                        print (item, t+1)
+                        t += 1
+
                 majority_seq = consensus_dict[rname][1]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(majority_seq[pos-1:pos-1+tlen], seq, cigar_str)
