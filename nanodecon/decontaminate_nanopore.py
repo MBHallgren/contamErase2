@@ -65,7 +65,7 @@ def nanopore_decontamination(arguments):
     consensus_dict = build_consensus_dict(arguments.output + '/rmlst_alignment.res',
                                           arguments.output + '/rmlst_alignment.mat')
 
-    print (consensus_dict['BACT000019_1507'])
+    #print (consensus_dict['BACT000019_1507'])
 
     #Here for the article.
     #Can we plot the noise distribution?
@@ -73,11 +73,11 @@ def nanopore_decontamination(arguments):
     consensus_dict, read_positions_blacklisted_dict = adjust_consensus_dict_for_individual_qscores(consensus_dict, arguments.output + '/rmlst_alignment.sam', arguments.nanopore)
 
     confirmed_mutation_dict = derive_mutation_positions2(consensus_dict, arguments)
-    number = 0
-    for key in confirmed_mutation_dict:
-        number += len(confirmed_mutation_dict[key])
-        print (key, confirmed_mutation_dict[key])
-    print ('Number of mutations found: ' + str(number))
+    #number = 0
+    #for key in confirmed_mutation_dict:
+    #    number += len(confirmed_mutation_dict[key])
+    #    print (key, confirmed_mutation_dict[key])
+    #print ('Number of mutations found: ' + str(number))
 
 
     #print ('Number of mutations found: ' + str(count_mutations_in_mutations_dict(confirmed_mutation_dict)))
@@ -953,8 +953,8 @@ def build_consensus_dict(res_file, mat_file):
                     index += 1
 
     for allele in consensus_dict:
-        for position in consensus_dict[allele][0][:4]:
-            consensus_dict[allele][1] += 'ACGT'[position.index(max(position))]
+        for position in consensus_dict[allele][0]:
+            consensus_dict[allele][1] += 'ACGT'[position[:4].index(max(position))]
     return consensus_dict
 
 
