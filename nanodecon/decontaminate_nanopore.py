@@ -954,7 +954,7 @@ def build_consensus_dict(res_file, mat_file):
 
     for allele in consensus_dict:
         for position in consensus_dict[allele][0]:
-            consensus_dict[allele][1] += 'ACGT'[position[:4].index(max(position))]
+            consensus_dict[allele][1] += 'ACGT'[position[:4].index(max(position[:4]))]
     return consensus_dict
 
 
