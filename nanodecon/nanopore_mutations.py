@@ -152,7 +152,9 @@ def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consens
                 majority_seq = consensus_dict[rname][1]
                 # Obtaining the alignment using your function
                 aligned_ref, aligned_query = extract_alignment(majority_seq[pos-1:pos-1+tlen], seq, cigar_str)
-
+                print (rname, pos, tlen)
+                print (aligned_ref)
+                print (aligned_query)
                 # Creating a mutation vector using your function
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
                 #print (mutation_vector, len(mutation_vector))
@@ -160,6 +162,8 @@ def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consens
 
                 # Identifying mutations using your function
                 #main_reference = reference_sequences[allele_pair_dict[gene_name]]
+                print (mutation_vector)
+                print (majority_seq[pos-1:pos-1+tlen])
                 mutations = identify_mutations(mutation_vector, majority_seq[pos-1:pos-1+tlen], confirmed_mutation_dict[rname][0], read_id, read_positions_blacklisted_dict)
                 # Storing mutations in the dictionary
                 name = read_id + ' ' + rname
