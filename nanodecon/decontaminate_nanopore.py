@@ -66,11 +66,12 @@ def nanopore_decontamination(arguments):
                                           arguments.output + '/rmlst_alignment.mat')
 
     for item in consensus_dict:
-        print (consensus_dict[item][1])
-        print (len(consensus_dict[item][1]), len(consensus_dict[item][0]))
+        print (item)
+        #print (consensus_dict[item][1])
+        #print (len(consensus_dict[item][1]), len(consensus_dict[item][0]))
         if '-' in consensus_dict[item][1]:
             print ('Gap in consensus')
-            sys.exit()
+            #sys.exit()
     sys.exit()
     #Here for the article.
     #Can we plot the noise distribution?
