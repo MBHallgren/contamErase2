@@ -68,6 +68,9 @@ def nanopore_decontamination(arguments):
     for item in consensus_dict:
         print (consensus_dict[item][1])
         print (len(consensus_dict[item][1]), len(consensus_dict[item][0]))
+        if '-' in consensus_dict[item][1]:
+            print ('Gap in consensus')
+            sys.exit()
     sys.exit()
     #Here for the article.
     #Can we plot the noise distribution?
