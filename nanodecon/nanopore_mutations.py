@@ -155,7 +155,7 @@ def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consens
                 t = 0
                 if rname == 'BACT000019_1507':
                     for item in consensus_dict[rname][0]:
-                        print (item, t+1, consensus_dict[rname[1][t-1]])
+                        print (item, t+1, consensus_dict[rname[1][t]])
                         t += 1
 
                 majority_seq = consensus_dict[rname][1]
