@@ -68,7 +68,10 @@ def create_mutation_vector(aligned_ref, aligned_query):
     mutation_vector = []
 
     # Loop through the aligned sequences
-    for ref_nt, query_nt in zip(aligned_ref, aligned_query):
+    for i in range(len(aligned_ref)):
+        ref_nt = aligned_ref[i]
+        query_nt = aligned_query[i]
+
         if ref_nt == "-":
             # Skip insertions in the reference
             continue
@@ -164,6 +167,7 @@ def parse_sam_and_find_mutations(sam_file_path, confirmed_mutation_dict, consens
                 #main_reference = reference_sequences[allele_pair_dict[gene_name]]
                 print (mutation_vector)
                 print (majority_seq[pos-1:pos-1+tlen])
+                #CONTINUE HERE
                 mutations = identify_mutations(mutation_vector, majority_seq[pos-1:pos-1+tlen], confirmed_mutation_dict[rname][0], read_id, read_positions_blacklisted_dict)
                 # Storing mutations in the dictionary
                 name = read_id + ' ' + rname
