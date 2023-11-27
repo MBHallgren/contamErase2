@@ -7,8 +7,6 @@ from nanodecon.decontaminate_illumina import illumina_decontamination
 
 def decontaminate(arguments):
     set_up_output_and_check_input(arguments)
-    if arguments.illumina != None:
-        illumina_decontamination(arguments)
     if arguments.nanopore != None:
         nanopore_decontamination(arguments)
     #Plasmid: https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid
