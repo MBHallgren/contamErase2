@@ -16,8 +16,10 @@ from nanodecon.nanopore_mutations import identify_mutations
 def nanopore_decontamination(arguments):
     check_arguments(arguments)
     os.system('mkdir ' + arguments.output)
-
-    os.system('cat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
+    if arguments.nanopore.endswith('.gz'):
+        os.system('zcat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
+    else:
+        os.system('cat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
     arguments.nanopore = arguments.output + '/trimmed_reads.fastq'
 
 
