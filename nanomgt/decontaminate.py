@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 
-from nanodecon.decontaminate_nanopore import nanopore_decontamination
+from nanomgt.decontaminate_nanopore import nanopore_decontamination
 
 def decontaminate(arguments):
     set_up_output_and_check_input(arguments)

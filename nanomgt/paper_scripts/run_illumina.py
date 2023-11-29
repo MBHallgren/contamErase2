@@ -9,7 +9,7 @@ for item in files:
     for id in os.listdir(trial_path):
         total_path = trial_path + '/' + id
         print (total_path)
-        cmd = '/home/people/malhal/nanodecon_paper/tmp_tests/NanoDecon/bin/nanodecon --illumina {}/{}_R1.fastq {}/{}_R2.fastq' \
+        cmd = '/home/people/malhal/nanodecon_paper/tmp_tests/NanoDecon/bin/nanomgt --illumina {}/{}_R1.fastq {}/{}_R2.fastq' \
               ' --o results/{}/isd_5/{} --db_dir /home/people/malhal/contamErase/test/nanodecon_db/ --threads 8 --isd 0.05'.format(total_path, id, total_path, id, item, id)
         #print (cmd)
         os.system(cmd)

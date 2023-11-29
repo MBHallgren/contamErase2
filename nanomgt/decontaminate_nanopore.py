@@ -2,16 +2,16 @@ import os
 import sys
 import gzip
 from Bio import SeqIO
-from nanodecon import kma
-from nanodecon import util
+from nanomgt import kma
+from nanomgt import util
 from itertools import combinations
 
 
-from nanodecon.intra_species_detection import determine_intra_species_contamination_nanopore
-from nanodecon.nanopore_mutations import parse_sam_and_find_mutations
-from nanodecon.nanopore_mutations import extract_alignment
-from nanodecon.nanopore_mutations import create_mutation_vector
-from nanodecon.nanopore_mutations import identify_mutations
+from nanomgt.intra_species_detection import determine_intra_species_contamination_nanopore
+from nanomgt.nanopore_mutations import parse_sam_and_find_mutations
+from nanomgt.nanopore_mutations import extract_alignment
+from nanomgt.nanopore_mutations import create_mutation_vector
+from nanomgt.nanopore_mutations import identify_mutations
 
 def nanopore_decontamination(arguments):
     check_arguments(arguments)
@@ -462,7 +462,7 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
                             allele = headers[i] + '_' + line.strip().split('\t')[i+1]
                             gene_set.add(allele)
     produce_species_fsa_file(fsa_file, gene_set, output)
-    os.system('kma index -i {}/specie.fsa -o {}/specie_db'.format(output, output))
+    os.system('kma index -i {}/specie.fsa -o {}/specie_db 2>/dev/null'.format(output, output))
 
 def produce_species_fsa_file(fsa_file, gene_set, output):
     with open(output + '/specie.fsa', 'w') as outfile:

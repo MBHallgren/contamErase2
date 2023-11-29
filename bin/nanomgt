@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+import os
+
+# Adding the parent directory to sys.path
+sys.path = [os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')] + sys.path
+
+# Importing the version module from nanomgt package
+from nanomgt import version
+
+__author__ = "Malte B. Hallgren"
+__version__ = version.__version__
+
+# Importing the decontaminate module from nanomgt package
+from nanomgt import decontaminate
+
+
+def main():
+    """
+    Main function to handle command-line arguments and execute the decontaminate function.
+    """
+    description = 'NanoMGT - Nanopore Marker Gene Typing, Version: ' + __version__
+    parser = argparse.ArgumentParser(description=description)
+
+    # Define command-line arguments
+    parser.add_argument('--nanopore', action="store", type=str, dest='nanopore',
+                        default=None, help='Nanopore input.')
+    parser.add_argument('--db_dir', action="store", type=str, dest='db_dir', help='Path to NanoMGT databases.')
+    parser.add_argument('--o', action="store", type=str, dest='output', help='Output directory')
+    parser.add_argument('--threads', action="store", type=int, dest='threads', default=4,
+                        help='Number of threads to use. Default: 4')
+    parser.add_argument('--min_n', action="store", type=int, dest='min_n', default=3,
+                        help='Minimum number of nucleotides required to call a SNV. Default: 3')
+    parser.add_argument('--mrd', action="store", type=float, dest='mrd', default=0.03,
+                        help='Minimum related depth (mrd) for validating a single allele SNVs. Default: 0.03')
+    parser.add_argument('--cor', action="store", type=float, dest='cor', default=0.5,
+                        help='Co-occurrence reward. Default: 0.5')
+    parser.add_argument('--bp', action="store", type=float, dest='bp', default=1.5,
+                        help='Biological penalty. Default: 1.5')
+    parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.35,
+                        help='Proximity penalty. Default: 1.35')
+    parser.add_argument('--proxi', action="store", type=int, dest='proxi', default=5,
+                        help='Proximity between SNVs which will incur a penalty. Default: 5')
+    parser.add_argument('--q_score', action="store", type=int, dest='q_score', default=14,
+                        help='Reads with an average q-score below this threshold are filtered out. Default: 14')
+    parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
+
+    args = parser.parse_args()
+
+    # Call the decontaminate function with the parsed arguments
+    decontaminate.decontaminate(args)
+
+
+if __name__ == '__main__':
+    main()

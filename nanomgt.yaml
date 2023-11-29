@@ -4,7 +4,7 @@ channels:
   - defaults
 dependencies:
   - mamba
-  - kma=1.4.9
+  - kma
   - porechop
   - nanofilt
   - flye

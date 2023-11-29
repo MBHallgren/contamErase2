@@ -10,7 +10,7 @@ setup(
     license='',
     install_requires=(),
     author='Malte B. Hallgren',
-    scripts=['bin/nanodecon'],
+    scripts=['bin/nanomgt'],
     author_email='malhal@food.dtu.dk',
     description='NanoDecon - Decontamination of Nanopore sequencing data'
 )

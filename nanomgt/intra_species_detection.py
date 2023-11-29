@@ -2,9 +2,9 @@ import os
 import sys
 import logging
 import subprocess
-from nanodecon import kmergenetyper
-from nanodecon import util
-from nanodecon import kma
+from nanomgt import kmergenetyper
+from nanomgt import util
+from nanomgt import kma
 import yaml
 
 def quick_determine_multiple_rmlst_alleles_from_res_files(res_file, cutoff):
