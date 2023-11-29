@@ -221,7 +221,7 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
     # Set up the consensus dictionary structure
     for allele, data in consensus_dict.items():
         allele_positions, allele_seq = data
-        adjusted_consensus_dict[allele] = [[0, 0, 0, 0, 0, 0] * len(allele_positions), allele_seq]
+        adjusted_consensus_dict[allele] = [[[0, 0, 0, 0, 0, 0] for _ in range(len(allele_positions))], allele_seq]
 
     total_black_list_count = 0
 
