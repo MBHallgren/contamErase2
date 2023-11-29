@@ -1,8 +1,8 @@
 import os
 import sys
 
-file_1 = 'barcode03_q10sup.res'
-file_2 = 'barcode09_q10sup.res'
+file_1 = 'DTU_2023_1025625_100_SI_SW_887_89_2_93_SE_5/rmlst_alignment.res'
+file_2 = 'DTU_2023_1025620_100_SI_1_SE_5/rmlst_alignment.res'
 
 list_1 = list()
 list_2 = list()

@@ -1,8 +1,8 @@
 import os
 import sys
 
-prim = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/1028222.fsa'
-sec = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/1028247.fsa'
+prim = '/home/people/malhal/papers/rmlst/test/gridion_0011/DTU_2023_1025625_100_SI_SW_887_89_2_93_SE_5/rmlst_alignment.fsa'
+sec = '/home/people/malhal/papers/rmlst/test/44_test/barcode03_5/rmlst_alignment.fsa'
 
 gene_dict_1 = {}
 gene_dict_2 = {}
