@@ -304,11 +304,12 @@ def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
             majority_base = consensus_dict[allele][1][int(position) - 1]
             total_depth = sum(consensus_dict[allele][0][int(position) - 1])
             biological_existence = check_single_mutation_existence(bio_validation_dict, allele, mutation[0])
+            gene_length = len(consensus_dict[allele][1])
 
             if biological_existence:
-                print('{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Mutation seen in database'))
+                print('{},{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, gene_length, 'Mutation seen in database'))
             else:
-                print('{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Novel mutation'))
+                print('{},{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, gene_length, 'Novel mutation'))
 
 def extract_mapped_rmlst_read(output_directory, nanopore_fastq):
     """
