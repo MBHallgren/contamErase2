@@ -293,7 +293,7 @@ def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
     Returns:
         None
     """
-    header = 'Gene,MajorityAllele,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,MutationComment'
+    header = 'Gene,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,MutationComment'
     print(header)
 
     for allele in confirmed_mutation_dict:
