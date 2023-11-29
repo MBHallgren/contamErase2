@@ -63,7 +63,7 @@ def nanopore_decontamination(arguments):
 
     bio_validation_dict = bio_validation_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
-    confirmed_mutation_dict = co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
+    confirmed_mutation_dict = co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
     format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict)
 
     sys.exit()
