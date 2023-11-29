@@ -244,9 +244,11 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
             if pos == 1 and len(seq) >= tlen:
                 aligned_ref, aligned_query = extract_alignment(template_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
+                print(mutation_vector)
 
                 # Update the consensus dictionary
                 for i, mutation in enumerate(mutation_vector):
+                    print (i, mutation)
                     nucleotide_list = ['A', 'C', 'G', 'T', 'N', '-']
                     if i not in black_listed_positions[read_id]:
                         adjusted_consensus_dict[rname][0][i][nucleotide_list.index(mutation)] += 1
