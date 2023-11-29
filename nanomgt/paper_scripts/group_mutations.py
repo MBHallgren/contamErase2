@@ -1,4 +1,5 @@
 import pandas as pd
+import sys
 
 def determine_group(df):
     # Convert 'Position' to integers
