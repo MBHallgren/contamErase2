@@ -1,5 +1,4 @@
 import pandas as pd
-import sys
 
 def determine_group(df):
     # Convert 'Position' to integers
@@ -7,6 +6,9 @@ def determine_group(df):
 
     # Convert 'MutationComment' to string
     df['MutationComment'] = df['MutationComment'].astype(str)
+
+    # Convert 'Gene' to string and modify each gene name to only include the gene number
+    df['Gene'] = df['Gene'].astype(str).apply(lambda gene: gene.split('_')[0][-2:])
 
     # Sort by Gene and Position to make the proximity check easier
     df = df.sort_values(by=['Gene', 'Position'])
@@ -40,7 +42,7 @@ grouped_df = determine_group(df)
 group_counts = grouped_df['Group'].value_counts().sort_index()
 
 # Save the result
-grouped_df.to_csv('output.csv', index=False)  # This will save the output to a file named 'output.csv'
+grouped_df.to_csv('output_modified.csv', index=False)  # This will save the output to a file named 'output_modified.csv'
 
 # Print the count of each group
 print(group_counts)

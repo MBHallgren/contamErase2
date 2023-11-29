@@ -63,8 +63,8 @@ def nanopore_decontamination(arguments):
 
     bio_validation_dict = bio_validation_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
-    confirmed_mutation_dict = co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
-    format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict)
+    confirmed_mutation_dict, co_occurrence_tmp_dict = co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
+    format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict, co_occurrence_tmp_dict)
 
     sys.exit()
 
@@ -88,7 +88,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
 
     # Iterate until no new mutations are found
     while True:
-        confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(
+        confirmed_mutation_dict, co_occurrence_tmp_dict = upper_co_occuring_mutations_in_reads(
             arguments,
             confirmed_mutation_dict,
             consensus_dict,
@@ -104,7 +104,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
             break
         current_count = new_count
 
-    return confirmed_mutation_dict
+    return confirmed_mutation_dict, co_occurrence_tmp_dict
 
 
 def check_arguments(arguments):
@@ -281,7 +281,7 @@ def blacklist_positions(fastq_file, quality_threshold):
         blacklist_dict[record.id] = blacklist
 
     return blacklist_dict
-def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
+def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict, co_occurrence_tmp_dict):
     """
     Format and print the output of confirmed mutations with additional information.
 
@@ -293,7 +293,7 @@ def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
     Returns:
         None
     """
-    header = 'Gene,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,GeneLength,MutationComment'
+    header = 'Gene,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,GeneLength,MutationComment,CoOccurrence'
     print(header)
 
     for allele in confirmed_mutation_dict:
@@ -305,11 +305,15 @@ def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
             total_depth = sum(consensus_dict[allele][0][int(position) - 1])
             biological_existence = check_single_mutation_existence(bio_validation_dict, allele, mutation[0])
             gene_length = len(consensus_dict[allele][1])
+            if mutation in co_occurrence_tmp_dict[allele]:
+                co_occurrence = 'Yes'
+            else:
+                co_occurrence = 'No'
 
             if biological_existence:
-                print('{},{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, gene_length, 'Mutation seen in database'))
+                print('{},{},{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, gene_length, 'Mutation seen in database', co_occurrence))
             else:
-                print('{},{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, gene_length, 'Novel mutation'))
+                print('{},{},{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, gene_length, 'Novel mutation', co_occurrence))
 
 def extract_mapped_rmlst_read(output_directory, nanopore_fastq):
     """
@@ -403,6 +407,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                        consensus_dict,
                                                        read_positions_blacklisted_dict)
 
+    co_occurence_tmp_dict = {}
     co_occurrence_matrix_dict = {}
     for allele in confirmed_mutation_dict:
         mutation_list = confirmed_mutation_dict[allele][0]
@@ -425,6 +430,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
     adjusted_mutation_dict = {}
     for allele in confirmed_mutation_dict:
+        co_occurence_tmp_dict[allele] = []
         if allele in co_occurrence_matrix_dict:
             adjusted_mutation_dict[allele] = [[], []]
             matrix = co_occurrence_matrix_dict[allele][0]
@@ -444,6 +450,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                                  position_depth, arguments.cor, arguments.pp, arguments.mrd, proxi_mutations)
 
                 if co_occurrence_list != []:
+                    co_occurrence_tmp_dict[allele].append(co_occurrence_list)
                     mutation_threshold = mutation_threshold * arguments.cor
                 if not biological_existence:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
@@ -468,7 +475,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
-    return adjusted_mutation_dict
+    return adjusted_mutation_dict, co_occurrence_tmp_dict
 
 
 
