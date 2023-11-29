@@ -203,9 +203,23 @@ def blacklist_positions(fastq_file, quality_threshold):
 
     return blacklist_dict
 
+#Here
+
 def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
-    header = 'Gene,MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,MutationComment'
-    print (header)
+    """
+    Format and print the output of confirmed mutations with additional information.
+
+    Args:
+        confirmed_mutation_dict (dict): A dictionary containing confirmed mutations for alleles.
+        consensus_dict (dict): A dictionary containing consensus information for alleles.
+        bio_validation_dict (dict): A dictionary containing biological validation data for genes.
+
+    Returns:
+        None
+    """
+    header = 'Gene,MajorityAllele,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,MutationComment'
+    print(header)
+
     for allele in confirmed_mutation_dict:
         for mutation in zip(confirmed_mutation_dict[allele][0], confirmed_mutation_dict[allele][1]):
             position = mutation[0].split('_')[0]
@@ -213,63 +227,108 @@ def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
             mutation_depth = mutation[1]
             majority_base = consensus_dict[allele][1][int(position) - 1]
             total_depth = sum(consensus_dict[allele][0][int(position) - 1])
-            biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation[0])
-            if biological_existance:
-                print ('{},{},{},{},{},{}. {}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Previously seen mutation in the database.'))
-            else:
-                print ('{},{},{},{},{},{}. {}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Novel mutation, never seen before in the database.'))
+            biological_existence = check_single_mutation_existence(bio_validation_dict, allele, mutation[0])
 
-def extract_mapped_rmlst_read(output, nanopore):
+            if biological_existence:
+                print('{},{},{},{},{},{}. {}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Previously seen mutation in the database.'))
+            else:
+                print('{},{},{},{},{},{}. {}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, 'Novel mutation, never seen before in the database.'))
+
+def extract_mapped_rmlst_read(output_directory, nanopore_fastq):
+    """
+    Extract and trim mapped rMLST reads from an initial alignment file.
+
+    Args:
+        output_directory (str): The directory where output files will be saved.
+        nanopore_fastq (str): The path to the nanopore FASTQ file.
+
+    Returns:
+        None
+    """
     read_set = set()
-    with open(output + '/initial_rmlst_alignment.frag', 'r') as frag:
+
+    # Extract read IDs from the initial rMLST alignment file
+    with open(output_directory + '/initial_rmlst_alignment.frag', 'r') as frag:
         for line in frag:
             line = line.rstrip()
             line = line.split('\t')
             read_set.add(line[-1])
-    with open(output + '/rmlst_reads.txt', 'w') as f:
+
+    # Write the extracted read IDs to a text file
+    with open(output_directory + '/rmlst_reads.txt', 'w') as f:
         for item in read_set:
             f.write(item + '\n')
-    os.system('seqtk subseq {} {} > {}'.format(nanopore, output + '/rmlst_reads.txt',
-                                               output + '/trimmed_rmlst_reads.fastq'))
+
+    # Use seqtk to extract the corresponding reads from the nanopore FASTQ file
+    os.system('seqtk subseq {} {} > {}'.format(nanopore_fastq, output_directory + '/rmlst_reads.txt',
+                                               output_directory + '/trimmed_rmlst_reads.fastq'))
+
 
 
 def derive_mutation_positions(consensus_dict, arguments):
+    """
+    Derive mutation positions and their depths from a consensus dictionary.
+
+    Args:
+        consensus_dict (dict): A dictionary containing consensus information for alleles.
+        arguments: Arguments containing parameters for mutation derivation.
+
+    Returns:
+        dict: A dictionary containing derived mutation positions and depths for each allele.
+    """
     all_confirmed_mutation_dict = {}
-    for item in consensus_dict:
-        all_confirmed_mutation_dict[item] = [[], []]
-        for i in range(len(consensus_dict[item][0])):
-            positions = consensus_dict[item][0][i][:4]
+
+    for allele, allele_data in consensus_dict.items():
+        all_confirmed_mutation_dict[allele] = [[], []]
+
+        for i in range(len(allele_data[0])):
+            positions = allele_data[0][i][:4]
             max_number = max(positions)
             index_of_max = positions.index(max_number)
             nucleotide_index = ['A', 'C', 'G', 'T']
+
             for t in range(len(positions)):
-                if t != index_of_max: #Use this to parse majority calls in the future if needed
+                if t != index_of_max:
                     if positions[t] >= arguments.min_n:
                         total_depth = sum(positions)
                         relative_depth = positions[t] / total_depth
-                        if relative_depth >= arguments.cor * arguments.mrd: #Only consider mutations with min depth >=2
-                            all_confirmed_mutation_dict[item][0].append(
+
+                        if relative_depth >= arguments.cor * arguments.mrd:
+                            # Only consider mutations with minimum depth >= 2
+                            all_confirmed_mutation_dict[allele][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
-                            all_confirmed_mutation_dict[item][1].append(positions[t])
+                            all_confirmed_mutation_dict[allele][1].append(positions[t])
+
     return all_confirmed_mutation_dict
 
 
 
 
 
-def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict):
-    #TBD why not just get the mutation list from the confirmed_mutation_dict?
-    #HERE
 
+def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,
+                                         read_positions_blacklisted_dict, bio_validation_dict):
+    """
+    Filter and adjust confirmed mutations based on co-occurrence, depth, and biological validation.
+
+    Args:
+        arguments: Arguments containing parameters for filtering.
+        confirmed_mutation_dict (dict): A dictionary containing confirmed mutations for alleles.
+        consensus_dict (dict): A dictionary containing consensus information for alleles.
+        read_positions_blacklisted_dict (dict): A dictionary of blacklisted positions.
+        bio_validation_dict (dict): A dictionary containing biological validation data for genes.
+
+    Returns:
+        dict: A filtered and adjusted mutation dictionary for alleles.
+    """
     reads_mutation_dict = parse_sam_and_find_mutations(arguments.output + '/rmlst_alignment.sam',
                                                        confirmed_mutation_dict,
                                                        consensus_dict,
                                                        read_positions_blacklisted_dict)
 
-    co_occurence_matrix_dict = {}
+    co_occurrence_matrix_dict = {}
     for allele in confirmed_mutation_dict:
         mutation_list = confirmed_mutation_dict[allele][0]
-        depth_list = confirmed_mutation_dict[allele][1]
         num_mutations = len(mutation_list)
         if num_mutations > 1:
             co_occurrence_matrix = [[0] * num_mutations for _ in range(num_mutations)]
@@ -279,40 +338,20 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     read_mutations = reads_mutation_dict[read]
                     valid_mutations = [mutation for mutation in read_mutations if mutation in mutation_list]
                     if len(valid_mutations) > 1:
-                        # Increment the matrix for pairs of mutations in the read
                         for i in range(len(valid_mutations)):
                             for j in range(i + 1, len(valid_mutations)):
                                 mutation1 = mutation_list.index(valid_mutations[i])
                                 mutation2 = mutation_list.index(valid_mutations[j])
                                 co_occurrence_matrix[mutation1][mutation2] += 1
                                 co_occurrence_matrix[mutation2][mutation1] += 1
+            co_occurrence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
 
-            # Print the co-occurrence matrix with mutation names
-            #print ("allele:", allele)
-            #print("Mutation names:", mutation_list)
-            #print ("Depth:", depth_list)
-            average_depth = sum(confirmed_mutation_dict[allele][1]) / len(confirmed_mutation_dict[allele][1])
-            #positional_depth = sum(consensus_dict[allele][0][0]) / len(consensus_dict[allele][0][0])
-            #total_gene_depth = 0
-            #for i in range(len(consensus_dict[allele][0])):
-            #    total_gene_depth += sum(consensus_dict[allele][0][i])
-            #average_depth = total_gene_depth / len(consensus_dict[allele][0])
-            #threshold = average_depth * arguments.mrd * arguments.cor
-            #print ("Threshold:", average_depth * 0.5) #Here, TBD look at threshold. Is more 0.5 really fine? Or should we do something similar to the benchmarking script
-            #for i, row in enumerate(co_occurrence_matrix):
-            #    mutation_name = mutation_list[i]
-            #    print(f"{mutation_name}: {row} {check_single_mutation_exisistance(bio_validation_dict, allele, mutation_name)}")
-
-            co_occurence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
-
-
-    #TBD continue here.
     adjusted_mutation_dict = {}
     for allele in confirmed_mutation_dict:
-        if allele in co_occurence_matrix_dict:
+        if allele in co_occurrence_matrix_dict:
             adjusted_mutation_dict[allele] = [[], []]
-            matrix = co_occurence_matrix_dict[allele][0]
-            mutation_list = co_occurence_matrix_dict[allele][1]
+            matrix = co_occurrence_matrix_dict[allele][0]
+            mutation_list = co_occurrence_matrix_dict[allele][1]
             depth_list = confirmed_mutation_dict[allele][1]
             for i in range(len(matrix)):
                 row = matrix[i]
@@ -321,23 +360,21 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 position_depth = sum(consensus_dict[allele][0][position - 1])
                 mutation_depth = depth_list[i]
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, arguments.proxi)
-                biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
-
+                biological_existence = check_single_mutation_existence(bio_validation_dict, allele, mutation)
 
                 mutation_threshold = position_depth * arguments.mrd
-                co_occurence_list = check_mutation_co_occurrence(row, mutation_list, mutation,
+                co_occurrence_list = check_mutation_co_occurrence(row, mutation_list, mutation,
                                                                  position_depth, arguments.cor, arguments.pp, arguments.mrd, proxi_mutations)
 
-                if co_occurence_list != []:
+                if co_occurrence_list != []:
                     mutation_threshold = mutation_threshold * arguments.cor
-                if not biological_existance:
+                if not biological_existence:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
                 if proxi_mutations != []:
                     mutation_threshold = mutation_threshold + (arguments.pp-1) * position_depth * arguments.mrd
                 if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
-
 
         else:
             adjusted_mutation_dict[allele] = [[], []]
@@ -347,65 +384,88 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 position_depth = sum(consensus_dict[allele][0][position - 1])
                 mutation_threshold = position_depth * arguments.mrd
                 depth = confirmed_mutation_dict[allele][1][0]
-                biological_existance = check_single_mutation_exisistance(bio_validation_dict, allele, mutation)
-                if not biological_existance:
+                biological_existence = check_single_mutation_existence(bio_validation_dict, allele, mutation)
+                if not biological_existence:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
 
-                #Check for mutation_threshold
                 if depth >= mutation_threshold:
-                    #print ('Added single mutation_2: ', allele, mutation)
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][0])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][0])
     return adjusted_mutation_dict
 
-def check_mutation_co_occurrence(list_of_mutation_co_occurrence, mutation_list, mutation,
-                                 position_depth, cor, pp, mrd, proxi_mutations):
-    """
-    Checks if a given mutation co-occurs with another mutation above a specified threshold.
 
-    :param list_of_mutation_co_occurrence: List of co-occurrence counts for each mutation.
-    :param threshold: The threshold value for determining significant co-occurrence.
-    :param mutation_list: List of mutations corresponding to the co-occurrence counts.
-    :param mutation: The mutation to check for co-occurrence.
-    :return: True if the mutation co-occurs with any other mutation above the threshold, False otherwise.
+
+def check_mutation_co_occurrence(list_of_mutation_co_occurrence, mutation_list, mutation,
+                                 position_depth, correlation_coefficient, proximity_penalty, mrd, proximity_mutations):
+    """
+    Check for co-occurrence of a mutation with other mutations in a list.
+
+    Args:
+        list_of_mutation_co_occurrence (list): A list of co-occurrence counts for each mutation.
+        mutation_list (list): A list of mutations.
+        mutation (str): The mutation for which co-occurrence is being checked.
+        position_depth (int): The depth at which the mutation occurs.
+        correlation_coefficient (float): The correlation coefficient used for threshold calculation.
+        proximity_penalty (float): The penalty factor for mutations within proximity.
+        mrd (float): The mutation rate difference.
+        proximity_mutations (list): A list of mutations within proximity.
+
+    Returns:
+        list: A list of mutations that co-occur with the given mutation.
     """
     if mutation not in mutation_list:
-        #Should never happen
-        return [] #no co-occurence and not in proximity
+        # Should never happen
+        return []  # No co-occurrence and not in proximity
 
-    co_threshold = position_depth * mrd * cor #default co_threshold
+    co_threshold = position_depth * mrd * correlation_coefficient  # Default co_threshold
     if co_threshold < 3:
         co_threshold = 3
 
     # Find the index of the mutation in the mutation list
     mutation_index = mutation_list.index(mutation)
 
-    co_occurence_list = []
+    co_occurrence_list = []
     # Check if the co-occurrence count of the mutation with any other mutation is above the threshold
     for i, count in enumerate(list_of_mutation_co_occurrence):
-        if mutation_list[i] in proxi_mutations:
-            # Add penalty for proximity to make it harder to get the co-occurence reward
+        if mutation_list[i] in proximity_mutations:
+            # Add penalty for proximity to make it harder to get the co-occurrence reward
             # for mutations within the proximity
-            co_threshold = co_threshold * pp
+            co_threshold = co_threshold * proximity_penalty
         if i != mutation_index and count >= co_threshold:
-            co_occurence_list.append(mutation_list[i])
+            co_occurrence_list.append(mutation_list[i])
 
-    return co_occurence_list
+    return co_occurrence_list
 
-def check_single_mutation_exisistance(bio_validation_dict, allele, specific_mutation):
+def check_single_mutation_existence(bio_validation_dict, allele, specific_mutation):
+    """
+    Check if a specific mutation exists for a given allele and gene in a biological validation dictionary.
+
+    Args:
+        bio_validation_dict (dict): A dictionary containing biological validation data for genes.
+        allele (str): The allele for which the existence of a specific mutation is checked.
+        specific_mutation (str): The specific mutation to check for.
+
+    Returns:
+        bool: True if the specific mutation exists for the allele, False otherwise.
+    """
     gene = allele.split('_')[0]
-    if specific_mutation in bio_validation_dict[gene]:
+
+    if specific_mutation in bio_validation_dict.get(gene, []):
         return True
+
     return False
 
-def find_mutations_proximity_specific_mutation(mutations, specific_mutation, proxi):
+def find_mutations_proximity_specific_mutation(mutations, specific_mutation, proximity):
     """
-    Find mutations that are within a specified proximity of a specific mutation.
+    Find mutations that are in proximity (within a certain number of positions) to a specific mutation.
 
-    :param mutations: A list of mutations.
-    :param specific_mutation: The specific mutation to compare others against.
-    :param proxi: The proximity within which another mutation can't be.
-    :return: A list of mutations which are within the specified proximity of the specific mutation.
+    Args:
+        mutations (list): A list of mutation strings in the format "position_base".
+        specific_mutation (str): The specific mutation to which proximity is determined.
+        proximity (int): The maximum number of positions for mutations to be considered in proximity.
+
+    Returns:
+        list: A list of mutations that are in proximity to the specific mutation.
     """
     specific_mutation_pos = int(specific_mutation.split('_')[0])
     proximity_mutations = []
@@ -414,23 +474,37 @@ def find_mutations_proximity_specific_mutation(mutations, specific_mutation, pro
     split_mutations = [(int(mutation.split('_')[0]), mutation) for mutation in mutations]
 
     for pos, mutation in split_mutations:
-        # Check if the mutation is within 'proxi' positions of the specific mutation
-        if abs(pos - specific_mutation_pos) <= proxi:
+        # Check if the mutation is within 'proximity' positions of the specific mutation
+        if abs(pos - specific_mutation_pos) <= proximity:
             if mutation != specific_mutation:
                 proximity_mutations.append(mutation)
 
     return proximity_mutations
 
 def derive_correct_length_headers(consensus_dict, fsa_file):
+    """
+    Derive correct length headers and sequences from a FASTA file based on a consensus dictionary.
+
+    Args:
+        consensus_dict (dict): A dictionary containing consensus information for alleles.
+        fsa_file (str): The path to the input FASTA file.
+
+    Returns:
+        dict: A dictionary mapping gene names to correct length sequences.
+    """
     correct_length_dict = {}
+
     for allele in consensus_dict:
         gene = allele.split('_')[0]
         correct_length_dict[gene] = [len(consensus_dict[allele][0]), []]
+
     sequence = ''
+    gene = None
+
     with open(fsa_file, 'r') as f:
         for line in f:
             if line.startswith('>'):
-                if gene != None:
+                if gene is not None:
                     if sequence != '':
                         if len(sequence) == correct_length_dict[gene][0]:
                             correct_length_dict[gene][1].append(sequence)
@@ -440,16 +514,30 @@ def derive_correct_length_headers(consensus_dict, fsa_file):
                 sequence = ''
             else:
                 sequence += line.strip()
-    if gene != None:
+
+    if gene is not None:
         if sequence != '':
             if len(sequence) == correct_length_dict[gene][0]:
                 correct_length_dict[gene][1].append(sequence)
 
     return correct_length_dict
 
-def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
+def produce_species_specific_kma_db(species, fsa_file, scheme_file, output_directory):
+    """
+    Produce a species-specific KMA database using the provided FASTA file and scheme file.
+
+    Args:
+        species (str): The target species for which the KMA database is being created.
+        fsa_file (str): The path to the input FASTA file.
+        scheme_file (str): The path to the scheme file containing gene information.
+        output_directory (str): The directory where the output KMA database will be created.
+
+    Returns:
+        None
+    """
     gene_set = set()
     t = 0
+
     with open(scheme_file, 'r') as f:
         for line in f:
             if line.startswith('rST'):
@@ -459,19 +547,38 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file, output):
                     if line.strip().split('\t')[55] == species:
                         t += 1
                         for i in range(len(headers)):
-                            allele = headers[i] + '_' + line.strip().split('\t')[i+1]
+                            allele = headers[i] + '_' + line.strip().split('\t')[i + 1]
                             gene_set.add(allele)
-    produce_species_fsa_file(fsa_file, gene_set, output)
-    os.system('kma index -i {}/specie.fsa -o {}/specie_db 2>/dev/null'.format(output, output))
 
-def produce_species_fsa_file(fsa_file, gene_set, output):
-    with open(output + '/specie.fsa', 'w') as outfile:
+    # Create a species-specific FASTA file with the selected genes
+    produce_species_fsa_file(fsa_file, gene_set, output_directory)
+
+    # Create a KMA database from the species-specific FASTA file
+    os.system('kma index -i {}/species.fsa -o {}/species_db 2>/dev/null'.format(output_directory, output_directory))
+
+
+def produce_species_fsa_file(fsa_file, gene_set, output_directory):
+    """
+    Produce a species-specific FASTA file containing sequences for genes in the given gene set.
+
+    Args:
+        fsa_file (str): The path to the input FASTA file.
+        gene_set (set): A set containing gene IDs to include in the output.
+        output_directory (str): The directory where the output file will be saved.
+
+    Returns:
+        None
+    """
+    output_file = output_directory + '/species.fsa'
+
+    with open(output_file, 'w') as outfile:
         with open(fsa_file, 'r') as f:
             write_sequence = False  # A flag to indicate whether the sequence should be written to the output
             for line in f:
                 if line.startswith('>'):
                     # Check if the gene_id (without '>') is in the gene_set
-                    write_sequence = line.strip().split()[0][1:] in gene_set
+                    gene_id = line.strip().split()[0][1:]
+                    write_sequence = gene_id in gene_set
                 # Write the line (header or sequence) if write_sequence is True
                 if write_sequence:
                     outfile.write(line)
