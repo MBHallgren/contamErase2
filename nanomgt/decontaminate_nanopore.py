@@ -6,8 +6,6 @@ from nanomgt import kma
 from nanomgt import util
 from itertools import combinations
 
-
-from nanomgt.intra_specie_detection import determine_intra_specie_contamination_nanopore
 from nanomgt.nanopore_mutations import parse_sam_and_find_mutations
 from nanomgt.nanopore_mutations import extract_alignment
 from nanomgt.nanopore_mutations import create_mutation_vector
