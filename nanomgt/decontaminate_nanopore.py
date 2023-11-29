@@ -7,7 +7,7 @@ from nanomgt import util
 from itertools import combinations
 
 
-from nanomgt.intra_species_detection import determine_intra_species_contamination_nanopore
+from nanomgt.intra_specie_detection import determine_intra_specie_contamination_nanopore
 from nanomgt.nanopore_mutations import parse_sam_and_find_mutations
 from nanomgt.nanopore_mutations import extract_alignment
 from nanomgt.nanopore_mutations import create_mutation_vector
@@ -30,9 +30,9 @@ def nanopore_decontamination(arguments):
 
     total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
-    primary_species = primary.split()[1] + ' ' + primary.split()[2]
+    primary_specie = primary.split()[1] + ' ' + primary.split()[2]
 
-    produce_species_specific_kma_db(primary_species,
+    produce_specie_specific_kma_db(primary_specie,
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
                                     '/home/people/malhal/contamErase_db/rmlst_scheme.txt',
                                     arguments.output)
@@ -522,12 +522,12 @@ def derive_correct_length_headers(consensus_dict, fsa_file):
 
     return correct_length_dict
 
-def produce_species_specific_kma_db(species, fsa_file, scheme_file, output_directory):
+def produce_specie_specific_kma_db(specie, fsa_file, scheme_file, output_directory):
     """
-    Produce a species-specific KMA database using the provided FASTA file and scheme file.
+    Produce a specie-specific KMA database using the provided FASTA file and scheme file.
 
     Args:
-        species (str): The target species for which the KMA database is being created.
+        specie (str): The target specie for which the KMA database is being created.
         fsa_file (str): The path to the input FASTA file.
         scheme_file (str): The path to the scheme file containing gene information.
         output_directory (str): The directory where the output KMA database will be created.
@@ -544,22 +544,22 @@ def produce_species_specific_kma_db(species, fsa_file, scheme_file, output_direc
                 headers = line.strip().split('\t')[1:54]
             else:
                 if line.strip().split('\t') != ['']:
-                    if line.strip().split('\t')[55] == species:
+                    if line.strip().split('\t')[55] == specie:
                         t += 1
                         for i in range(len(headers)):
                             allele = headers[i] + '_' + line.strip().split('\t')[i + 1]
                             gene_set.add(allele)
 
-    # Create a species-specific FASTA file with the selected genes
-    produce_species_fsa_file(fsa_file, gene_set, output_directory)
+    # Create a specie-specific FASTA file with the selected genes
+    produce_specie_fsa_file(fsa_file, gene_set, output_directory)
 
-    # Create a KMA database from the species-specific FASTA file
-    os.system('kma index -i {}/species.fsa -o {}/species_db 2>/dev/null'.format(output_directory, output_directory))
+    # Create a KMA database from the specie-specific FASTA file
+    os.system('kma index -i {}/specie.fsa -o {}/specie_db 2>/dev/null'.format(output_directory, output_directory))
 
 
-def produce_species_fsa_file(fsa_file, gene_set, output_directory):
+def produce_specie_fsa_file(fsa_file, gene_set, output_directory):
     """
-    Produce a species-specific FASTA file containing sequences for genes in the given gene set.
+    Produce a specie-specific FASTA file containing sequences for genes in the given gene set.
 
     Args:
         fsa_file (str): The path to the input FASTA file.
@@ -569,7 +569,7 @@ def produce_species_fsa_file(fsa_file, gene_set, output_directory):
     Returns:
         None
     """
-    output_file = output_directory + '/species.fsa'
+    output_file = output_directory + '/specie.fsa'
 
     with open(output_file, 'w') as outfile:
         with open(fsa_file, 'r') as f:
