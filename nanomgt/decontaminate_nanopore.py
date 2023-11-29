@@ -251,6 +251,8 @@ def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq
                     print (i, mutation)
                     nucleotide_list = ['A', 'C', 'G', 'T', 'N', '-']
                     if i not in black_listed_positions[read_id]:
+                        print (nucleotide_list.index(mutation))
+                        print (adjusted_consensus_dict[rname][0][i])
                         adjusted_consensus_dict[rname][0][i][nucleotide_list.index(mutation)] += 1
                     else:
                         total_black_list_count += 1
