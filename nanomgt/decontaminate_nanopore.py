@@ -68,33 +68,70 @@ def nanopore_decontamination(arguments):
 
     sys.exit()
 
-def co_occurence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict):
+def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict):
     """
-    Iteratively call upper_co_occuring_mutations_in_reads until no new mutations are found.
+    Iteratively identifies co-occurring mutations in reads until convergence is reached.
+
+    Args:
+    arguments (object): An object containing various parameters for the function.
+    confirmed_mutation_dict (dict): A dictionary of confirmed mutations.
+    consensus_dict (dict): A dictionary containing consensus data.
+    read_positions_blacklisted_dict (dict): A dictionary with read positions that are blacklisted.
+    bio_validation_dict (dict): A dictionary used for biological validation.
+
+    Returns:
+    dict: The updated dictionary of confirmed mutations after convergence.
     """
 
     current_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
     iteration_count = 0
+
+    # Iterate until no new mutations are found
     while True:
-        confirmed_mutation_dict =\
-            upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, consensus_dict,read_positions_blacklisted_dict, bio_validation_dict)
+        confirmed_mutation_dict = upper_co_occuring_mutations_in_reads(
+            arguments,
+            confirmed_mutation_dict,
+            consensus_dict,
+            read_positions_blacklisted_dict,
+            bio_validation_dict
+        )
+
         new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
         iteration_count += 1
+
+        # Check for convergence
         if new_count == current_count:
             break
         current_count = new_count
+
     return confirmed_mutation_dict
 
+
 def check_arguments(arguments):
+    """
+    Validates the given arguments to ensure they are within expected ranges.
+
+    Args:
+    arguments (object): An object containing various parameters to validate.
+
+    This function exits the program if any argument is outside its valid range.
+    """
+
+    # Validate 'cor' argument
     if arguments.cor > 1:
-        print ('cor must be between 0 and 1, otherwise it is not a reward.')
+        print('cor must be between 0 and 1, otherwise it is not a reward.')
         sys.exit()
+
+    # Validate 'bp' argument
     if arguments.bp < 1:
-        print ('bp must be greater than 1, otherwise it is not a penalty.')
+        print('bp must be greater than 1, otherwise it is not a penalty.')
         sys.exit()
+
+    # Validate 'pp' argument
     if arguments.pp < 1:
-        print ('pp must be greater than 1, otherwise it is not a penalty.')
+        print('pp must be greater than 1, otherwise it is not a penalty.')
         sys.exit()
+
 
 
 def count_mutations_in_mutations_dict(mutation_dict):
@@ -113,79 +150,123 @@ def bio_validation_mutations(consensus_dict, fsa_file, confirmed_mutation_dict):
                 mutation_dict[gene].add(str(i+1) + '_' + sequence[i])
     return mutation_dict
 
-def index_top_hits_db(output):
-    infile = output + '/initial_rmlst_alignment.res'
 
+def index_top_hits_db(output_directory):
+    """
+    Indexes the top hits from an initial RMLST alignment result and creates a FASTA file and database for these hits.
+
+    Args:
+    output_directory (str): The directory where the input files are located and where the output files will be saved.
+
+    The function reads two files:
+    - 'initial_rmlst_alignment.res' to identify the top hits.
+    - 'specie_db.name' to match and index these hits.
+
+    It then creates a FASTA file of the top hits and indexes it for use with the KMA tool.
+    """
+    # Read and process initial alignment results to identify top hits
+    initial_alignment_file = os.path.join(output_directory, 'initial_rmlst_alignment.res')
     top_hits = {}
-    with open(infile, 'r') as f:
-        for line in f:
+    with open(initial_alignment_file, 'r') as file:
+        for line in file:
             if not line.startswith('#'):
-                line = line.strip().split('\t')
-                allele = line[0]
+                elements = line.strip().split('\t')
+                allele, score = elements[:2]
                 gene = allele.split('_')[0]
-                if gene not in top_hits:
-                    top_hits[gene] = [allele, line[1], 0]
-                else:
-                    if line[1] > top_hits[gene][1]:
-                        top_hits[gene] = [allele, line[1], 0]
 
-    name_file = output + '/specie_db.name'
-    t = 1
-    with open(name_file, 'r') as f:
-        for line in f:
-            line = line.strip()
-            allele = line
+                # Update the top hits for each gene
+                if gene not in top_hits or score > top_hits[gene][1]:
+                    top_hits[gene] = [allele, score, 0]
+
+    # Match the top hits with their respective sequence number
+    species_name_file = os.path.join(output_directory, 'specie_db.name')
+    with open(species_name_file, 'r') as file:
+        for sequence_number, line in enumerate(file, start=1):
+            allele = line.strip()
             gene = allele.split('_')[0]
-            if gene in top_hits:
-                if top_hits[gene][0] == allele:
-                    top_hits[gene][-1] = t
-            t += 1
 
-    seqs = ''
-    for item in top_hits:
-        seqs += str(top_hits[item][-1]) + ','
-    seqs = seqs[:-1]
-    os.system('kma seq2fasta -seqs {} -t_db {} > {}/top_hits.fsa'.format(seqs, output + '/specie_db', output))
-    os.system('kma index -i {} -o {} 2>/dev/null' .format(output + '/top_hits.fsa', output + '/top_hits_db'))
+            if gene in top_hits and top_hits[gene][0] == allele:
+                top_hits[gene][-1] = sequence_number
+
+    # Prepare the sequences for FASTA conversion and indexing
+    sequence_numbers = ','.join(str(top_hits[gene][-1]) for gene in top_hits)
+
+    # Generate FASTA file from the sequences
+    fasta_file = os.path.join(output_directory, 'top_hits.fsa')
+    specie_db = os.path.join(output_directory, 'specie_db')
+    os.system(f'kma seq2fasta -seqs {sequence_numbers} -t_db {specie_db} > {fasta_file}')
+
+    # Index the generated FASTA file
+    top_hits_db = os.path.join(output_directory, 'top_hits_db')
+    os.system(f'kma index -i {fasta_file} -o {top_hits_db} 2>/dev/null')
 
 def adjust_consensus_dict_for_individual_qscores(consensus_dict, sam_file, fastq_file):
-    #Both of the below are in the consensus dict
-    black_listed_positions = blacklist_positions(fastq_file, 2) #TBD fix this. Bases in the start of genes are removed with a higher value
-    #TBD also check the last position in the consensus dict. all of them return 6 0's right now.
+    """
+    Adjusts the consensus dictionary with individual quality scores from SAM and FASTQ files.
+
+    Args:
+    consensus_dict (dict): Dictionary containing consensus data.
+    sam_file (str): Path to the SAM file.
+    fastq_file (str): Path to the FASTQ file.
+
+    Returns:
+    tuple: A tuple containing the adjusted consensus dictionary and blacklisted positions.
+    """
+    # Blacklist certain positions based on the FASTQ file
+    black_listed_positions = blacklist_positions(fastq_file, 2)
+
+    # Initialize the adjusted consensus dictionary
     adjusted_consensus_dict = {}
 
-    for allele in consensus_dict:
-        adjusted_consensus_dict[allele] = [[], consensus_dict[allele][1]]
-        for position in consensus_dict[allele][0]:
-            adjusted_consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0])
+    # Set up the consensus dictionary structure
+    for allele, data in consensus_dict.items():
+        allele_positions, allele_seq = data
+        adjusted_consensus_dict[allele] = [[0, 0, 0, 0, 0, 0] * len(allele_positions), allele_seq]
 
     total_black_list_count = 0
-    with open(sam_file, 'r') as sam_file:
-        for alignment in sam_file:
-            if alignment[0] == '@':
+
+    # Process alignments from the SAM file
+    with open(sam_file, 'r') as file:
+        for alignment in file:
+            # Skip header lines
+            if alignment.startswith('@'):
                 continue
+
+            # Parse the alignment data
             cols = alignment.strip().split('\t')
-            qname, flag, rname, pos, mapq, cigar_str, rnext, pnext, tlen, seq = cols[:10]
+            qname, _, rname, pos, _, cigar_str, _, _, _, seq = cols[:10]
             read_id = qname.split(' ')[0]
             template_seq = adjusted_consensus_dict[rname][1]
             pos = int(pos)
-            tlen = int(tlen)
+            tlen = len(template_seq)
 
-            if pos == 1 and len(seq) >= tlen: #We will only consider read that span the entire gene.
-                # Obtaining the alignment using your function
+            # Process only full-length reads
+            if pos == 1 and len(seq) >= tlen:
                 aligned_ref, aligned_query = extract_alignment(template_seq[pos - 1:pos - 1 + tlen], seq, cigar_str)
                 mutation_vector = create_mutation_vector(aligned_ref, aligned_query)
-                for i in range(len(mutation_vector)):
+
+                # Update the consensus dictionary
+                for i, mutation in enumerate(mutation_vector):
                     nucleotide_list = ['A', 'C', 'G', 'T', 'N', '-']
                     if i not in black_listed_positions[read_id]:
-                        adjusted_consensus_dict[rname][0][i][nucleotide_list.index(mutation_vector[i])] += 1
+                        adjusted_consensus_dict[rname][0][i][nucleotide_list.index(mutation)] += 1
                     else:
                         total_black_list_count += 1
-    #print ('Total blacklisted positions: ' + str(total_black_list_count))
-    return adjusted_consensus_dict, black_listed_positions
 
+    return adjusted_consensus_dict, black_listed_positions
 def blacklist_positions(fastq_file, quality_threshold):
+    """
+    Create a blacklist of low-quality positions in a FASTQ file for each read.
+
+    Args:
+        fastq_file (str): The path to the FASTQ file.
+        quality_threshold (int): The quality score threshold for blacklisting positions.
+
+    Returns:
+        dict: A dictionary where keys are read IDs and values are lists of blacklisted positions.
+    """
     blacklist_dict = {}
+
     for record in SeqIO.parse(fastq_file, "fastq"):
         # Initialize the blacklist for this read
         blacklist = []
@@ -200,9 +281,6 @@ def blacklist_positions(fastq_file, quality_threshold):
         blacklist_dict[record.id] = blacklist
 
     return blacklist_dict
-
-#Here
-
 def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict):
     """
     Format and print the output of confirmed mutations with additional information.
