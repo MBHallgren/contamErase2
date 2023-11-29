@@ -476,8 +476,21 @@ def produce_species_fsa_file(fsa_file, gene_set, output):
                 if write_sequence:
                     outfile.write(line)
 
+#Here
 def build_consensus_dict(res_file, mat_file):
+    """
+    Build a consensus dictionary from result and matrix files.
+
+    Args:
+        res_file (str): The name of the result file.
+        mat_file (str): The name of the matrix file.
+
+    Returns:
+        dict: A dictionary containing consensus information for alleles.
+    """
     consensus_dict = {}
+
+    # Read and process the result file
     with open(res_file, 'r') as f:
         for line in f:
             if not line.startswith('#'):
@@ -486,8 +499,9 @@ def build_consensus_dict(res_file, mat_file):
                 length = int(line[3])
                 consensus_dict[allele] = [[], '']
                 for i in range(length):
-                    consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0]) #[A, C, G, T, N, -]
+                    consensus_dict[allele][0].append([0, 0, 0, 0, 0, 0])  # [A, C, G, T, N, -]
 
+    # Read and process the matrix file
     with open(mat_file, 'r') as f:
         for line in f:
             line = line.strip()
@@ -496,87 +510,154 @@ def build_consensus_dict(res_file, mat_file):
                 index = 0
             elif line != '':
                 line = line.split('\t')
-                if line[0] != '-': #excludes read gaps. Reconsider?
+                if line[0] != '-':  # Excludes read gaps. Reconsider?
                     line = line[1:]
                     for i in range(len(line)):
                         consensus_dict[allele][0][index][i] += int(line[i])
                     index += 1
 
+    # Generate consensus sequences for alleles
     for allele in consensus_dict:
         for position in consensus_dict[allele][0]:
             consensus_dict[allele][1] += 'ACGT'[position[:4].index(max(position[:4]))]
+
     return consensus_dict
 
 
+
 def number_of_bases_in_file(filename):
-    gzipped, type = determine_file_type(filename)
-    #print (gzipped, type)
-    if type == 'fasta':
-        sum = 0
+    """
+    Calculate the total number of bases in a FASTA or FASTQ file.
+
+    Args:
+        filename (str): The name of the input file.
+
+    Returns:
+        int: The total number of bases in the file.
+    """
+    gzipped, file_type = determine_file_type(filename)
+
+    if file_type == 'fasta':
+        total_bases = 0
         with open(filename, 'r') as f:
             for line in f:
                 if not line.startswith('>'):
-                    sum += len(line.strip())
-        return sum
+                    total_bases += len(line.strip())
+        return total_bases
 
-    elif type == 'fastq':
-        if gzipped:
-            line_count = 1
-            sum = 0
-            with gzip.open(filename, 'r') as f:
-                for line in f:
-                    if line_count == 2:
-                        sum += len(line.strip())
-                    line_count += 1
-                    if line_count == 5:
-                        line_count = 1
-            return sum
-        else:
-            line_count = 1
-            sum = 0
-            with open(filename, 'r') as f:
-                for line in f:
-                    if line_count == 2:
-                        sum += len(line.strip())
-                    line_count += 1
-                    if line_count == 5:
-                        line_count = 1
-            return sum
+    elif file_type == 'fastq':
+        total_bases = 0
+        line_count = 1
+        with (gzip.open(filename, 'r') if gzipped else open(filename, 'r')) as f:
+            for line in f:
+                if line_count == 2:
+                    total_bases += len(line.strip())
+                line_count += 1
+                if line_count == 5:
+                    line_count = 1
+        return total_bases
+
 def eval_bacteria_results(results, total_bacteria_aligning_bases):
+    """
+    Evaluate bacterial alignment results to determine primary and candidate results.
+
+    Args:
+        results (list of dict): List of dictionaries containing bacterial alignment results.
+        total_bacteria_aligning_bases (int): Total number of bases aligning to bacteria.
+
+    Returns:
+        tuple: A tuple containing the primary result and a dictionary of candidate results.
+    """
     primary = results[0]['#Template']
     candidate_dict = dict()
+
     for item in results:
+        # Calculate the number of bases hit based on depth
         bases_hit = int(item['Template_length']) * float(item['Depth'].strip())
+
+        # Calculate the template identity
         template_id = float(item['Template_Identity'])
+
+        # Calculate relative template depth
         relative_template_depth = bases_hit / total_bacteria_aligning_bases
+
+        # Check if the result qualifies as a candidate
         if relative_template_depth > 0.01 or template_id > 20.00:
             candidate_dict[item['#Template']] = [relative_template_depth, int(item['Template_length'])]
+
     return primary, candidate_dict
+
 
 def drive_bacteria_results(arguments, total_bacteria_aligning_bases):
+    """
+    Drive the analysis of bacterial alignment results.
+
+    Args:
+        arguments: Parsed command-line arguments.
+        total_bacteria_aligning_bases (int): Total number of bases aligning to bacteria.
+
+    Returns:
+        tuple: A tuple containing primary results and a dictionary of candidate results.
+    """
+    # Sort bacterial alignment results by score
     results = sort_lines_by_score(arguments.output + "/bacteria_alignment.res")
+
+    # Evaluate the bacterial results to determine primary and candidates
     primary, candidate_dict = eval_bacteria_results(results, total_bacteria_aligning_bases)
+
     return primary, candidate_dict
 
+
 def determine_file_type(file):
+    """
+    Determine the file type and whether it is gzipped.
+
+    Args:
+        file (str): The name of the input file.
+
+    Returns:
+        tuple: A tuple containing a boolean indicating if the file is gzipped and a string indicating the file type.
+    """
     gzipped = False
-    type = None
+    file_type = None
+
+    # Check if the file has a '.gz' extension, indicating it is gzipped
     if file.endswith('.gz'):
         gzipped = True
-        file = file[:-3]
+        file = file[:-3]  # Remove the '.gz' extension
+
+    # Check the file type based on its extension
     if file.endswith('.fastq') or file.endswith('.fq'):
-        type = 'fastq'
+        file_type = 'fastq'
     elif file.endswith('.fasta') or file.endswith('.fa') or file.endswith('.fna') or file.endswith('.fsa'):
-        type = 'fasta'
-    return gzipped, type
+        file_type = 'fasta'
+
+    return gzipped, file_type
+
 
 def sort_lines_by_score(filename):
+    """
+    Sort lines in a tab-delimited file by the 'Score' column in descending order.
+
+    Args:
+        filename (str): The name of the input file.
+
+    Returns:
+        list: A list of dictionaries representing the sorted data.
+    """
     data = []
+
+    # Read data from the input file
     with open(filename, 'r') as file:
         lines = file.readlines()
         header = lines[0].strip().split('\t')
+
+        # Parse and store data as dictionaries
         for line in lines[1:]:
             values = line.strip().split('\t')
             data.append(dict(zip(header, values)))
+
+    # Sort the data by the 'Score' column in descending order
     sorted_data = sorted(data, key=lambda x: int(x['Score']), reverse=True)
+
     return sorted_data
