@@ -415,7 +415,7 @@ def derive_mutation_positions(consensus_dict, arguments):
                         total_depth = sum(positions)
                         relative_depth = positions[t] / total_depth
 
-                        if relative_depth >= arguments.cor * arguments.mrd:
+                        if relative_depth >= arguments.mrd - (arguments.mrd * arguments.cor):
                             # Only consider mutations with minimum depth >= 2
                             all_confirmed_mutation_dict[allele][0].append(
                                 '{}_{}'.format(i + 1, nucleotide_index[t]))
@@ -484,6 +484,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 position_depth = sum(consensus_dict[allele][0][position - 1])
                 mutation_depth = depth_list[i]
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, arguments.proxi)
+                density_mutations = find_mutations_density_specific_mutation(mutation_list, mutation, arguments.dp_window)
                 biological_existence = check_single_mutation_existence(bio_validation_dict, allele, mutation)
 
                 mutation_threshold = position_depth * arguments.mrd
@@ -493,11 +494,13 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 if co_occurrence_list != []:
                     for item in co_occurrence_list:
                         co_occurrence_tmp_dict[allele].append(item)
-                    mutation_threshold = mutation_threshold * arguments.cor
+                    mutation_threshold = mutation_threshold - mutation_threshold * arguments.cor
                 if not biological_existence:
-                    mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
+                    mutation_threshold = mutation_threshold + arguments.bp * position_depth * arguments.mrd
                 if proxi_mutations != []:
-                    mutation_threshold = mutation_threshold + (arguments.pp-1) * position_depth * arguments.mrd
+                    mutation_threshold = mutation_threshold + arguments.pp * position_depth * arguments.mrd
+                if density_mutations != []:
+                    mutation_threshold = mutation_threshold + arguments.dp * position_depth * arguments.mrd * len(density_mutations)
                 if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])

@@ -35,16 +35,20 @@ def main():
                         help='Minimum number of nucleotides required to call a SNV. Default: 3')
     parser.add_argument('--mrd', action="store", type=float, dest='mrd', default=0.03,
                         help='Minimum related depth (mrd) for validating a single allele SNVs. Default: 0.03')
-    parser.add_argument('--cor', action="store", type=float, dest='cor', default=0.75,
-                        help='Co-occurrence reward. Default: 0.75')
-    parser.add_argument('--bp', action="store", type=float, dest='bp', default=2,
-                        help='Biological penalty. Default: 2')
-    parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.75,
-                        help='Proximity penalty. Default: 1.75')
+    parser.add_argument('--cor', action="store", type=float, dest='cor', default=0.25,
+                        help='Co-occurrence reward. += mrd*cor. Default: 0.25')
+    parser.add_argument('--bp', action="store", type=float, dest='bp', default=1,
+                        help='Biological penalty. -= mrd*bp. Default: 1')
+    parser.add_argument('--pp', action="store", type=float, dest='pp', default=0.5,
+                        help='Proximity penalty. -= mrd*pp Default: 0.5')
+    parser.add_argument('--dp', action="store", type=float, dest='dp', default=0.1,
+                        help='Density Penalty. += n_mutation_in_windown*dp*mrd Default: 0.1')
+    parser.add_argument('--dp_window', action="store", type=float, dest='dp_window', default=20,
+                        help='Proximity penalty. Default: 20')
     parser.add_argument('--proxi', action="store", type=int, dest='proxi', default=5,
                         help='Proximity between SNVs which will incur a penalty. Default: 5')
     parser.add_argument('--q_score', action="store", type=int, dest='q_score', default=20,
-                        help='Reads with an average q-score below this threshold are filtered out. Default: 14')
+                        help='Reads with an average q-score below this threshold are filtered out. Default: 20')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
     args = parser.parse_args()
