@@ -65,6 +65,10 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict, co_occurrence_tmp_dict = co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
     format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict, co_occurrence_tmp_dict)
+    with open(arguments.output + '/majority_seqs.fasta', 'w') as f:
+        for allele in consensus_dict:
+            print ('>' + allele, file=f)
+            print (consensus_dict[allele][1], file=f)
 
     sys.exit()
 
