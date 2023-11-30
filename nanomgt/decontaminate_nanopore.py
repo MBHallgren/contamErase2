@@ -407,7 +407,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                        consensus_dict,
                                                        read_positions_blacklisted_dict)
 
-    co_occurence_tmp_dict = {}
+    co_occurrence_tmp_dict = {}
     co_occurrence_matrix_dict = {}
     for allele in confirmed_mutation_dict:
         mutation_list = confirmed_mutation_dict[allele][0]
@@ -430,7 +430,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
 
     adjusted_mutation_dict = {}
     for allele in confirmed_mutation_dict:
-        co_occurence_tmp_dict[allele] = []
+        co_occurrence_tmp_dict[allele] = []
         if allele in co_occurrence_matrix_dict:
             adjusted_mutation_dict[allele] = [[], []]
             matrix = co_occurrence_matrix_dict[allele][0]
