@@ -457,7 +457,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 position_depth = sum(consensus_dict[allele][0][position - 1])
                 mutation_depth = depth_list[i]
                 proxi_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, arguments.proxi)
-                density_mutations = find_mutations_density_specific_mutation(mutation_list, mutation, arguments.dp_window)
+                density_mutations = find_mutations_proximity_specific_mutation(mutation_list, mutation, arguments.dp_window)
                 biological_existence = check_single_mutation_existence(bio_validation_dict, allele, mutation)
 
                 mutation_threshold = position_depth * arguments.mrd
