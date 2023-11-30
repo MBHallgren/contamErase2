@@ -285,6 +285,42 @@ def blacklist_positions(fastq_file, quality_threshold):
         blacklist_dict[record.id] = blacklist
 
     return blacklist_dict
+
+def format_output_for_plots(confirmed_mutation_dict, consensus_dict, bio_validation_dict, co_occurrence_tmp_dict):
+    """
+    Format and print the output of confirmed mutations with additional information.
+
+    Args:
+        confirmed_mutation_dict (dict): A dictionary containing confirmed mutations for alleles.
+        consensus_dict (dict): A dictionary containing consensus information for alleles.
+        bio_validation_dict (dict): A dictionary containing biological validation data for genes.
+
+    Returns:
+        None
+    """
+
+    header = 'Gene,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,GeneLength,MutationComment,CoOccurrence'
+    print(header)
+
+    for allele in confirmed_mutation_dict:
+        for mutation in zip(confirmed_mutation_dict[allele][0], confirmed_mutation_dict[allele][1]):
+            position = mutation[0].split('_')[0]
+            mutation_base = mutation[0].split('_')[1]
+            mutation_depth = mutation[1]
+            majority_base = consensus_dict[allele][1][int(position) - 1]
+            total_depth = sum(consensus_dict[allele][0][int(position) - 1])
+            biological_existence = check_single_mutation_existence(bio_validation_dict, allele, mutation[0])
+            gene_length = len(consensus_dict[allele][1])
+            if mutation[0] in co_occurrence_tmp_dict[allele]:
+                co_occurrence = 'Yes'
+            else:
+                co_occurrence = 'No'
+
+            if biological_existence:
+                print('{},{},{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, gene_length, 'Mutation seen in database', co_occurrence))
+            else:
+                print('{},{},{},{},{},{},{},{},{}'.format(allele, position, majority_base, mutation_base, mutation_depth, total_depth, gene_length, 'Novel mutation', co_occurrence))
+
 def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict, co_occurrence_tmp_dict):
     """
     Format and print the output of confirmed mutations with additional information.

@@ -35,15 +35,15 @@ def main():
                         help='Minimum number of nucleotides required to call a SNV. Default: 3')
     parser.add_argument('--mrd', action="store", type=float, dest='mrd', default=0.03,
                         help='Minimum related depth (mrd) for validating a single allele SNVs. Default: 0.03')
-    parser.add_argument('--cor', action="store", type=float, dest='cor', default=0.5,
-                        help='Co-occurrence reward. Default: 0.5')
-    parser.add_argument('--bp', action="store", type=float, dest='bp', default=1.5,
-                        help='Biological penalty. Default: 1.5')
-    parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.35,
-                        help='Proximity penalty. Default: 1.35')
+    parser.add_argument('--cor', action="store", type=float, dest='cor', default=0.75,
+                        help='Co-occurrence reward. Default: 0.75')
+    parser.add_argument('--bp', action="store", type=float, dest='bp', default=2,
+                        help='Biological penalty. Default: 2')
+    parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.5,
+                        help='Proximity penalty. Default: 1.5')
     parser.add_argument('--proxi', action="store", type=int, dest='proxi', default=5,
                         help='Proximity between SNVs which will incur a penalty. Default: 5')
-    parser.add_argument('--q_score', action="store", type=int, dest='q_score', default=14,
+    parser.add_argument('--q_score', action="store", type=int, dest='q_score', default=20,
                         help='Reads with an average q-score below this threshold are filtered out. Default: 14')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
