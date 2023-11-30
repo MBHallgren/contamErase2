@@ -12,7 +12,6 @@ from nanomgt.nanopore_mutations import create_mutation_vector
 from nanomgt.nanopore_mutations import identify_mutations
 
 def nanopore_decontamination(arguments):
-    check_arguments(arguments)
     os.system('mkdir ' + arguments.output)
     if arguments.nanopore.endswith('.gz'):
         os.system('zcat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
@@ -109,32 +108,6 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
         current_count = new_count
 
     return confirmed_mutation_dict, co_occurrence_tmp_dict
-
-
-def check_arguments(arguments):
-    """
-    Validates the given arguments to ensure they are within expected ranges.
-
-    Args:
-    arguments (object): An object containing various parameters to validate.
-
-    This function exits the program if any argument is outside its valid range.
-    """
-
-    # Validate 'cor' argument
-    if arguments.cor > 1:
-        print('cor must be between 0 and 1, otherwise it is not a reward.')
-        sys.exit()
-
-    # Validate 'bp' argument
-    if arguments.bp < 1:
-        print('bp must be greater than 1, otherwise it is not a penalty.')
-        sys.exit()
-
-    # Validate 'pp' argument
-    if arguments.pp < 1:
-        print('pp must be greater than 1, otherwise it is not a penalty.')
-        sys.exit()
 
 
 
