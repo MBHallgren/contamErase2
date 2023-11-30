@@ -293,6 +293,10 @@ def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict, 
     Returns:
         None
     """
+
+    for item in co_occurrence_tmp_dict:
+        print (item, co_occurrence_tmp_dict[item])
+
     header = 'Gene,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,GeneLength,MutationComment,CoOccurrence'
     print(header)
 
