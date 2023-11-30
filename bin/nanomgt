@@ -39,8 +39,8 @@ def main():
                         help='Co-occurrence reward. Default: 0.75')
     parser.add_argument('--bp', action="store", type=float, dest='bp', default=2,
                         help='Biological penalty. Default: 2')
-    parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.5,
-                        help='Proximity penalty. Default: 1.5')
+    parser.add_argument('--pp', action="store", type=float, dest='pp', default=1.75,
+                        help='Proximity penalty. Default: 1.75')
     parser.add_argument('--proxi', action="store", type=int, dest='proxi', default=5,
                         help='Proximity between SNVs which will incur a penalty. Default: 5')
     parser.add_argument('--q_score', action="store", type=int, dest='q_score', default=20,
