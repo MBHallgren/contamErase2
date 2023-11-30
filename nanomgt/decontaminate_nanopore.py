@@ -294,9 +294,6 @@ def format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict, 
         None
     """
 
-    for item in co_occurrence_tmp_dict:
-        print (item, co_occurrence_tmp_dict[item])
-
     header = 'Gene,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth,GeneLength,MutationComment,CoOccurrence'
     print(header)
 
@@ -454,7 +451,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                                                  position_depth, arguments.cor, arguments.pp, arguments.mrd, proxi_mutations)
 
                 if co_occurrence_list != []:
-                    co_occurrence_tmp_dict[allele].append(co_occurrence_list)
+                    for item in co_occurrence_list:
+                        co_occurrence_tmp_dict[allele].append(item)
                     mutation_threshold = mutation_threshold * arguments.cor
                 if not biological_existence:
                     mutation_threshold = mutation_threshold + (arguments.bp-1) * position_depth * arguments.mrd
