@@ -62,7 +62,7 @@ def nanopore_decontamination(arguments):
 
     bio_validation_dict = bio_validation_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
-    confirmed_mutation_dict, co_occurrence_tmp_dict = co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
+    confirmed_mutation_dict, co_occurrence_tmp_dict, iteration_count = co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
     format_output(confirmed_mutation_dict, consensus_dict, bio_validation_dict, co_occurrence_tmp_dict)
     with open(arguments.output + '/majority_seqs.fasta', 'w') as f:
         for allele in consensus_dict:
@@ -94,8 +94,8 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
     # Iterate until no new mutations are found
     while True:
         print ('Iteration: ' + str(iteration_count), file=sys.stderr)
-        arguments.cor = arguments.cor + (original_cor * 0.1) #increase of 10% per iteration
-        arguments.dp = arguments.dp + (original_dp * 0.1) #increase of 10% per iteration
+        #arguments.cor = arguments.cor + (original_cor * 0.1) #increase of 10% per iteration
+        #arguments.dp = arguments.dp + (original_dp * 0.1) #increase of 10% per iteration
         confirmed_mutation_dict, co_occurrence_tmp_dict = upper_co_occuring_mutations_in_reads(
             arguments,
             confirmed_mutation_dict,
@@ -112,7 +112,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
             break
         current_count = new_count
 
-    return confirmed_mutation_dict, co_occurrence_tmp_dict
+    return confirmed_mutation_dict, co_occurrence_tmp_dict, iteration_count
 
 
 
