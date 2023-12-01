@@ -14,7 +14,9 @@ for rate in bf_rates:
         #    .format(path, i, rate, i, rate, rate, i, 'results')
         #os.system(cmd)
         os.system('mkdir {}/{}'.format(rate, i))
-        os.system('cp /home/people/malhal/papers/rmlst/test/longshot/majority_seqs.fasta {}/{}/majority_seqs.fasta'.format(rate, i))
+        #os.system('cp /home/people/malhal/papers/rmlst/test/longshot/majority_seqs.fasta {}/{}/majority_seqs.fasta'.format(rate, i))
+        os.system('cp /home/people/malhal/test/sarues_test/majority_seqs.fasta {}/{}/majority_seqs.fasta'.format(rate, i))
+
         os.system('minimap2 -ax map-ont {}/{}/majority_seqs.fasta {}/{}/intra.fastq > {}/{}/output.sam'.format(rate, i, path, i, rate, i))
         os.system('samtools view -bS {}/{}/output.sam > {}/{}/output.bam'.format(rate, i, rate, i))
         os.system('samtools sort {}/{}/output.bam -o {}/{}/output.sorted.bam'.format(rate, i, rate, i))
