@@ -1,6 +1,7 @@
 import os
 import sys
 import gzip
+import time
 from Bio import SeqIO
 from nanomgt import kma
 from nanomgt import util
@@ -90,6 +91,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
     iteration_count = 0
     original_cor = arguments.cor
     original_dp = arguments.dp
+    time_1 = time.time()
     with open(arguments.output + '/convergence_results.txt', 'w') as convergence_file:
         print ('Interations,Mutations', file=convergence_file)
         # Iterate until no new mutations are found
@@ -115,6 +117,8 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
             if new_count == current_count:
                 break
             current_count = new_count
+    time_2 = time.time()
+    print ('Time taken for all iterations: ' + str(time_2 - time_1), file=sys.stderr)
 
     return confirmed_mutation_dict, co_occurrence_tmp_dict, iteration_count
 
