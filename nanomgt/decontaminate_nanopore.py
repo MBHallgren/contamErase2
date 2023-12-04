@@ -90,27 +90,31 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
     iteration_count = 0
     original_cor = arguments.cor
     original_dp = arguments.dp
+    with open(arguments.output + '/convergence_results.txt', 'w') as convergence_file:
+        print ('Interations,Mutations', file=convergence_file)')
+        # Iterate until no new mutations are found
+        while True:
+            arguments.cor = arguments.cor + (original_cor * 0.25) #increase of 25% per iteration
+            arguments.dp = arguments.dp + (original_dp * 0.25) #increase of 25% per iteration
+            confirmed_mutation_dict, co_occurrence_tmp_dict = upper_co_occuring_mutations_in_reads(
+                arguments,
+                confirmed_mutation_dict,
+                consensus_dict,
+                read_positions_blacklisted_dict,
+                bio_validation_dict
+            )
 
-    # Iterate until no new mutations are found
-    while True:
-        print ('Iteration: ' + str(iteration_count), file=sys.stderr)
-        arguments.cor = arguments.cor + (original_cor * 0.25) #increase of 25% per iteration
-        arguments.dp = arguments.dp + (original_dp * 0.25) #increase of 25% per iteration
-        confirmed_mutation_dict, co_occurrence_tmp_dict = upper_co_occuring_mutations_in_reads(
-            arguments,
-            confirmed_mutation_dict,
-            consensus_dict,
-            read_positions_blacklisted_dict,
-            bio_validation_dict
-        )
+            new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
+            iteration_count += 1
+            print ('Iteration: ' + str(iteration_count), file=sys.stderr)
+            print ('Mutations: ' + str(new_count), file=sys.stderr)
+            print (str(iteration_count) + ',' + str(new_count), file=convergence_file
 
-        new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
-        iteration_count += 1
 
-        # Check for convergence
-        if new_count == current_count:
-            break
-        current_count = new_count
+            # Check for convergence
+            if new_count == current_count:
+                break
+            current_count = new_count
 
     return confirmed_mutation_dict, co_occurrence_tmp_dict, iteration_count
 
