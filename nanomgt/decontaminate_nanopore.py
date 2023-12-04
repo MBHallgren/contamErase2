@@ -108,7 +108,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
             iteration_count += 1
             print ('Iteration: ' + str(iteration_count), file=sys.stderr)
             print ('Mutations: ' + str(new_count), file=sys.stderr)
-            print (str(iteration_count) + ',' + str(new_count), file=convergence_file
+            print (str(iteration_count) + ',' + str(new_count), file=convergence_file)
 
 
             # Check for convergence
