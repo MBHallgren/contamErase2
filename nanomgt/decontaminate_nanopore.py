@@ -59,6 +59,10 @@ def nanopore_decontamination(arguments):
 
     confirmed_mutation_dict = derive_mutation_positions(consensus_dict, arguments)
 
+    for item in confirmed_mutation_dict:
+        print (item, confirmed_mutation_dict[item])
+    sys.exit()
+
     bio_validation_dict = bio_validation_mutations(consensus_dict, arguments.output + '/specie.fsa', confirmed_mutation_dict)
 
     confirmed_mutation_dict, co_occurrence_tmp_dict, iteration_count = co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict)
@@ -839,24 +843,6 @@ def eval_bacteria_results(results, total_bacteria_aligning_bases):
     return primary, candidate_dict
 
 
-def drive_bacteria_results(arguments, total_bacteria_aligning_bases):
-    """
-    Drive the analysis of bacterial alignment results.
-
-    Args:
-        arguments: Parsed command-line arguments.
-        total_bacteria_aligning_bases (int): Total number of bases aligning to bacteria.
-
-    Returns:
-        tuple: A tuple containing primary results and a dictionary of candidate results.
-    """
-    # Sort bacterial alignment results by score
-    results = sort_lines_by_score(arguments.output + "/bacteria_alignment.res")
-
-    # Evaluate the bacterial results to determine primary and candidates
-    primary, candidate_dict = eval_bacteria_results(results, total_bacteria_aligning_bases)
-
-    return primary, candidate_dict
 
 
 def determine_file_type(file):

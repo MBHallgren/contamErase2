@@ -75,7 +75,7 @@ print ('experiment,totalsnvs,totalbiologicalsnvscorrect,missingbiologicalsnvscor
 for rate in rates:
     for file_depth in file_depths:
         #results_file = '/home/people/malhal/papers/rmlst/benchmarking/mix/{}/{}_results.csv'.format(rate, file_depth)
-        results_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr/{}/{}/intra_contamination.csv'.format(rate, file_depth)
+        results_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr_sarues/{}/{}/intra_contamination.csv'.format(rate, file_depth, file_depth)
         #confindr_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr/{}/{}/intra_contamination.csv'.format(rate, file_depth)
         results = dict()
         with open(results_file, 'r') as f:
