@@ -31,7 +31,7 @@ def nanopore_decontamination(arguments):
 
     #total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
     #primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
-    highest_scoring_template = highest_scoring_hit(arguments.output + "/bacteria_mapping.res")
+    highest_scoring_template = highest_scoring_hit(arguments.output + "/bacteria_mapping.spa")
     primary_specie = highest_scoring_template.split()[1] + ' ' + highest_scoring_template.split()[2]
 
     produce_specie_specific_kma_db(primary_specie,
