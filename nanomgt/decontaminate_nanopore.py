@@ -526,7 +526,7 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                     mutation_threshold = mutation_threshold + arguments.dp * position_depth * arguments.mrd * len(density_mutations)
                 if allele == 'BACT000043_15':
                     print (position_depth)
-                    print (mrd)
+                    print (arguments.mrd)
                     print (position_depth * arguments.mrd)
                     print ('mutation', 'mutation_threshold', 'mutation_depth', 'position_depth', 'biological_existence', 'co_occurrence_list', 'proxi_mutations', 'density_mutations')
                     print(mutation, mutation_threshold, mutation_depth, position_depth, biological_existence, co_occurrence_list, proxi_mutations, density_mutations)
