@@ -24,13 +24,7 @@ def nanopore_decontamination(arguments):
                   arguments.output + "/bacteria_mapping",
                   arguments.db_dir + "/bac_db",
                   "-mem_mode -Sparse -ss c -t {}".format(arguments.threads)).run()
-    #kma.KMARunner(arguments.nanopore,
-    #              arguments.output + "/bacteria_alignment",
-    #              arguments.db_dir + "/bac_db",
-    #              "-mem_mode -1t1 -t {} -ID 10 -ont -eq 14 -mct 0.5".format(arguments.threads)).run()
 
-    #total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
-    #primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
     highest_scoring_template = highest_scoring_hit(arguments.output + "/bacteria_mapping.spa")
     primary_specie = highest_scoring_template.split()[1] + ' ' + highest_scoring_template.split()[2]
 
@@ -131,7 +125,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
         # Iterate until no new mutations are found
         while True:
             arguments.cor = arguments.cor + (original_cor * 0.15) #increase of 15% per iteration
-            arguments.dp = arguments.dp + (original_dp * 0.15) #increase of 15% per iteration
+            arguments.dp = arguments.dp + (original_dp * 0.10) #increase of 10% per iteration
             confirmed_mutation_dict, co_occurrence_tmp_dict = upper_co_occuring_mutations_in_reads(
                 arguments,
                 confirmed_mutation_dict,

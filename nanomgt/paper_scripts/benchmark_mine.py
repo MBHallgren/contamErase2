@@ -3,9 +3,9 @@ import sys
 import numpy as np
 
 
-#final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/final_mutation_lists/biological_rmlst_snvs.txt'
+final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/final_mutation_lists/biological_rmlst_snvs.txt'
 
-final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/mix/mix_mutations.txt'
+#final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/mix/mix_mutations.txt'
 
 biological_rmlst_snvs = dict()
 
@@ -73,11 +73,15 @@ def derive_biological_rmlst_snvs_results(biological_rmlst_snvs, results):
 rates = [1, 2, 3, 4, 5]
 file_depths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+for item in biological_rmlst_snvs:
+    print (item, biological_rmlst_snvs[item])
+sys.exit()
+
 print ('experiment,totalsnvs,totalbiologicalsnvscorrect,missingbiologicalsnvscorrect,noise_novel,noise_known')
 #print ('MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth')
 for rate in rates:
     for file_depth in file_depths:
-        results_file = '/home/people/malhal/papers/rmlst/benchmarking/ecoli_mine/{}/{}_results.csv'.format(rate, file_depth)
+        results_file = '/home/people/malhal/papers/rmlst/benchmarking/saures_mine/{}/{}_results.csv'.format(rate, file_depth)
         #confindr_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr/{}/{}/intra_contamination.csv'.format(rate, file_depth)
         results = dict()
         with open(results_file, 'r') as f:
@@ -110,7 +114,7 @@ for rate in rates:
             if item not in total_bio_snvs_found_correctly:
                 missing_biological_snvs.append(item)
                 #print (item)
-        #print (missing_biological_snvs)
+        print (missing_biological_snvs)
         #BACT000038 is a problem. 4 not IDd. Are these called correctly? check again. TBD
         #BACT000030 2 mutations. ID'ed with co-occurence!
         #BACT000040_240_A #This is known and needs to be fixed.'    240_A' is not in list
