@@ -24,15 +24,15 @@ def nanopore_decontamination(arguments):
                   arguments.output + "/bacteria_mapping",
                   arguments.db_dir + "/bac_db",
                   "-mem_mode -Sparse -ss c -t {}".format(arguments.threads)).run()
-    sys.exit()
-    kma.KMARunner(arguments.nanopore,
-                  arguments.output + "/bacteria_alignment",
-                  arguments.db_dir + "/bac_db",
-                  "-mem_mode -1t1 -t {} -ID 10 -ont -eq 14 -mct 0.5".format(arguments.threads)).run()
+    #kma.KMARunner(arguments.nanopore,
+    #              arguments.output + "/bacteria_alignment",
+    #              arguments.db_dir + "/bac_db",
+    #              "-mem_mode -1t1 -t {} -ID 10 -ont -eq 14 -mct 0.5".format(arguments.threads)).run()
 
-    total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
-    primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
-    primary_specie = primary.split()[1] + ' ' + primary.split()[2]
+    #total_bacteria_aligning_bases = util.number_of_bases_in_file(arguments.output + "/bacteria_alignment.fsa")
+    #primary, candidate_dict = drive_bacteria_results(arguments, total_bacteria_aligning_bases)
+    highest_scoring_template = highest_scoring_hit(arguments.output + "/bacteria_mapping.res")
+    primary_specie = highest_scoring_template.split()[1] + ' ' + highest_scoring_template.split()[2]
 
     produce_specie_specific_kma_db(primary_specie,
                                     '/home/people/malhal/contamErase_db/rmlst.fsa',
@@ -75,6 +75,35 @@ def nanopore_decontamination(arguments):
             print (consensus_dict[allele][1], file=f)
 
     sys.exit()
+
+
+def highest_scoring_hit(file_path):
+    """
+    Reads a tab-separated file and returns the #Template of the highest scoring hit.
+
+    Args:
+    file_path (str): The path to the file containing the data.
+
+    Returns:
+    str: The #Template of the highest scoring hit.
+    """
+    highest_score = 0
+    highest_scoring_template = ""
+
+    with open(file_path, 'r') as file:
+        next(file)  # Skip the header line
+        for line in file:
+            columns = line.split('\t')
+            try:
+                score = int(columns[2])  # Assuming the score is in the 3rd column (index 2)
+                if score > highest_score:
+                    highest_score = score
+                    highest_scoring_template = columns[0]  # Assuming the template is in the 1st column
+            except ValueError:
+                # In case the score is not an integer or the line is malformed
+                continue
+
+    return highest_scoring_template
 
 def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensus_dict, read_positions_blacklisted_dict, bio_validation_dict):
     """
