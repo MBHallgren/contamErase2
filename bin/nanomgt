@@ -43,8 +43,8 @@ def main():
                         help='Proximity penalty. -= mrd*pp Default: 0.5')
     parser.add_argument('--dp', action="store", type=float, dest='dp', default=0.1,
                         help='Density Penalty. += n_mutation_in_windown*dp*mrd Default: 0.1')
-    parser.add_argument('--dp_window', action="store", type=float, dest='dp_window', default=20,
-                        help='Proximity penalty. Default: 20')
+    parser.add_argument('--dp_window', action="store", type=float, dest='dp_window', default=15,
+                        help='Proximity penalty. Default: 15')
     parser.add_argument('--proxi', action="store", type=int, dest='proxi', default=5,
                         help='Proximity between SNVs which will incur a penalty. Default: 5')
     parser.add_argument('--q_score', action="store", type=int, dest='q_score', default=20,
