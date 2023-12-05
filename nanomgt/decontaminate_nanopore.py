@@ -139,7 +139,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
             print ('Iteration: ' + str(iteration_count), file=sys.stderr)
             print ('Mutations: ' + str(new_count), file=sys.stderr)
             print (str(iteration_count) + ',' + str(new_count), file=convergence_file)
-            print (confirmed_mutation_dict['BACT000043_15'])
+            print (confirmed_mutation_dict)
 
 
             # Check for convergence
