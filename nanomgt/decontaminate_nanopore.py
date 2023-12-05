@@ -20,7 +20,11 @@ def nanopore_decontamination(arguments):
         os.system('cat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
     arguments.nanopore = arguments.output + '/trimmed_reads.fastq'
 
-
+    kma.KMARunner(arguments.nanopore,
+                  arguments.output + "/bacteria_mapping",
+                  arguments.db_dir + "/bac_db",
+                  "-mem_mode -Sparse -ss c -t {}".format(arguments.threads)).run()
+    sys.exit()
     kma.KMARunner(arguments.nanopore,
                   arguments.output + "/bacteria_alignment",
                   arguments.db_dir + "/bac_db",
