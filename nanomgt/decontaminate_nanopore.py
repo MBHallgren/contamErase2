@@ -120,7 +120,6 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
     original_dp = arguments.dp
     time_1 = time.time()
     #TBD can we speed up iterations?
-    print (confirmed_mutation_dict)
     with open(arguments.output + '/convergence_results.txt', 'w') as convergence_file:
         print ('Interations,Mutations', file=convergence_file)
         # Iterate until no new mutations are found
@@ -140,7 +139,6 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
             print ('Iteration: ' + str(iteration_count), file=sys.stderr)
             print ('Mutations: ' + str(new_count), file=sys.stderr)
             print (str(iteration_count) + ',' + str(new_count), file=convergence_file)
-            print (confirmed_mutation_dict)
 
 
             # Check for convergence
