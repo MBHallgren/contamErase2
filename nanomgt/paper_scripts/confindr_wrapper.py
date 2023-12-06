@@ -4,8 +4,8 @@ import sys
 
 bf_rates = [1, 2, 3, 4, 5]
 
-#path = '/home/people/malhal/papers/rmlst/data/mix/subsets'
-path = '/home/people/malhal/contamErase/benchmarking/confindr/data/nanopore/'
+path = '/home/people/malhal/papers/rmlst/data/saures/subsets'
+#path = '/home/people/malhal/papers/rmlst/data/ecoli/subsets'
 for rate in bf_rates:
     for i in range(1, 11, 1):
         os.system(

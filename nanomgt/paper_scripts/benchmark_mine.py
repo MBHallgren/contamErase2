@@ -3,9 +3,9 @@ import sys
 import numpy as np
 
 
-#final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/final_mutation_lists/biological_rmlst_snvs.txt'
+final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/final_mutation_lists/biological_rmlst_snvs.txt'
 
-final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/mix/mix_mutations.txt'
+#final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/mix/mix_mutations.txt'
 
 biological_rmlst_snvs = dict()
 
@@ -77,7 +77,7 @@ print ('experiment,totalsnvs,totalbiologicalsnvscorrect,missingbiologicalsnvscor
 #print ('MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth')
 for rate in rates:
     for file_depth in file_depths:
-        results_file = '/home/people/malhal/papers/rmlst/benchmarking/ecoli_mine/{}/{}_results.csv'.format(rate, file_depth)
+        results_file = '/home/people/malhal/papers/rmlst/benchmarking/saures_mine/{}/{}_results.csv'.format(rate, file_depth)
         #confindr_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr/{}/{}/intra_contamination.csv'.format(rate, file_depth)
         results = dict()
         with open(results_file, 'r') as f:

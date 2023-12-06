@@ -1,8 +1,11 @@
 import os
 import sys
 
-p_r = '/home/people/malhal/data/GridION_0011/DTU_2023_1025625_100_SI_SW_887_89_2_93_SE.fq.gz'
-p_s = '/home/people/plan/kma_nanomlst/seqs/run44/guppy_5.0.11_sup/barcode03_q10sup.fq.gz'
+p_r = '/home/people/malhal/contamErase/data/nanopore/intra/paper/DTU_2023_1028222_101_SI_BC00107_SE.fq'
+p_s = '/home/people/malhal/contamErase/data/nanopore/intra/paper/DTU_2023_1028247_100_SI_DADST035_SE.fq'
+
+#p_r = '/home/people/malhal/data/GridION_0011/DTU_2023_1025625_100_SI_SW_887_89_2_93_SE.fq.gz'
+#p_s = '/home/people/malhal/data/GridION_0001/DTU_2020_1000202_100_SI_ITA_MIL_018_SE.fq.gz'
 #extra_s = 'DTU_2023_1026326_100_SI_26_SE.fq'
 
 total = 140000
