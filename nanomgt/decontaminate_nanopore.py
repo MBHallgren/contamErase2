@@ -15,9 +15,9 @@ from nanomgt.nanopore_mutations import identify_mutations
 def nanopore_decontamination(arguments):
     os.system('mkdir ' + arguments.output)
     if arguments.nanopore.endswith('.gz'):
-        os.system('zcat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
+        os.system('zcat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, arguments.q_score, arguments.output))
     else:
-        os.system('cat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, 14, arguments.output))
+        os.system('cat {} | NanoFilt -q {} > {}/trimmed_reads.fastq'.format(arguments.nanopore, arguments.q_score, arguments.output))
     arguments.nanopore = arguments.output + '/trimmed_reads.fastq'
 
     kma.KMARunner(arguments.nanopore,
