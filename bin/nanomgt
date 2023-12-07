@@ -41,8 +41,8 @@ def main():
                         help='Biological penalty. -= mrd*bp. Default: 1')
     parser.add_argument('--pp', action="store", type=float, dest='pp', default=0.5,
                         help='Proximity penalty. -= mrd*pp Default: 0.5')
-    parser.add_argument('--dp', action="store", type=float, dest='dp', default=0.1,
-                        help='Density Penalty. += n_mutation_in_windown*dp*mrd Default: 0.1')
+    parser.add_argument('--dp', action="store", type=float, dest='dp', default=0.05,
+                        help='Density Penalty. += n_mutation_in_windown*dp*mrd Default: 0.05')
     parser.add_argument('--dp_window', action="store", type=float, dest='dp_window', default=15,
                         help='Proximity penalty. Default: 15')
     parser.add_argument('--proxi', action="store", type=int, dest='proxi', default=5,
