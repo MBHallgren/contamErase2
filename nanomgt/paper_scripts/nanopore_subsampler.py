@@ -8,7 +8,7 @@ p_r = '/home/people/malhal/data/GridION_0011/DTU_2023_1025625_100_SI_SW_887_89_2
 p_s = '/home/people/malhal/data/GridION_0001/DTU_2020_1000202_100_SI_ITA_MIL_018_SE.fq.gz'
 #extra_s = 'DTU_2023_1026326_100_SI_26_SE.fq'
 
-total = 140000
+total = 240000
 p_s_limit = 60000
 
 for i in range(1, 11, 1):
@@ -27,8 +27,8 @@ for i in range(1, 11, 1):
 
 
     os.system('mkdir subsets/{}'.format(i))
-    os.system('seqtk sample -s101 {} {} > subsets/{}/primary.fastq'.format(p_r, r_size, i))
-    os.system('seqtk sample -s101 {} {} > subsets/{}/secondary.fastq'.format(p_s, s_size, i))
+    os.system('seqtk sample -s100 {} {} > subsets/{}/primary.fastq'.format(p_r, r_size, i))
+    os.system('seqtk sample -s100 {} {} > subsets/{}/secondary.fastq'.format(p_s, s_size, i))
     #os.system('seqtk sample -s100 {} {} > subsets/{}/extra.fastq'.format(extra_s, extra_size, i))
     os.system('cat subsets/{}/*fastq > subsets/{}/{}_intra.fastq'.format(i, i, i))
 
