@@ -124,7 +124,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
         print ('Interations,Mutations', file=convergence_file)
         # Iterate until no new mutations are found
         while True:
-            arguments.cor = arguments.cor + (original_cor * 0.15) #increase of 15% per iteration
+            arguments.cor = arguments.cor + (original_cor * 0.25) #increase of 15% per iteration
             arguments.dp = arguments.dp + (original_dp * 0.15) #increase of 15% per iteration
             confirmed_mutation_dict, co_occurrence_tmp_dict = upper_co_occuring_mutations_in_reads(
                 arguments,
@@ -482,6 +482,11 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation1][mutation2] += 1
                                 co_occurrence_matrix[mutation2][mutation1] += 1
             co_occurrence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
+            if allele == 'BACT000030_2105':
+                print('Co-occurrence matrix for BACT000030_2105:')
+                print (co_occurrence_matrix_dict[allele][1])
+                for row in co_occurrence_matrix_dict[allele][0]:
+                    print(row)
 
     adjusted_mutation_dict = {}
     for allele in confirmed_mutation_dict:

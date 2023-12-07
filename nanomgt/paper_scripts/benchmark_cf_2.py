@@ -2,9 +2,10 @@ import os
 import sys
 import numpy as np
 
-final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/final_mutation_lists/biological_rmlst_snvs.txt'
+#final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/final_mutation_lists/biological_rmlst_snvs.txt'
 
-#final_mutation_file = '/home/people/malhal/papers/rmlst/benchmarking/sample_benchmarks/mix/mix_mutations.txt'
+final_mutation_file = '/home/people/malhal/papers/rmlst/test/ecoli_diff.txt'
+
 
 biological_rmlst_snvs = dict()
 
@@ -31,7 +32,7 @@ def derive_biological_rmlst_snvs_results(biological_rmlst_snvs, results):
     remaining_bio_snvs = dict()
     noise_novel = list()
     noise_known = list()
-
+    general_noise = list()
     for gene in results:
         if gene in biological_rmlst_snvs:
             mutations = results[gene][0]
@@ -54,7 +55,7 @@ def derive_biological_rmlst_snvs_results(biological_rmlst_snvs, results):
                         remaining_snvs[gene][0].append(mutation)
                     else:
                         total_snvs += 1
-                        noise_known.append(gene + '_' + mutation)
+                        general_noise.append(gene + '_' + mutation)
                         remaining_snvs[gene][0].append(mutation)
 
     #GO BACK AND CHECK THIS
@@ -65,17 +66,17 @@ def derive_biological_rmlst_snvs_results(biological_rmlst_snvs, results):
                     remaining_bio_snvs[item] = mutation
 
 
-    return total_snvs, total_bio_snvs_found_correctly, remaining_snvs, remaining_bio_snvs, noise_novel, noise_known
+    return total_snvs, total_bio_snvs_found_correctly, remaining_snvs, remaining_bio_snvs, noise_novel, noise_known, general_noise
 
 rates = [1, 2, 3, 4, 5]
 file_depths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-print ('experiment,totalsnvs,totalbiologicalsnvscorrect,missingbiologicalsnvscorrect,noise_novel,noise_known')
+print ('experiment,totalsnvs,totalbiologicalsnvscorrect,missingbiologicalsnvscorrect,noise_novel,noise_known,general_noise')
 #print ('MajorityAlelle,Position,MajorityBase,MutationBase,MutationDepth,TotalDepth')
 for rate in rates:
     for file_depth in file_depths:
         #results_file = '/home/people/malhal/papers/rmlst/benchmarking/mix/{}/{}_results.csv'.format(rate, file_depth)
-        results_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr_sarues/{}/{}/intra_contamination.csv'.format(rate, file_depth, file_depth)
+        results_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr_ecoli/{}/{}/{}_intra_contamination.csv'.format(rate, file_depth, file_depth, file_depth)
         #confindr_file = '/home/people/malhal/papers/rmlst/benchmarking/confindr/{}/{}/intra_contamination.csv'.format(rate, file_depth)
         results = dict()
         with open(results_file, 'r') as f:
@@ -97,7 +98,7 @@ for rate in rates:
                             results[gene][1].append(line[4])
                             results[gene][2].append(line[-1])
 
-        total_snvs, total_bio_snvs_found_correctly, remaining_snvs, remaining_bio_snvs, noise_novel, noise_known = derive_biological_rmlst_snvs_results(biological_rmlst_snvs, results)
+        total_snvs, total_bio_snvs_found_correctly, remaining_snvs, remaining_bio_snvs, noise_novel, noise_known, general_noise = derive_biological_rmlst_snvs_results(biological_rmlst_snvs, results)
 
         all_biological_snvs = list()
         missing_biological_snvs = list()
@@ -109,10 +110,10 @@ for rate in rates:
             if item not in total_bio_snvs_found_correctly:
                 missing_biological_snvs.append(item)
                 #print (item)
-        #print (missing_biological_snvs)
+        print (missing_biological_snvs)
         #BACT000038 is a problem. 4 not IDd. Are these called correctly? check again. TBD
         #BACT000030 2 mutations. ID'ed with co-occurence!
         #BACT000040_240_A #This is known and needs to be fixed.'    240_A' is not in list
-        print (str(rate) + '/' + str(file_depth), total_snvs, len(total_bio_snvs_found_correctly), len(missing_biological_snvs), len(noise_novel), len(noise_known), sep=',')
+        print (str(rate) + '/' + str(file_depth), total_snvs, len(total_bio_snvs_found_correctly), len(missing_biological_snvs), len(noise_novel), len(noise_known), len(general_noise), sep=',')
         #TBD current we use 5p mutations for primary SNVs, should also bench are 1-4?
         #TBD Which missing biological SNVs do we see and why?
