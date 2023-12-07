@@ -124,7 +124,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
         print ('Interations,Mutations', file=convergence_file)
         # Iterate until no new mutations are found
         while True:
-            arguments.cor = arguments.cor + (original_cor * 0.25) #increase of 15% per iteration
+            arguments.cor = arguments.cor + (original_cor * 0.15) #increase of 15% per iteration
             arguments.dp = arguments.dp + (original_dp * 0.15) #increase of 15% per iteration
             confirmed_mutation_dict, co_occurrence_tmp_dict = upper_co_occuring_mutations_in_reads(
                 arguments,
