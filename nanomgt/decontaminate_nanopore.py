@@ -134,6 +134,8 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
                 bio_validation_dict
             )
 
+            print (confirmed_mutation_dict)
+
             new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
             iteration_count += 1
             print ('Iteration: ' + str(iteration_count), file=sys.stderr)
@@ -509,6 +511,8 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 mutation_threshold = position_depth * arguments.mrd
                 co_occurrence_list = check_mutation_co_occurrence(row, mutation_list, mutation,
                                                                  position_depth, arguments.cor, arguments.pp, arguments.mrd, proxi_mutations)
+                if allele == 'BACT000030_2105':
+                    print (mutation_list[i], co_occurrence_list)
                 if co_occurrence_list != []:
                     for item in co_occurrence_list:
                         co_occurrence_tmp_dict[allele].append(item)
@@ -565,7 +569,7 @@ def check_mutation_co_occurrence(list_of_mutation_co_occurrence, mutation_list, 
         # Should never happen
         return []  # No co-occurrence and not in proximity
 
-    co_threshold = position_depth * mrd * correlation_coefficient  # Default co_threshold
+    co_threshold = position_depth * mrd - correlation_coefficient * position_depth * mrd # Default co_threshold
     if co_threshold < 3:
         co_threshold = 3
 
