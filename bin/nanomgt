@@ -36,11 +36,11 @@ def main():
     parser.add_argument('--mrd', action="store", type=float, dest='mrd', default=0.03,
                         help='Minimum related depth (mrd) for validating a single allele SNVs. Default: 0.03')
     parser.add_argument('--cor', action="store", type=float, dest='cor', default=0.50,
-                        help='Co-occurrence reward. += mrd*cor. Default: 0.50')
-    parser.add_argument('--bp', action="store", type=float, dest='bp', default=1,
-                        help='Biological penalty. -= mrd*bp. Default: 1')
+                        help='Co-occurrence reward. -= mrd*cor. Default: 0.50')
+    parser.add_argument('--bp', action="store", type=float, dest='bp', default=1.25,
+                        help='Biological penalty. += mrd*bp. Default: 1.25')
     parser.add_argument('--pp', action="store", type=float, dest='pp', default=0.25,
-                        help='Proximity penalty. -= mrd*pp Default: 0.25')
+                        help='Proximity penalty. += mrd*pp Default: 0.25')
     parser.add_argument('--dp', action="store", type=float, dest='dp', default=0.1,
                         help='Density Penalty. += n_mutation_in_windown*dp*mrd Default: 0.1')
     parser.add_argument('--dp_window', action="store", type=float, dest='dp_window', default=15,
