@@ -134,7 +134,7 @@ def co_occurrence_until_convergence(arguments, confirmed_mutation_dict, consensu
                 bio_validation_dict
             )
 
-            #print (confirmed_mutation_dict)
+            print (confirmed_mutation_dict)
 
             new_count = count_mutations_in_mutations_dict(confirmed_mutation_dict)
             iteration_count += 1
@@ -484,11 +484,11 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                                 co_occurrence_matrix[mutation1][mutation2] += 1
                                 co_occurrence_matrix[mutation2][mutation1] += 1
             co_occurrence_matrix_dict[allele] = [co_occurrence_matrix, mutation_list]
-            #if allele == 'BACT000043_15':
-            #    print('Co-occurrence matrix for BACT000043_15:')
-            #    print (co_occurrence_matrix_dict[allele][1])
-            #    for row in co_occurrence_matrix_dict[allele][0]:
-            #        print(row)
+            if allele == 'BACT000039_31':
+                print('Co-occurrence matrix for BACT000039_31:')
+                print (co_occurrence_matrix_dict[allele][1])
+                for row in co_occurrence_matrix_dict[allele][0]:
+                    print(row)
 
     adjusted_mutation_dict = {}
     for allele in confirmed_mutation_dict:
@@ -511,27 +511,27 @@ def upper_co_occuring_mutations_in_reads(arguments, confirmed_mutation_dict, con
                 mutation_threshold = position_depth * arguments.mrd
                 co_occurrence_list = check_mutation_co_occurrence(row, mutation_list, mutation,
                                                                  position_depth, arguments.cor, arguments.pp, arguments.mrd, proxi_mutations)
-                #if allele == 'BACT000043_15':
-                #    print (mutation_list[i], co_occurrence_list, depth_list[i], mutation_threshold)
+                if allele == 'BACT000039_31':
+                    print (mutation_list[i], co_occurrence_list, depth_list[i], mutation_threshold)
                 if co_occurrence_list != []:
                     for item in co_occurrence_list:
                         co_occurrence_tmp_dict[allele].append(item)
                     mutation_threshold = mutation_threshold - position_depth * arguments.mrd * arguments.cor
-                #if allele == 'BACT000043_15':
-                #    print (mutation_threshold)
+                if allele == 'BACT000039_31':
+                    print (mutation_threshold)
                 if not biological_existence:
                     mutation_threshold = mutation_threshold + arguments.bp * position_depth * arguments.mrd
-                #if allele == 'BACT000043_15':
-                #    print (mutation_threshold)
+                if allele == 'BACT000039_31':
+                    print (mutation_threshold)
                 if proxi_mutations != []:
                     mutation_threshold = mutation_threshold + arguments.pp * position_depth * arguments.mrd
-                #if allele == 'BACT000043_15':
-                #    print (mutation_threshold)
+                if allele == 'BACT000039_31':
+                    print (mutation_threshold)
                 if density_mutations != []:
                     mutation_threshold = mutation_threshold + arguments.dp * position_depth * arguments.mrd * len(density_mutations)
-                #if allele == 'BACT000043_15':
-                #    print ('Density mutation: {}'.format(density_mutations))
-                #    print (mutation_threshold)
+                if allele == 'BACT000039_31':
+                    print ('Density mutation: {}'.format(density_mutations))
+                    print (mutation_threshold)
                 if mutation_depth >= mutation_threshold:
                     adjusted_mutation_dict[allele][0].append(confirmed_mutation_dict[allele][0][i])
                     adjusted_mutation_dict[allele][1].append(confirmed_mutation_dict[allele][1][i])
